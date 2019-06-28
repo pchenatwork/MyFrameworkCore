@@ -11,7 +11,7 @@ namespace Framework.Core.DataObject
     ///	NOT ORM Entities 
     ///	</summary>
     #endregion Header
-    public interface IValueObject
+    public interface IValueObject<T> where T: IValueObject<T>
     {
         #region	Public Methods
         //	*************************************************************************
@@ -23,7 +23,7 @@ namespace Framework.Core.DataObject
         /// Call base.CopyFrom first in the implementation.
         /// </summary>
         /// <param name="source">The source object.</param>
-        void CopyFrom(IValueObject source);
+        void CopyFrom(T source);
         /// <summary>
         /// Serializes the value object into a string.
         /// </summary>

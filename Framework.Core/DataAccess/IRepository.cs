@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Framework.Core.DataAccess
 {
-    public interface IRepository<T> where T : IValueObject
+    public interface IRepository<T> where T : IValueObject<T>
     {
         int Create(T entity);
         bool Update(T entity);

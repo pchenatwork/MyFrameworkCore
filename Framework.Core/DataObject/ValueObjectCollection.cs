@@ -7,7 +7,7 @@ using System.Xml.Serialization;
 namespace Framework.Core.DataObject
 {
     [Serializable]
-    public class ValueObjectCollection<T> : Collection<T> where T : IValueObject
+    public class ValueObjectCollection<T> : Collection<T> where T : IValueObject<T>
     {
         #region Constructors 
         // *************************************************************************

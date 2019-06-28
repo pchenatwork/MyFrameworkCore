@@ -12,7 +12,7 @@ namespace Framework.Core.DataObject
     /// https://enterprisecraftsmanship.com/2015/01/03/value-objects-explained/
     /// </summary>
     [Serializable]
-    public abstract class AbstractValueObject<T> : IValueObject where T: AbstractValueObject<T>
+    public abstract class AbstractValueObject<T> : IValueObject<T> where T: AbstractValueObject<T>
     {
 
         #region	Private Members
@@ -28,7 +28,7 @@ namespace Framework.Core.DataObject
         ///	<summary>
         ///	default	constructor	
         ///	</summary>
-        public AbstractValueObject()
+        private AbstractValueObject()
         {
         }
         #endregion constructor
@@ -63,20 +63,25 @@ namespace Framework.Core.DataObject
         }
         public override bool Equals(object obj)
         {
-            var o = obj as T;
-            if (ReferenceEquals(o, null))
+            var _o = obj as T;
+            if (ReferenceEquals(_o, null))
                 return false;
-            return EqualMe(o);
+            return _Equals(_o);
         }
-        protected abstract bool EqualMe(T that);
+        protected abstract bool _Equals(T that);
 
         public override int GetHashCode()
         {
-            return GetMyHashCode();
+            return _GetHashCode();
         }
-        protected abstract int GetMyHashCode();
+        protected abstract int _GetHashCode();
 
-        public virtual void CopyFrom(IValueObject source)
+        /// <summary>
+        /// Copy all the Member variables from the source object.
+        /// Call base.CopyFrom first in the implementation.
+        /// </summary>
+        /// <param name="source">The source object.</param>
+        public virtual void CopyFrom(T source)
         {
             _id = source.Id;
             _createUser = source.CreateUser;
@@ -84,7 +89,9 @@ namespace Framework.Core.DataObject
             _changeUser = source.ChangeUser;
             _changeDate = source.ChangeDate;
             _extra = source.Extra;
+            _CopyFrom(source);
         }
+        protected abstract void _CopyFrom(T source);
         public override String ToString()
         {
             return XMLUtility.ToXml(this);
