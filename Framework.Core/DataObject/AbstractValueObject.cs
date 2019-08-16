@@ -28,7 +28,7 @@ namespace Framework.Core.DataObject
         ///	<summary>
         ///	default	constructor	
         ///	</summary>
-        private AbstractValueObject()
+        public AbstractValueObject()
         {
         }
         #endregion constructor

@@ -5,6 +5,10 @@ using System.Text;
 
 namespace Framework.Core.DataAccess
 {
+    /// <summary>
+    /// From VAS IRepository === DataAccessObject (DAO)
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IRepository<T> where T : IValueObject<T>
     {
         int Create(T entity);
