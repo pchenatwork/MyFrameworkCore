@@ -1,5 +1,5 @@
 ﻿using Framework.Core.Common;
-using Framework.Core.DataObject;
+using Framework.Core.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

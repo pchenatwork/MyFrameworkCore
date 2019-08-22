@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Framework.Core.DataObject
+namespace Framework.Core.ValueObjects
 {
     public class ValueObjectFactory<T> : FactoryBase<ValueObjectFactory<T>> where T : IValueObject<T>
     {

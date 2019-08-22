@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace Framework.Core.DataObject
+namespace Framework.Core.ValueObjects
 {
     /// <summary>
     /// Inspired by

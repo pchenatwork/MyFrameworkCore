@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace Framework.Core.DataObject
+namespace Framework.Core.ValueObjects
 {
     /// <summary>
     /// Generic abstract base class for enumeration and lookup data. 

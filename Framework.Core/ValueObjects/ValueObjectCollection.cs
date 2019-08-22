@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace Framework.Core.DataObject
+namespace Framework.Core.ValueObjects
 {
     [Serializable]
     public class ValueObjectCollection<T> : Collection<T> where T : IValueObject<T>

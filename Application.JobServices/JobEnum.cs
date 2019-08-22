@@ -1,4 +1,4 @@
-﻿using Framework.Core.DataObject;
+﻿using Framework.Core.ValueObjects;
 using System;
 
 namespace Application.JobServices

@@ -1,4 +1,4 @@
-﻿using Framework.Core.DataObject;
+﻿using Framework.Core.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;

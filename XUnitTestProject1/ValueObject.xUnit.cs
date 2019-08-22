@@ -1,5 +1,5 @@
 using Application.ValueObjects.Workflow;
-using Framework.Core.DataObject;
+using Framework.Core.ValueObjects;
 using System;
 using Xunit;
 

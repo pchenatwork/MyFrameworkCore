@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Framework.Core.DataObject
+namespace Framework.Core.ValueObjects
 {
     #region	Header
     ///	<summary>
