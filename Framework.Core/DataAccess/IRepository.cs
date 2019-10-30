@@ -11,12 +11,12 @@ namespace Framework.Core.DataAccess
     /// <typeparam name="T"></typeparam>
     public interface IRepository<T> where T : IValueObject<T>
     {
-        int Create(T entity);
-        bool Update(T entity);
-        bool Delete(dynamic Id);
-        T Get(dynamic id);
-        IEnumerable<T> GetAll();
-        IEnumerable<T> FindByCriteria(string finderType, params object[] criteria);
+        int Create(IDbSession dbSession, T entity);
+        bool Update(IDbSession dbSession, T entity);
+        bool Delete(IDbSession dbSession, dynamic Id);
+        T Get(IDbSession dbSession, dynamic id);
+        IEnumerable<T> GetAll(IDbSession dbSession);
+        IEnumerable<T> FindByCriteria(IDbSession dbSession, string finderType, params object[] criteria);
 
         /// <summary>
         /// This is a generic function to invoke any function of a DAO.
@@ -25,6 +25,6 @@ namespace Framework.Core.DataAccess
         /// <param name="methodName"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        object InvokeByMethodName(string methodName, params object[] parameters);
+        object InvokeByMethodName(IDbSession dbSession, string methodName, params object[] parameters);
     }
 }

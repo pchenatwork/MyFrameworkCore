@@ -91,15 +91,27 @@ namespace Application.ValueObjects.Workflow
             }
         }
         [XmlAttribute()]
-        public int Type
+        public string NodeType
         {
             get
             {
-                return this._type;
+                return this._nodeType;
             }
             set
             {
-                this._type = value;
+                this._nodeType = value;
+            }
+        }
+        [XmlAttribute()]
+        public int NodeTypeEnum
+        {
+            get
+            {
+                return this._nodeTypeEnum;
+            }
+            set
+            {
+                this._nodeTypeEnum = value;
             }
         }
         [XmlAttribute()]
@@ -364,6 +376,21 @@ namespace Application.ValueObjects.Workflow
             _action5 = sourceWorkflowNode._action5;
             _action6 = sourceWorkflowNode._action6;
             _emailAction = sourceWorkflowNode._emailAction;
+        }
+
+        protected override void _CopyFrom(WorkflowNode source)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override bool _Equals(WorkflowNode that)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override int _GetHashCode()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

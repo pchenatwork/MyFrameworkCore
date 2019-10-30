@@ -1,5 +1,4 @@
 ﻿using Framework.Core.Common;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,9 +7,9 @@ namespace Framework.Core.DataAccess
 {
     public sealed class DbSessionFactory : FactoryBase<DbSessionFactory>
     {
-        public IDbSession Create(DbContext dbContext)
+        public IDbSession GetSession(string dbName)
         {
-            IDbSession session = new DbSession(dbContext);
+            IDbSession session = new DbSession("System.Data.SqlClient", "Data Source = MSSQL1; Initial Catalog = Northwind; Integrated Security = true" );
             return session;
         }
     }

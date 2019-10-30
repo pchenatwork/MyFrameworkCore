@@ -1,6 +1,5 @@
 ﻿using Framework.Core.ValueObjects;
 using Framework.Core.Utilities;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -11,20 +10,34 @@ namespace Framework.Core.DataAccess
 {
     public abstract class AbstractDAO<T> : IRepository<T> where T : IValueObject<T>
     {
-        protected readonly DbContext _dbContext;
-
-        public AbstractDAO(DbContext dbContext)
+        public AbstractDAO()
         {
-            _dbContext = dbContext;
         }
-        public abstract int Create(T entity);
-        public abstract bool Delete(dynamic Id);
-        public abstract IEnumerable<T> FindByCriteria(string finderType, params object[] criteria);
-        public abstract T Get(dynamic id);
-        public abstract IEnumerable<T> GetAll();
-        public abstract bool Update(T entity);
-
-        public virtual object InvokeByMethodName(string methodName, params object[] parameters)
+        public virtual int Create(IDbSession dbSession, T entity)
+        {
+            throw new NotImplementedException();
+        }
+        public virtual bool Delete(IDbSession dbSession, dynamic Id)
+        {
+            throw new NotImplementedException();
+        }
+        public virtual IEnumerable<T> FindByCriteria(IDbSession dbSession, string finderType, params object[] criteria)
+        {
+            throw new NotImplementedException();
+        }
+        public virtual T Get(IDbSession dbSession, dynamic id)
+        {
+            throw new NotImplementedException();
+        }
+        public virtual IEnumerable<T> GetAll(IDbSession dbSession)
+        {
+            throw new NotImplementedException();
+        }
+        public virtual bool Update(IDbSession dbSession, T entity)
+        {
+            throw new NotImplementedException();
+        }
+        public virtual object InvokeByMethodName(IDbSession dbSession, string methodName, params object[] parameters)
         {
             Type type = this.GetType();
             return type.InvokeMember(methodName, BindingFlags.DeclaredOnly |

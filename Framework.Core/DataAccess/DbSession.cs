@@ -1,92 +1,115 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Text;
 using Framework.Core.ValueObjects;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
+using System.Data;
 
 namespace Framework.Core.DataAccess
 {
+    public interface IDbSession : IDisposable
+    {
+        IDbConnection DbConnection { get; }
+        IDbTransaction Transaction { get; }
+        IDbTransaction BeginTrans(IsolationLevel isolation = IsolationLevel.ReadCommitted);
+        void Commit();
+        void Rollback();
+    }
     public class DbSession : IDbSession
     {
-        #region Private members
-        private DbContext _dbContext;
-        //private DbConnection _dbConnection;
-        private IDbContextTransaction _transaction;
-        private bool disposed = false;
-        private Dictionary<Type, object> repositories;
+        #region Private members        
+        private IDbConnection _dbConnection;
+        private IDbTransaction _transaction;
         #endregion private members
 
         #region Constructor
-        public DbSession(DbContext context)
+        internal DbSession(string providerName, string connectionString)
         {
-            _dbContext = context;
+            // Create the DbProviderFactory and DbConnection.
+            /*
+<configuration>  
+  <connectionStrings>  
+    <clear/>  
+    <add name="NorthwindSQL"   
+     providerName="System.Data.SqlClient"   
+     connectionString=  
+     "Data Source=MSSQL1;Initial Catalog=Northwind;Integrated Security=true"  
+    />  
+  
+    <add name="NorthwindAccess"   
+     providerName="System.Data.OleDb"   
+     connectionString=  
+     "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\Data\Northwind.mdb;"  
+    />  
+  </connectionStrings>  
+</configuration> 
+             * */
+            if (connectionString != null)
+            {
+                try
+                {
+                    DbProviderFactory factory =
+                        DbProviderFactories.GetFactory(providerName);
+
+                    _dbConnection = factory.CreateConnection();
+                    _dbConnection.ConnectionString = connectionString;
+                }
+                catch (Exception ex)
+                {
+                    // Set the connection to null if it was created.
+                    if (_dbConnection != null)
+                    {
+                        _dbConnection = null;
+                    }
+                }
+            }
+        }
+        internal DbSession(IDbConnection conn)
+        {
+            _dbConnection = conn;
+        }
+        internal DbSession(IDbTransaction trans)
+        {
+            _dbConnection = trans.Connection;
+            _transaction = trans;
         }
         #endregion Constructor
-
-        public DbContext DbContext
+        
+        #region Properties
+        public IDbConnection DbConnection => _dbConnection;
+        public IDbTransaction Transaction => _transaction;
+        #endregion Properties
+        
+        public IDbTransaction BeginTrans(IsolationLevel isolation = IsolationLevel.ReadCommitted)
         {
-            get => _dbContext;
+            return _dbConnection.BeginTransaction(isolation);
         }
-
-        public DbConnection DbConnection
-        {
-            get => _dbContext.Database.GetDbConnection();
-        }
-
-        public IDbContextTransaction BeginTrans()
-        {
-            _transaction = _dbContext.Database.BeginTransaction();
-            return _transaction;
-        }
-
         public void Commit()
         {
             _transaction.Commit();
-            throw new NotImplementedException();
+            _transaction = null;
         }
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposed)
+            if (_dbConnection.State != ConnectionState.Closed)
             {
-                if (disposing)
+                if (_transaction != null)
                 {
-                    if (repositories != null)
-                    {
-                        repositories.Clear();
-                    }
-                    _dbContext.Dispose();
+                    //_transaction.Rollback();
+                    _transaction.Dispose();
+                    _transaction = null;
+
                 }
+                _dbConnection.Close();
+                _dbConnection = null;
             }
-            disposed = true;
-        }
-
-        public int ExecuteSqlCommand(string sql, params object[] paramters)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IRepository<T> GetRepository<T>() where T : IValueObject<T>
-        {
-            throw new NotImplementedException();
+            GC.SuppressFinalize(this);
         }
 
         public void Rollback()
         {
             _transaction.Rollback();
             _transaction = null;
-        }
-
-        public int SaveChanges()
-        {
-            throw new NotImplementedException();
         }
     }
 }
