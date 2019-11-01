@@ -10,12 +10,12 @@ namespace XUnitTestProject1
         [Fact]
         public void EqualTest()
         {
-            Workflow wf1 = ValueObjectFactory<Workflow>.Instance.Create();
+            WorkflowList wf1 = ValueObjectFactory<WorkflowList>.Instance.Create();
             wf1.Id = 1;
             wf1.Description = "xxx";
             wf1.Name = "paul";
 
-            Workflow wf2 = new Workflow()
+            WorkflowList wf2 = new WorkflowList()
             {
                 Id = 1, Description = "xxx2", Name = "paul2"
             };

@@ -10,9 +10,16 @@ namespace Framework.Core.DataAccess
 {
     public abstract class AbstractDAO<T> : IRepository<T> where T : IValueObject<T>
     {
+        #region constructor
         public AbstractDAO()
         {
         }
+        static AbstractDAO()
+        {
+
+        }
+        #endregion constructor
+
         public virtual int Create(IDbSession dbSession, T entity)
         {
             throw new NotImplementedException();

@@ -17,8 +17,8 @@ namespace Framework.Core.DataAccess
     public class DbSession : IDbSession
     {
         #region Private members        
-        private IDbConnection _dbConnection;
-        private IDbTransaction _transaction;
+        private IDbConnection _dbConn;
+        private IDbTransaction _dbTran;
         #endregion private members
 
         #region Constructor
@@ -50,66 +50,66 @@ namespace Framework.Core.DataAccess
                     DbProviderFactory factory =
                         DbProviderFactories.GetFactory(providerName);
 
-                    _dbConnection = factory.CreateConnection();
-                    _dbConnection.ConnectionString = connectionString;
+                    _dbConn = factory.CreateConnection();
+                    _dbConn.ConnectionString = connectionString;
                 }
                 catch (Exception ex)
                 {
                     // Set the connection to null if it was created.
-                    if (_dbConnection != null)
+                    if (_dbConn != null)
                     {
-                        _dbConnection = null;
+                        _dbConn = null;
                     }
                 }
             }
         }
         internal DbSession(IDbConnection conn)
         {
-            _dbConnection = conn;
+            _dbConn = conn;
         }
         internal DbSession(IDbTransaction trans)
         {
-            _dbConnection = trans.Connection;
-            _transaction = trans;
+            _dbConn = trans.Connection;
+            _dbTran = trans;
         }
         #endregion Constructor
         
         #region Properties
-        public IDbConnection DbConnection => _dbConnection;
-        public IDbTransaction Transaction => _transaction;
+        public IDbConnection DbConnection => _dbConn;
+        public IDbTransaction Transaction => _dbTran;
         #endregion Properties
         
         public IDbTransaction BeginTrans(IsolationLevel isolation = IsolationLevel.ReadCommitted)
         {
-            return _dbConnection.BeginTransaction(isolation);
+            return _dbTran = _dbConn.BeginTransaction(isolation);
         }
         public void Commit()
         {
-            _transaction.Commit();
-            _transaction = null;
+            _dbTran.Commit();
+            _dbTran = null;
         }
 
         public void Dispose()
         {
-            if (_dbConnection.State != ConnectionState.Closed)
+            if (_dbConn.State != ConnectionState.Closed)
             {
-                if (_transaction != null)
+                if (_dbTran != null)
                 {
                     //_transaction.Rollback();
-                    _transaction.Dispose();
-                    _transaction = null;
+                    _dbTran.Dispose();
+                    _dbTran = null;
 
                 }
-                _dbConnection.Close();
-                _dbConnection = null;
+                _dbConn.Close();
+                _dbConn = null;
             }
             GC.SuppressFinalize(this);
         }
 
         public void Rollback()
         {
-            _transaction.Rollback();
-            _transaction = null;
+            _dbTran.Rollback();
+            _dbTran = null;
         }
     }
 }

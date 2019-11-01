@@ -20,7 +20,7 @@ namespace Framework.Core.DataAccess
 
         /// <summary>
         /// This is a generic function to invoke any function of a DAO.
-        /// Note: IDataSource must be the first parameter of  parameters array.
+        /// Note: IDbSession must be the first parameter of  parameters array.
         /// </summary>
         /// <param name="methodName"></param>
         /// <param name="parameters"></param>

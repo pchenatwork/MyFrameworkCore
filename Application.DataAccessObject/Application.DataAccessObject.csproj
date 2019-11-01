@@ -6,7 +6,11 @@
 
   <ItemGroup>
     <Folder Include="Supplier\" />
-    <Folder Include="Workflow\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application.ValueObjects\Application.ValueObjects.csproj" />
+    <ProjectReference Include="..\Framework.Core\Framework.Core.csproj" />
   </ItemGroup>
 
 </Project>
