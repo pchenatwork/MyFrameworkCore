@@ -9,11 +9,10 @@ namespace Application.ValueObjects.Workflow
     [Serializable]
     public class WorkflowNode : AbstractValueObject<WorkflowNode>
     {
-
         #region	Constants
         #endregion
 
-        #region	Private Members
+        #region	Private valurables
         // *************************************************************************
         //				 Private Members
         // *************************************************************************
@@ -24,14 +23,13 @@ namespace Application.ValueObjects.Workflow
         private string _nodeType;
         private int _nodeFromId;
         private int _nodeToId;
+        private int _stepId;
         private double _timeToSkip;
         private int _isPermissioned;
         private string _nodeValue;
         private int _nodeConditionEnum;
         private string _nodeCondition;
-        private string _action1 = string.Empty;
-        private string _action2 = string.Empty;
-        private string _emailAction = string.Empty;
+        private string _action = string.Empty;
 
         private ValueObjectCollection<WorkflowAction> _workflowActions = null;
         ///private WorkflowConditionCollection _workflowConditions = null;
@@ -42,17 +40,15 @@ namespace Application.ValueObjects.Workflow
         static WorkflowNode()
         {
         }
-
         ///	<summary>
         ///	default	constructor	
         ///	</summary>
-
         public WorkflowNode()
         {
         }
         #endregion Constructors
 
-        #region	Properties
+        #region	Public Properties
 
         [XmlAttribute()]
         public int WorkflowId
@@ -67,18 +63,6 @@ namespace Application.ValueObjects.Workflow
             }
         }
         [XmlAttribute()]
-        public int UserStepId
-        {
-            get
-            {
-                return this._userStepId;
-            }
-            set
-            {
-                this._userStepId = value;
-            }
-        }
-        [XmlAttribute()]
         public string Name
         {
             get
@@ -88,6 +72,17 @@ namespace Application.ValueObjects.Workflow
             set
             {
                 this._name = value;
+            }
+        }
+        public string Description
+        {
+            get
+            {
+                return this._description;
+            }
+            set
+            {
+                this._description = value;
             }
         }
         [XmlAttribute()]
@@ -115,18 +110,6 @@ namespace Application.ValueObjects.Workflow
             }
         }
         [XmlAttribute()]
-        public int ConditionId
-        {
-            get
-            {
-                return this._conditionId;
-            }
-            set
-            {
-                this._conditionId = value;
-            }
-        }
-        [XmlAttribute()]
         public int NodeFromId
         {
             get
@@ -151,15 +134,27 @@ namespace Application.ValueObjects.Workflow
             }
         }
         [XmlAttribute()]
-        public string Description
+        public int StepId
         {
             get
             {
-                return this._description;
+                return this._stepId;
             }
             set
             {
-                this._description = value;
+                this._stepId = value;
+            }
+        }
+        [XmlAttribute()]
+        public string Action
+        {
+            get
+            {
+                return this._action;
+            }
+            set
+            {
+                this._action = value;
             }
         }
         [XmlAttribute()]
@@ -175,123 +170,27 @@ namespace Application.ValueObjects.Workflow
             }
         }
         [XmlAttribute()]
-        public int Counter
+        public string NodeValue
         {
             get
             {
-                return this._counter;
+                return this._nodeValue;
             }
             set
             {
-                this._counter = value;
+                this._nodeValue = value;
             }
         }
         [XmlAttribute()]
-        public int IsSkip
+        public int NodeConditionEnum
         {
             get
             {
-                return this._isSkip;
+                return this._nodeTypeEnum;
             }
             set
             {
-                this._isSkip = value;
-            }
-        }
-        [XmlAttribute()]
-        public int IsPermCtrl
-        {
-            get
-            {
-                return this._isPermCtrl;
-            }
-            set
-            {
-                this._isPermCtrl = value;
-            }
-        }
-        [XmlAttribute()]
-        public string Action1
-        {
-            get
-            {
-                return this._action1;
-            }
-            set
-            {
-                this._action1 = value;
-            }
-        }
-        [XmlAttribute()]
-        public string Action2
-        {
-            get
-            {
-                return this._action2;
-            }
-            set
-            {
-                this._action2 = value;
-            }
-        }
-        [XmlAttribute()]
-        public string Action3
-        {
-            get
-            {
-                return this._action3;
-            }
-            set
-            {
-                this._action3 = value;
-            }
-        }
-        [XmlAttribute()]
-        public string Action4
-        {
-            get
-            {
-                return this._action4;
-            }
-            set
-            {
-                this._action4 = value;
-            }
-        }
-        [XmlAttribute()]
-        public string Action5
-        {
-            get
-            {
-                return this._action5;
-            }
-            set
-            {
-                this._action5 = value;
-            }
-        }
-        [XmlAttribute()]
-        public string Action6
-        {
-            get
-            {
-                return this._action6;
-            }
-            set
-            {
-                this._action6 = value;
-            }
-        }
-        [XmlAttribute()]
-        public string EmailAction
-        {
-            get
-            {
-                return this._emailAction;
-            }
-            set
-            {
-                this._emailAction = value;
+                this._nodeTypeEnum = value;
             }
         }
 
@@ -299,7 +198,7 @@ namespace Application.ValueObjects.Workflow
         /// Property WorkflowActions (WorkflowActionCollection)
         /// </summary>
         [XmlArray("ArrayOfWorkflowAction")]
-        public WorkflowActionCollection WorkflowActions
+        public ValueObjectCollection<WorkflowAction> WorkflowActions
         {
             get
             {
@@ -310,77 +209,30 @@ namespace Application.ValueObjects.Workflow
                 this._workflowActions = value;
             }
         }
-
-        /// <summary>
-        /// Property WorkflowConditions (WorkflowConditionCollection)
-        /// </summary>
-        [XmlArray("ArrayOfWorkflowCondition")]
-        public WorkflowConditionCollection WorkflowConditions
-        {
-            get
-            {
-                return this._workflowConditions;
-            }
-            set
-            {
-                this._workflowConditions = value;
-            }
-        }
-
-        /// <summary>
-        /// Property WorkflowNodeUsers (WorkflowNodeUserCollection)
-        /// </summary>
-        [XmlArray("ArrayOfWorkflowNodeUser")]
-        public WorkflowNodeUserCollection WorkflowNodeUsers
-        {
-            get
-            {
-                return this._workflowNodeUsers;
-            }
-            set
-            {
-                this._workflowNodeUsers = value;
-            }
-        }
         #endregion Properties
 
-        #region	Public Methods
-        //	*************************************************************************
-        //				   Public methods
-        //	*************************************************************************
+        #region	override Methods
         /// <summary>
         /// Copy all the Member variables from the source object.
         /// Call base.CopyFrom first in the implementation.
         /// </summary>
         /// <param name="source">The source object.</param>
-        public override void CopyFrom(IValueObject source)
-        {
-            WorkflowNode sourceWorkflowNode = (WorkflowNode)source;
-            base.CopyFrom(source);
-            _workflowId = sourceWorkflowNode._workflowId;
-            _userStepId = sourceWorkflowNode._userStepId;
-            _name = sourceWorkflowNode._name;
-            _type = sourceWorkflowNode._type;
-            _conditionId = sourceWorkflowNode._conditionId;
-            _nodeFromId = sourceWorkflowNode._nodeFromId;
-            _nodeToId = sourceWorkflowNode._nodeToId;
-            _description = sourceWorkflowNode._description;
-            _timeToSkip = sourceWorkflowNode._timeToSkip;
-            _counter = sourceWorkflowNode._counter;
-            _isSkip = sourceWorkflowNode._isSkip;
-            _isPermCtrl = sourceWorkflowNode._isPermCtrl;
-            _action1 = sourceWorkflowNode._action1;
-            _action2 = sourceWorkflowNode._action2;
-            _action3 = sourceWorkflowNode._action3;
-            _action4 = sourceWorkflowNode._action4;
-            _action5 = sourceWorkflowNode._action5;
-            _action6 = sourceWorkflowNode._action6;
-            _emailAction = sourceWorkflowNode._emailAction;
-        }
-
         protected override void _CopyFrom(WorkflowNode source)
         {
-            throw new NotImplementedException();
+            _workflowId = source._workflowId;
+            _name = source._name;
+            _description = source._description;
+            _nodeTypeEnum = source._nodeTypeEnum;
+            _nodeType = source._nodeType;
+            _nodeFromId = source._nodeFromId;
+            _nodeToId = source._nodeToId;
+            _stepId = source._stepId;
+            _action = source._action;
+            _isPermissioned = source._isPermissioned;
+            _timeToSkip = source._timeToSkip;
+            _nodeConditionEnum = source._nodeConditionEnum;
+            _nodeCondition = source._nodeCondition;
+            _nodeValue = source._nodeValue;
         }
 
         protected override bool _Equals(WorkflowNode that)
@@ -393,8 +245,6 @@ namespace Application.ValueObjects.Workflow
             throw new NotImplementedException();
         }
 
-        #endregion
-
-
+        #endregion        
     }
 }

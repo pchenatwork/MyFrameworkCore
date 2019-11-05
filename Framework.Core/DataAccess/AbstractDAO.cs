@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Xml;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace Framework.Core.DataAccess
 {
@@ -50,6 +52,29 @@ namespace Framework.Core.DataAccess
             return type.InvokeMember(methodName, BindingFlags.DeclaredOnly |
                 BindingFlags.Public | BindingFlags.Instance | BindingFlags.InvokeMethod,
                 null, this, parameters);
+        }
+
+        protected XmlReader ExecuteXmlReader(IDbSession dbSession, string commandText, SqlParameter[] parameters)
+        {
+            XmlReader reader;
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.Connection = (SqlConnection)dbSession.DbConnection;
+                if (dbSession.Transaction != null) cmd.Transaction = (SqlTransaction)dbSession.Transaction;
+
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = commandText;
+
+                foreach (SqlParameter p in parameters)
+                {
+                    cmd.Parameters.Add(p);
+                }
+
+                if (cmd.Connection.State != ConnectionState.Open) cmd.Connection.Open();
+
+                reader = cmd.ExecuteXmlReader();
+            }
+            return reader;
         }
 
         protected T Deserialize(XmlReader reader)

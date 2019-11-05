@@ -25,6 +25,7 @@ namespace Application.ValueObjects.Workflow
         // *************************************************************************
         private string _name = string.Empty;
         private string _description = string.Empty;
+        private bool _status;
         #endregion Private Members
 
         #region	Constructors
@@ -67,6 +68,9 @@ namespace Application.ValueObjects.Workflow
                 this._description = value;
             }
         }
+
+        [XmlAttribute()]
+        public Boolean Status { get => _status; set => _status = value; }
         #endregion Properties
 
         #region	Overide Methods
