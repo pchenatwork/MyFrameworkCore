@@ -12,7 +12,7 @@ namespace Framework.Core.ValueObjects
     /// https://enterprisecraftsmanship.com/2015/01/03/value-objects-explained/
     /// </summary>
     [Serializable]
-    public abstract class AbstractValueObject<T> : IValueObject<T> where T: AbstractValueObject<T>
+    public abstract class AbstractValueObject<T> : IValueObject where T: AbstractValueObject<T>
     {
 
         #region	Private Members
@@ -81,7 +81,8 @@ namespace Framework.Core.ValueObjects
         /// Call base.CopyFrom first in the implementation.
         /// </summary>
         /// <param name="source">The source object.</param>
-        public virtual void CopyFrom(T source)
+        /// 
+        public void CopyFrom(IValueObject source)
         {
             _id = source.Id;
             _createUser = source.CreateUser;
@@ -89,7 +90,8 @@ namespace Framework.Core.ValueObjects
             _changeUser = source.ChangeUser;
             _changeDate = source.ChangeDate;
             _extra = source.Extra;
-            _CopyFrom(source);
+
+            _CopyFrom((T)source);
         }
         protected abstract void _CopyFrom(T source);
         public override String ToString()

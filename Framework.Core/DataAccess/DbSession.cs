@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using Microsoft.Data.SqlClient;
 using Framework.Core.ValueObjects;
 using System.Data;
+using System.Linq;
 
 namespace Framework.Core.DataAccess
 {
@@ -47,10 +49,31 @@ namespace Framework.Core.DataAccess
             {
                 try
                 {
-                    DbProviderFactory factory =
-                        DbProviderFactories.GetFactory(providerName);
+                    /***** Works
+                    // In core, need to Microsoft.Data.SqlClient is not part of machine.config/GAC. In .NET Core, there is no GAC or Global Configuration anymore.
+                    // This means you will have ot register your provider in your project first
+                    // 1. Register the factor
+                    DbProviderFactories.RegisterFactory("test", Microsoft.Data.SqlClient.SqlClientFactory.Instance);
+                    
+                    // 2. Get the provider invariant names
+                    IEnumerable<string> invariants = DbProviderFactories.GetProviderInvariantNames(); // => 1 result; 'test'
+
+                    // 3. Get a factory using that name
+                    DbProviderFactory factory = DbProviderFactories.GetFactory(invariants.FirstOrDefault());
+
+
+                    DbProviderFactory factory2 = Microsoft.Data.SqlClient.SqlClientFactory.Instance;
+
+                    /// Not Working ///
+                    //DbProviderFactory factory2 =
+                    //    DbProviderFactories.GetFactory(providerName);
 
                     _dbConn = factory.CreateConnection();
+                    _dbConn.ConnectionString = connectionString;
+
+                     **********/
+
+                    _dbConn = Microsoft.Data.SqlClient.SqlClientFactory.Instance.CreateConnection();
                     _dbConn.ConnectionString = connectionString;
                 }
                 catch (Exception ex)

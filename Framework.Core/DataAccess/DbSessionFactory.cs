@@ -9,7 +9,7 @@ namespace Framework.Core.DataAccess
     {
         public IDbSession GetSession(string providerName, string connectionString)
         {
-            IDbSession session = new DbSession("System.Data.SqlClient", "Data Source = MSSQL1; Initial Catalog = Northwind; Integrated Security = true" );
+            IDbSession session = new DbSession(providerName, connectionString);
             return session;
         }
     }

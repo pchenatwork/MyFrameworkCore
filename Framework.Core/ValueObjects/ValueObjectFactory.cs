@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Framework.Core.ValueObjects
 {
-    public class ValueObjectFactory<T> : FactoryBase<ValueObjectFactory<T>> where T : IValueObject<T>
+    public class ValueObjectFactory<T> : FactoryBase<ValueObjectFactory<T>> where T : IValueObject
     {
         public T Create()
         {

@@ -161,17 +161,16 @@ namespace Application.ValueObjects.Workflow
 
         #region	Overide Methods
 
-        protected override void _CopyFrom(WorkflowAction sourceWorkflowAction)
+        protected override void _CopyFrom(WorkflowAction source)
         {
-            _workflowNodeId = sourceWorkflowAction._workflowNodeId;
-            _name = sourceWorkflowAction._name;
-            _actionTypeEnum = sourceWorkflowAction._actionTypeEnum;
-            _actionType = sourceWorkflowAction._actionType;
-            _description = sourceWorkflowAction._description;
-            _displayOrder = sourceWorkflowAction._displayOrder;
-            _functionName = sourceWorkflowAction._functionName;
-            _functionOption = sourceWorkflowAction._functionOption;
-            _status = sourceWorkflowAction._status;
+            _name = source._name;
+            _actionTypeEnum = source._actionTypeEnum;
+            _actionType = source._actionType;
+            _description = source._description;
+            _displayOrder = source._displayOrder;
+            _functionName = source._functionName;
+            _functionOption = source._functionOption;
+            _status = source._status;
         }
 
         protected override bool _Equals(WorkflowAction that)
