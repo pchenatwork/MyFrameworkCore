@@ -72,9 +72,14 @@ namespace Framework.Core.DataAccess
                     _dbConn.ConnectionString = connectionString;
 
                      **********/
-
-                    _dbConn = Microsoft.Data.SqlClient.SqlClientFactory.Instance.CreateConnection();
-                    _dbConn.ConnectionString = connectionString;
+                    switch (providerName.Split('.').Last().ToLower())
+                    {
+                        case "sqlclient":
+                          _dbConn = Microsoft.Data.SqlClient.SqlClientFactory.Instance.CreateConnection(); break;
+                        default:
+                          _dbConn = null; break;
+                    }
+                    if (_dbConn!= null) _dbConn.ConnectionString = connectionString;
                 }
                 catch (Exception ex)
                 {

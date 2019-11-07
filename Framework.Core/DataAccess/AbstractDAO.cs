@@ -10,7 +10,7 @@ using System.Data;
 
 namespace Framework.Core.DataAccess
 {
-    public abstract class AbstractDAO<T> : IRepository<T> where T : IValueObject
+    public abstract class AbstractDAO<T> : IRepository<T> where T : IValueObject // class, IValueObject, new()
     {
         #region constructor
         public AbstractDAO()

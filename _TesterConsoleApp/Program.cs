@@ -2,6 +2,8 @@
 using Framework.Core.DataAccess;
 using System;
 
+using Application.DataAccessObject.Workflow;
+
 namespace _TesterConsoleApp
 {
     class Program
@@ -15,7 +17,13 @@ namespace _TesterConsoleApp
             //string providerName = "System.Data.SqlClient";
             string providerName = "Microsoft.Data.SqlClient";
             string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\GitHub\\Source\\Repos\\pchenatwork\\MyFrameworkCore\\Application.DB\\Workflow.mdf;Integrated Security=True";
-            IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString);
+
+            using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
+            {
+                WorkflowListDAO dao = new WorkflowListDAO();
+                var x = dao.Get(session, 1);
+            }
+
 
 
             Console.ReadKey();
