@@ -33,23 +33,6 @@ namespace Application.DataAccessObject.Workflow
 
             XmlReader reader = ExecuteXmlReader(dbSession, "GetWorkflowXML", parameters);
             return Deserialize(reader);
-
-            ////SqlCommand cmd = new SqlCommand();
-            ////cmd.Connection = (SqlConnection)dbSession.DbConnection;
-            ////if (dbSession.Transaction != null) cmd.Transaction = (SqlTransaction)dbSession.Transaction;
-
-            ////cmd.CommandType = CommandType.StoredProcedure;
-            ////cmd.CommandText = "GetWorkflowXML";
-
-            ////SqlParameter param = new SqlParameter("@id", SqlDbType.Int);
-            ////param.Value=id;
-            ////cmd.Parameters.Add(param);
-
-            ////param = new SqlParameter("@ReturnValue", SqlDbType.Int);
-            ////param.Direction = ParameterDirection.ReturnValue;
-            ////cmd.Parameters.Add(param);
-
-            ////cmd.ExecuteXmlReader();
         }
 
         #endregion IRepository
