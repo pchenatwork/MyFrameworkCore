@@ -25,7 +25,7 @@ namespace Application.ValueObjects.Workflow
         // *************************************************************************
         private string _name = string.Empty;
         private string _description = string.Empty;
-        private bool _status;
+        private bool _isActive;
         #endregion Private Members
 
         #region	Constructors
@@ -70,7 +70,7 @@ namespace Application.ValueObjects.Workflow
         }
 
         [XmlAttribute()]
-        public Boolean Status { get => _status; set => _status = value; }
+        public Boolean IsActive { get => _isActive; set => _isActive = value; }
         #endregion Properties
 
         #region	Overide Methods
@@ -83,7 +83,7 @@ namespace Application.ValueObjects.Workflow
 
         protected override bool _Equals(WorkflowList that)
         {
-            return _id == that.Id && _name.Equals(that.Name) && _description.Equals(that.Description);
+            return _name.Equals(that.Name) && _description.Equals(that.Description);
         }
 
         protected override int _GetHashCode()

@@ -15,8 +15,8 @@ namespace Framework.Core.DataAccess
         bool Update(IDbSession dbSession, T entity);
         bool Delete(IDbSession dbSession, dynamic Id);
         T Get(IDbSession dbSession, dynamic id);
-        IEnumerable<T> GetAll(IDbSession dbSession);
-        IEnumerable<T> FindByCriteria(IDbSession dbSession, string finderType, params object[] criteria);
+        ICollection<T> GetAll(IDbSession dbSession);
+        ICollection<T> FindByCriteria(IDbSession dbSession, string finderType, params object[] criteria);
 
         /// <summary>
         /// This is a generic function to invoke any function of a DAO.

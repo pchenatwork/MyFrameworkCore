@@ -89,6 +89,9 @@ namespace Framework.Core.ValueObjects
             get;
             set;
         }
+
+        int TotalRecordNumber { get; set; }
+        string Result { get; set; }
         #endregion Properties
     } 
 }

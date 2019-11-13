@@ -22,7 +22,7 @@ namespace Framework.Core.DataAccess
         }
         #endregion constructor
 
-        public virtual int Create(IDbSession dbSession, T entity)
+        public virtual int Create(IDbSession dbSession, T newObject)
         {
             throw new NotImplementedException();
         }
@@ -30,7 +30,7 @@ namespace Framework.Core.DataAccess
         {
             throw new NotImplementedException();
         }
-        public virtual IEnumerable<T> FindByCriteria(IDbSession dbSession, string finderType, params object[] criteria)
+        public virtual ICollection<T> FindByCriteria(IDbSession dbSession, string finderType, params object[] criteria)
         {
             throw new NotImplementedException();
         }
@@ -38,11 +38,11 @@ namespace Framework.Core.DataAccess
         {
             throw new NotImplementedException();
         }
-        public virtual IEnumerable<T> GetAll(IDbSession dbSession)
+        public virtual ICollection<T> GetAll(IDbSession dbSession)
         {
             throw new NotImplementedException();
         }
-        public virtual bool Update(IDbSession dbSession, T entity)
+        public virtual bool Update(IDbSession dbSession, T obj)
         {
             throw new NotImplementedException();
         }
@@ -75,6 +75,36 @@ namespace Framework.Core.DataAccess
                 reader = cmd.ExecuteXmlReader();
             }
             return reader;
+        }
+
+        /// <summary>
+        /// Make sure SqlParameter[0] is ParameterDirection.ReturnValue
+        /// </summary>
+        /// <param name="dbSession"></param>
+        /// <param name="commandText"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        protected int ExecuteNonQuery(IDbSession dbSession, string commandText, SqlParameter[] parameters)
+        {
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.Connection = (SqlConnection)dbSession.DbConnection;
+                if (dbSession.Transaction != null) cmd.Transaction = (SqlTransaction)dbSession.Transaction;
+
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = commandText;
+
+                foreach (SqlParameter p in parameters)
+                {
+                    cmd.Parameters.Add(p);
+                }
+
+                if (cmd.Connection.State != ConnectionState.Open) cmd.Connection.Open();
+                object returnValue = cmd.ExecuteNonQuery();
+
+                return (int)cmd.Parameters[0].Value;
+            }
+
         }
 
         protected T Deserialize(XmlReader reader)

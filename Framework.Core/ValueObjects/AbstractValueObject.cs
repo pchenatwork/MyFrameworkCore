@@ -22,6 +22,9 @@ namespace Framework.Core.ValueObjects
         protected string _changeUser = string.Empty;
         protected DateTime _changeDate = new DateTime(1900, 1, 1);
         protected string _extra = string.Empty;
+
+        protected int _totalRecordNumber;
+        protected string _result = string.Empty;
         #endregion
 
         #region constructor
@@ -46,6 +49,40 @@ namespace Framework.Core.ValueObjects
         public DateTime ChangeDate { get => _changeDate; set => _changeDate = value; }
         [XmlAttribute()]
         public string Extra { get => _extra; set => _extra = value; }
+
+
+        /// <summary>
+        /// Property TotalRecordNumber (int)
+        /// </summary>
+        [XmlAttribute()]
+        public virtual int TotalRecordNumber
+        {
+            get
+            {
+                return this._totalRecordNumber;
+            }
+            set
+            {
+                this._totalRecordNumber = value;
+            }
+        }
+
+        /// <summary>
+        /// Property Result (string)
+        /// </summary>
+        [XmlAttribute()]
+        public virtual string Result
+        {
+            get
+            {
+                return this._result;
+            }
+            set
+            {
+                this._result = value;
+            }
+        }
+
         #endregion properties
 
         #region Methods
@@ -92,6 +129,10 @@ namespace Framework.Core.ValueObjects
             _extra = source.Extra;
 
             _CopyFrom((T)source);
+
+            _totalRecordNumber = source.TotalRecordNumber;
+            _result = source.Result;
+
         }
         protected abstract void _CopyFrom(T source);
         public override String ToString()
