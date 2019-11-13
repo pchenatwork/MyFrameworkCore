@@ -12,7 +12,7 @@ namespace Application.DataAccessObject.Workflow
     public class WorkflowListDAO : AbstractDAO<WorkflowList>
     {
         #region	Constructors
-        public WorkflowListDAO()
+        private WorkflowListDAO()
         {
         }
         #endregion constructors
