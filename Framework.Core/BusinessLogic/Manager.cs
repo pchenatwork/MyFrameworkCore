@@ -14,11 +14,12 @@ namespace Framework.Core.BusinessLogic
         #endregion
 
         #region Constructors
-        internal Manager(IDbSession dbSession, IRepository<T> dao)
+        protected Manager(IDbSession dbSession, IRepository<T> dao)
         {
             _dbSession = dbSession;
             _dao = dao;
         }
+        protected Manager() { }
         #endregion
 
         public IDbSession dbSession => this._dbSession;

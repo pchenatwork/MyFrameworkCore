@@ -11,7 +11,7 @@ namespace Framework.Core.Utilities
     {
         public static string ToXml(object obj)
         {
-            return ToXml(obj, null);
+            return ToXml(obj, string.Empty);
         }
         public static string ToXml(object obj, string xmlRootName)
         {

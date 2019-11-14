@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application.DataAccessObject\Application.DataAccessObject.csproj" />
+    <ProjectReference Include="..\Application.DataAccess\Application.DataAccess.csproj" />
     <ProjectReference Include="..\Application.JobServices\Application.JobServices.csproj" />
     <ProjectReference Include="..\Framework.Core\Framework.Core.csproj" />
   </ItemGroup>

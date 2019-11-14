@@ -14,7 +14,7 @@ namespace Framework.Core.DataAccess
             Type type = Type.GetType(daoClassName, true);
             // return (IRepository<T>) Activator.CreateInstance(type);
 
-            //           var a = new Application.DataAccessObject.Workflow.WorkflowListDAO();  
+            //           var a = new Application.DataAccess.Workflow.WorkflowListDAO();  
             //         var x = Activator.CreateInstance(Type.GetType(daoClassName), daoClassName);
             return Activator.CreateInstance(Type.GetType(daoClassName),
                      BindingFlags.NonPublic | BindingFlags.Instance, null,
