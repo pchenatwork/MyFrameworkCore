@@ -89,7 +89,8 @@ namespace Framework.Core.DataAccess
             using (SqlCommand cmd = new SqlCommand())
             {
                 cmd.Connection = (SqlConnection)dbSession.DbConnection;
-                if (dbSession.Transaction != null) cmd.Transaction = (SqlTransaction)dbSession.Transaction;
+                if (dbSession.Transaction != null) 
+                    cmd.Transaction = (SqlTransaction)dbSession.Transaction;
 
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = commandText;

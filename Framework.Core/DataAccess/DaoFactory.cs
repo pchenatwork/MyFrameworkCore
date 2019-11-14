@@ -2,6 +2,7 @@
 using Framework.Core.ValueObjects;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -9,17 +10,27 @@ namespace Framework.Core.DataAccess
 {
     public class DaoFactory<T> : FactoryBase<DaoFactory<T>> where T : IValueObject
     {
-        public IRepository<T> GetDAO(string daoClassName)
+        public IRepository<T> GetDAO(string daoClassFullName)
         {
-            Type type = Type.GetType(daoClassName, true);
-            // return (IRepository<T>) Activator.CreateInstance(type);
-
-            //           var a = new Application.DataAccess.Workflow.WorkflowListDAO();  
-            //         var x = Activator.CreateInstance(Type.GetType(daoClassName), daoClassName);
-            return Activator.CreateInstance(Type.GetType(daoClassName),
+            return Activator.CreateInstance(Type.GetType(daoClassFullName),
                      BindingFlags.NonPublic | BindingFlags.Instance, null,
                      null, null) as IRepository<T>;
         }
+
+        public IRepository<T> GetDAO()
+        {
+            string daoClassName = typeof(T).Name.ToLower() + "dao";
+            var sss = AppDomain.CurrentDomain.GetAssemblies().Where(i => i.FullName.Contains("System"));
+            Type typeObj = (from asm in AppDomain.CurrentDomain.GetAssemblies()
+                            from type in asm.GetTypes()
+                            where type.IsClass && type.Name.ToLower().Equals(daoClassName)
+                            select type).Single();
+
+            return Activator.CreateInstance(typeObj,
+                     BindingFlags.NonPublic | BindingFlags.Instance, null,
+                     null, null) as IRepository<T>;
+        }
+
     }
 }
 
