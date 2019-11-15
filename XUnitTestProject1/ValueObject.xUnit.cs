@@ -15,10 +15,10 @@ namespace XUnitTestProject1
             wf1.Description = "xxx";
             wf1.Name = "paul";
 
-            WorkflowList wf2 = new WorkflowList()
-            {
-                Id = 1, Description = "xxx2", Name = "paul2"
-            };
+            WorkflowList wf2 = ValueObjectFactory<WorkflowList>.Instance.Create();
+            wf1.Id = 2;
+            wf1.Description = "yyy";
+            wf1.Name = "paul2";
 
             Assert.True(wf1 != wf2);
             wf2.CopyFrom(wf1);

@@ -9,6 +9,7 @@ using Application.DataAccess;
 using Framework.Core.ValueObjects;
 using Framework.Core.BusinessLogic;
 using Application.BusinessLogic;
+using Application.DataAccess.Dapper;
 
 namespace _TesterConsoleApp
 {
@@ -29,9 +30,10 @@ namespace _TesterConsoleApp
            //  string connectionString = "Data Source=.;Initial Catalog=MyFramework;Integrated Security=True;";
 
 
-          testManagerFactory(providerName, connectionString);
+          //testManagerFactory(providerName, connectionString);
 
-          ///    testDAO(providerName, connectionString);
+            ///    testDAO(providerName, connectionString);
+              testDapperDAO(providerName, connectionString); 
 
             /**** Working ****
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
@@ -72,7 +74,7 @@ namespace _TesterConsoleApp
 
             **** Working ****/
 
-                Console.ReadKey();
+            Console.ReadKey();
 
         }
 
@@ -142,6 +144,17 @@ namespace _TesterConsoleApp
 
                 session.Commit();
                 // session.Rollback();
+            }
+        }
+
+        static private void testDapperDAO(string providerName, string connectionString)
+        {
+
+            using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
+            {
+                var dao = DapperDaoFactory<WorkflowHistory>.Instance.GetDAO();
+
+                var x2 = dao.Get(session, 1);
             }
         }
     }

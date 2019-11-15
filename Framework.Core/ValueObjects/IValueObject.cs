@@ -48,7 +48,7 @@ namespace Framework.Core.ValueObjects
         /// <summary>
         /// CreateUser property
         /// </summary>
-        string CreateUser
+        string CreateBy
         {
             get;
             set;
@@ -66,7 +66,7 @@ namespace Framework.Core.ValueObjects
         /// <summary>
         /// ChangeUser property
         /// </summary>
-        string ChangeUser
+        string LastUpdateBy
         {
             get;
             set;
@@ -75,7 +75,7 @@ namespace Framework.Core.ValueObjects
         /// <summary>
         /// ChangeDate property
         /// </summary>
-        DateTime ChangeDate
+        DateTime LastUpdateDate
         {
             get;
             set;

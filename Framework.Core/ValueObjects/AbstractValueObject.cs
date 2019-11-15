@@ -29,9 +29,9 @@ namespace Framework.Core.ValueObjects
 
         #region constructor
         ///	<summary>
-        ///	default	constructor	
+        ///	Private constructor to force using ValueObjectFactory<T>
         ///	</summary>
-        public AbstractValueObject()
+        protected AbstractValueObject() // Private constructor to force using ValueObjectFactory<T> 
         {
         }
         #endregion constructor
@@ -40,13 +40,13 @@ namespace Framework.Core.ValueObjects
         [XmlAttribute()]
         public int Id { get => this._id; set => _id = value; }
         [XmlAttribute()]
-        public string CreateUser { get => _createUser; set => _createUser = value; }
+        public string CreateBy { get => _createUser; set => _createUser = value; }
         [XmlAttribute()]
         public DateTime CreateDate { get => _createDate; set => _createDate = value; }
         [XmlAttribute()]
-        public string ChangeUser { get => _changeUser; set => _changeUser = value; }
+        public string LastUpdateBy { get => _changeUser; set => _changeUser = value; }
         [XmlAttribute()]
-        public DateTime ChangeDate { get => _changeDate; set => _changeDate = value; }
+        public DateTime LastUpdateDate { get => _changeDate; set => _changeDate = value; }
         [XmlAttribute()]
         public string Extra { get => _extra; set => _extra = value; }
 
@@ -122,10 +122,10 @@ namespace Framework.Core.ValueObjects
         public void CopyFrom(IValueObject source)
         {
             _id = source.Id;
-            _createUser = source.CreateUser;
+            _createUser = source.CreateBy;
             _createDate = source.CreateDate;
-            _changeUser = source.ChangeUser;
-            _changeDate = source.ChangeDate;
+            _changeUser = source.LastUpdateBy;
+            _changeDate = source.LastUpdateDate;
             _extra = source.Extra;
 
             _CopyFrom((T)source);

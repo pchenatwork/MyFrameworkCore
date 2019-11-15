@@ -36,8 +36,7 @@ namespace Application.ValueObjects.Workflow
         ///	<summary>
         ///	default	constructor	
         ///	</summary>
-
-        public WorkflowList()
+        private WorkflowList()
         {
         }
         #endregion Constructors
