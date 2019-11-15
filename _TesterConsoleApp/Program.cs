@@ -25,13 +25,13 @@ namespace _TesterConsoleApp
 
 
            // string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\GitHub\\Source\\Repos\\pchenatwork\\MyFrameworkCore\\Application.DB\\Workflow.mdf;Integrated Security=True";
-           // string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\_GitHub\\Source\\Repos\\pchenatwork\\MyFrameworkCore\\Application.DB\\Workflow.mdf;Integrated Security=True";
-            string connectionString = "Data Source=.;Initial Catalog=MyFramework;Integrated Security=True;";
+           string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\_GitHub\\Source\\Repos\\pchenatwork\\MyFrameworkCore\\Application.DB\\Workflow.mdf;Integrated Security=True";
+           //  string connectionString = "Data Source=.;Initial Catalog=MyFramework;Integrated Security=True;";
 
 
-            testManagerFactory(providerName, connectionString);
+          testManagerFactory(providerName, connectionString);
 
-           /// testDAO(providerName, connectionString);
+          ///    testDAO(providerName, connectionString);
 
             /**** Working ****
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
@@ -80,9 +80,12 @@ namespace _TesterConsoleApp
         {
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
             {                
-                var mgr = ManagerFactory<WorkflowList>.Instance.GetManager(session);
+                string daoClassName = "Application.DataAccess.Workflow.WorkflowListDAO";
+                var mgr2 = ManagerFactory<WorkflowList>.Instance.GetManager(session, daoClassName);
+                var mgr1 = ManagerFactory<WorkflowList>.Instance.GetManager(session);
 
-                var wf1 = mgr.Get(1);
+                var wf1 = mgr1.Get(1);
+                wf1 = mgr2.Get(1);
 
                 var wf = ValueObjectFactory<WorkflowList>.Instance.Create();
                 wf.CopyFrom(wf1);
@@ -90,22 +93,22 @@ namespace _TesterConsoleApp
                 session.BeginTrans();
 
                 wf.Name = wf1.Name + "(updated rollback 1)";
-                mgr.Update(wf);
+                mgr1.Update(wf);
                 wf.Name = wf1.Name + "(updated rollback 2)";
-                mgr.Update(wf);
+                mgr1.Update(wf);
                 wf.Name = wf1.Name + "(updated reset)";
-                mgr.Update(wf);
+                mgr1.Update(wf);
 
                 session.Rollback();
 
                 session.BeginTrans();
 
                 wf.Name = wf1.Name + "(updated Commit 1)";
-                mgr.Update(wf);
+                mgr1.Update(wf);
                 wf.Name = wf1.Name + "(updated Commit 2)";
-                mgr.Update(wf);
+                mgr1.Update(wf);
                 wf.Name = wf1.Name + "(updated Commit)";
-                mgr.Update(wf);
+                mgr1.Update(wf);
                 
                 session.Commit();
             }
@@ -117,22 +120,25 @@ namespace _TesterConsoleApp
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
             {
                 //WorkflowListDAO dao = new WorkflowListDAO();
-                //var dao = DataAccessObjectFactory<WorkflowList>.Instance.GetDAO("Application.DataAccess.Workflow.WorkflowListDAO");
-                var dao = DaoFactory<WorkflowList>.Instance.GetDAO();
-                var x = dao.Get(session, 1);
+               // var dao = DataAccessObjectFactory<WorkflowList>.Instance.GetDAO("Application.DataAccess.Workflow.WorkflowListDAO");
+               // var dao = DataAccessObjectFactory<WorkflowList>.Instance.GetDAO("Application.DataAccess.Workflow.WorkflowListDAO");
+                var dao2 = DataAccessObjectFactory<WorkflowList>.Instance.GetDAO();
+               //var dao2 = DaoFactory<WorkflowList>.Instance.GetDAO();
+                //var x1 = dao2.Get(session, 1);
+                var x2 = dao2.Get(session, 1);
 
-                string xml = x.ToString();
+                string xml = x2.ToString();
 
                 var wf = ValueObjectFactory<WorkflowList>.Instance.Create();
-                wf.CopyFrom(x);
+                wf.CopyFrom(x2);
 
                 session.BeginTrans();
 
-                wf.Name = x.Name + "(updated)";
-                dao.Update(session, wf);
-                wf.Name = x.Name + "(insert)";
+                wf.Name = x2.Name + "(updated)";
+                dao2.Update(session, wf);
+                wf.Name = x2.Name + "(insert)";
                 wf.Id = 0;
-                dao.Create(session, wf);
+                dao2.Create(session, wf);
 
                 session.Commit();
                 // session.Rollback();

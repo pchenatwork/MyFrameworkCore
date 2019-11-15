@@ -20,7 +20,7 @@ namespace Framework.Core.DataAccess
         public IRepository<T> GetDAO()
         {
             string daoClassName = typeof(T).Name.ToLower() + "dao";
-            var sss = AppDomain.CurrentDomain.GetAssemblies().Where(i => i.FullName.Contains("System"));
+            // Note: *** Type can not be found is the assembly has not been loaded ***
             Type typeObj = (from asm in AppDomain.CurrentDomain.GetAssemblies()
                             from type in asm.GetTypes()
                             where type.IsClass && type.Name.ToLower().Equals(daoClassName)

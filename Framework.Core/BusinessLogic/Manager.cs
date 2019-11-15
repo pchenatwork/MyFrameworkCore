@@ -14,7 +14,7 @@ namespace Framework.Core.BusinessLogic
         #endregion
 
         #region Constructors
-        public Manager(IDbSession dbSession, IRepository<T> dao)
+        protected Manager(IDbSession dbSession, IRepository<T> dao)
         {
             _dbSession = dbSession;
             _dao = dao;

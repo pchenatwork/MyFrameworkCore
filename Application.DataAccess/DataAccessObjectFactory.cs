@@ -11,25 +11,42 @@ namespace Application.DataAccess
 {
     public sealed class DataAccessObjectFactory<T> : FactoryBase<DataAccessObjectFactory<T>> where T : IValueObject
     {
-        public IRepository<T> GetDAO(string daoClassFullName)
+        public IRepository<T> GetDAO(string daoClassName = null)
         {
-            return Activator.CreateInstance(Type.GetType(daoClassFullName),
+            if (string.IsNullOrEmpty(daoClassName))
+            {
+                daoClassName = typeof(T).Name.ToLower() + "dao";
+                // Search type in current assembly
+                Type typeObj = (from type in Assembly.GetExecutingAssembly().GetTypes()
+                                where type.IsClass && type.Name.ToLower().Equals(daoClassName)
+                                select type).Single();
+                return Activator.CreateInstance(typeObj,
+                     BindingFlags.NonPublic | BindingFlags.Instance, null,
+                     null, null) as IRepository<T>;
+            }
+
+            return Activator.CreateInstance(Type.GetType(daoClassName),
                      BindingFlags.NonPublic | BindingFlags.Instance, null,
                      null, null) as IRepository<T>;
         }
 
-        public IRepository<T> GetDAO()
-        {
-            string daoClassName = typeof(T).Name.ToLower() + "dao";
-            Type typeObj = (from asm in AppDomain.CurrentDomain.GetAssemblies()
-                               from type in asm.GetTypes()
-                               where type.IsClass && type.Name.ToLower().Equals(daoClassName)
-                               select type).Single();
+        ////public IRepository<T> GetDAO()
+        ////{
+        ////    string daoClassName = typeof(T).Name.ToLower() + "dao";
+        ////    var a = System.Reflection.Assembly.GetExecutingAssembly();
 
-            return Activator.CreateInstance(typeObj,
-                     BindingFlags.NonPublic | BindingFlags.Instance, null,
-                     null, null) as IRepository<T>;
-        }
+        ////    Type typeObj = (from type in Assembly.GetExecutingAssembly().GetTypes()
+        ////                    where type.IsClass && type.Name.ToLower().Equals(daoClassName)
+        ////                    select type).Single();
+        ////    ////Type typeObj = (from asm in AppDomain.CurrentDomain.GetAssemblies()
+        ////    ////                from type in asm.GetTypes()
+        ////    ////                where type.IsClass && type.Name.ToLower().Equals(daoClassName)
+        ////    ////                select type).Single();
+
+        ////    return Activator.CreateInstance(typeObj,
+        ////             BindingFlags.NonPublic | BindingFlags.Instance, null,
+        ////             null, null) as IRepository<T>;
+        ////}
 
     }
 }

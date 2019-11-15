@@ -13,46 +13,46 @@ namespace Application.BusinessLogic
 {
     public sealed class ManagerFactory<T> : FactoryBase<ManagerFactory<T>> where T : IValueObject
     {
-        public IManager<T> GetManager(IDbSession session, string daoClassName)
+        public IManager<T> GetManager(IDbSession session, string daoClassName = null)
         {
-            //Type t = typeof(T);
-            //string daoClass = t.Name.ToLower() + "dao";
-
-            //Type objectType = (from asm in AppDomain.CurrentDomain.GetAssemblies()
-            //                   from type in asm.GetTypes()
-            //                   where type.IsClass && type.Name.ToLower().Equals(daoClass)
-            //                   select type).Single();
-            //object obj = Activator.CreateInstance(objectType);
-
-
             var dao = DataAccessObjectFactory<T>.Instance.GetDAO(daoClassName);
-
-            return new Manager<T>(session, dao);
-        }
-        public IManager<T> GetManager(IDbSession session)
-        {
-            var dao = DataAccessObjectFactory<T>.Instance.GetDAO();
-
-            IManager<T> mgr = null;
-            object[] args = { session, dao};  // For parametered Constructor 
-
-
-            Type t = Type.GetType("Framework.Core.BusinessLogic.Manager");
-
+            object[] args = { session, dao };  // For parametered Constructor 
             try
             {
-                mgr = Activator.CreateInstance(Type.GetType("Framework.Core.BusinessLogic.Manager"),
+                return Activator.CreateInstance(typeof(Manager<T>),
                     BindingFlags.NonPublic | BindingFlags.Instance, null,
                     args, null) as IManager<T>;
-
             }
             catch (TargetInvocationException e)
             {
-                throw new SystemException(e.InnerException.Message, e.InnerException);
+                //throw new SystemException(e.InnerException.Message, e.InnerException);
+                return null;
             }
-
-            return mgr;
-
         }
+        ////public IManager<T> GetManager(IDbSession session)
+        ////{
+        ////    var dao = DataAccessObjectFactory<T>.Instance.GetDAO();
+
+        ////    IManager<T> mgr = null;
+
+        //// //   Type t = Type.GetType("Framework.Core.BusinessLogic.Manager");
+
+        //// //   Type t2 = typeof(Manager<T>);
+
+        ////    try
+        ////    {
+        ////        mgr = Activator.CreateInstance(typeof(Manager<T>),
+        ////            BindingFlags.NonPublic | BindingFlags.Instance , null,
+        ////            args, null) as IManager<T>;
+
+        ////    }
+        ////    catch (TargetInvocationException e)
+        ////    {
+        ////        throw new SystemException(e.InnerException.Message, e.InnerException);
+        ////    }
+
+        ////    return mgr;
+
+        ////}
     }
 }
