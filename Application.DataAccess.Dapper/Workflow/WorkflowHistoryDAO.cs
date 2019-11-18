@@ -18,7 +18,11 @@ namespace Application.DataAccess.Dapper.Workflow
         {
             using (var connection = dbSession.DbConnection)
             {
-                string sql = "SELECT * FROM WorkflowHistory WHERE Id=@id";
+                    string sql = @"select Id, TransactionId, WorkflowId, CurrentNodeId, " +
+                                "ApprovalUserId, ApprovalDate, PrevHistoryId, " +
+"case when IsActive = 'Y' Then 1 else 0 end as IsActive, " +
+"Comment, CreateBy, CreateDate, LastUpdateBy, LastUpdateDate " +
+"from WorkflowHistory WHERE Id=@id";
 
                 var orderDetail = connection.QueryFirstOrDefault<WorkflowHistory>(sql, new { Id = id});
 

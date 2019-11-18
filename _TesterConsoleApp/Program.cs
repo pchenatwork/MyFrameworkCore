@@ -9,7 +9,6 @@ using Application.DataAccess;
 using Framework.Core.ValueObjects;
 using Framework.Core.BusinessLogic;
 using Application.BusinessLogic;
-using Application.DataAccess.Dapper;
 
 namespace _TesterConsoleApp
 {
@@ -152,7 +151,7 @@ namespace _TesterConsoleApp
 
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
             {
-                var dao = DapperDaoFactory<WorkflowHistory>.Instance.GetDAO();
+                var dao = DataAccessObjectFactory<WorkflowHistory>.Instance.GetDAO();
 
                 var x2 = dao.Get(session, 1);
             }
