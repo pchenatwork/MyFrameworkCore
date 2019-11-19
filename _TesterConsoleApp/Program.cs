@@ -24,8 +24,8 @@ namespace _TesterConsoleApp
             string providerName = "Microsoft.Data.SqlClient";
 
 
-           string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\GitHub\\Source\\Repos\\pchenatwork\\MyFrameworkCore\\Application.DB\\Workflow.mdf;Integrated Security=True";
-           // string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\_GitHub\\Source\\Repos\\pchenatwork\\MyFrameworkCore\\Application.DB\\Workflow.mdf;Integrated Security=True";
+           //string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\GitHub\\Source\\Repos\\pchenatwork\\MyFrameworkCore\\Application.DB\\Workflow.mdf;Integrated Security=True";
+            string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\_GitHub\\Source\\Repos\\pchenatwork\\MyFrameworkCore\\Application.DB\\Workflow.mdf;Integrated Security=True";
            //  string connectionString = "Data Source=.;Initial Catalog=MyFramework;Integrated Security=True;";
 
 
@@ -151,9 +151,9 @@ namespace _TesterConsoleApp
 
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
             {
-               // var dao = DataAccessObjectFactory<WorkflowHistory>.Instance.GetDAO();
+               var dao = DataAccessObjectFactory<WorkflowHistory>.Instance.GetDAO();
 
-               // var x1 = dao.Get(session, 1);
+                var x1 = dao.Get(session, 1);
 
                 var dao2 = DataAccessObjectFactory<WorkflowNode>.Instance.GetDAO();
                 var x2 = dao2.Get(session, 2);

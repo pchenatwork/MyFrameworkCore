@@ -14,18 +14,18 @@ namespace Application.DataAccess.Workflow
 
         public override WorkflowHistory Get(IDbSession dbSession, dynamic id)
         {
-            using (var connection = dbSession.DbConnection)
-            {
+            //using (var connection = dbSession.DbConnection)
+            //{
                 string sql = @"select Id, TransactionId, WorkflowId, CurrentNodeId, " +
-                            "ApprovalUserId, ApprovalDate, PrevHistoryId, " +
-"case when IsActive = 'Y' Then 1 else 0 end as IsActive, " +
-"Comment, CreateBy, CreateDate, LastUpdateBy, LastUpdateDate " +
-"from WorkflowHistory WHERE Id=@id";
+                    "ApprovalUserId, ApprovalDate, PrevHistoryId, " +
+                    "case when IsActive = 'Y' Then 1 else 0 end as IsActive, " +
+                    "Comment, CreateBy, CreateDate, LastUpdateBy, LastUpdateDate " +
+                    "from WorkflowHistory WHERE Id=@id";
 
-                var orderDetail = connection.QueryFirstOrDefault<WorkflowHistory>(sql, new { Id = id });
+                var orderDetail = dbSession.DbConnection.QueryFirstOrDefault<WorkflowHistory>(sql, new { Id = id });
 
                 return orderDetail;
-            }
+            //}
         }
     }
 }
