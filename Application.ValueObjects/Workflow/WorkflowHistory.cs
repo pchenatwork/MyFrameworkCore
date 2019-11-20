@@ -24,7 +24,7 @@ namespace Application.ValueObjects.Workflow
         [XmlAttribute()]
         public int WorkflowId { get; set; }
         [XmlAttribute()]
-        public int CurrentNodeId { get; set; }
+        public int NodeId { get; set; }
         [XmlAttribute()]
         public int ApprovalUserId { get; set; }
         [XmlAttribute()]
@@ -32,7 +32,7 @@ namespace Application.ValueObjects.Workflow
         [XmlAttribute()]
         public int PrevHistoryId { get; set; }
         [XmlAttribute()]
-        public bool IsActive { get; set; }
+        public bool IsCurrent { get; set; }
         [XmlAttribute()]
         public string Comment { get; set; } = string.Empty;
         #endregion

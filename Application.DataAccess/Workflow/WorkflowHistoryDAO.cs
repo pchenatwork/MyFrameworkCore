@@ -18,7 +18,7 @@ namespace Application.DataAccess.Workflow
             //{
                 string sql = @"select Id, TransactionId, WorkflowId, CurrentNodeId, " +
                     "ApprovalUserId, ApprovalDate, PrevHistoryId, " +
-                    "case when IsActive = 'Y' Then 1 else 0 end as IsActive, " +
+                    "case when IsCurrent = 'Y' Then 1 else 0 end as IsActive, " +
                     "Comment, CreateBy, CreateDate, LastUpdateBy, LastUpdateDate " +
                     "from WorkflowHistory WHERE Id=@id";
 
