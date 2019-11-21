@@ -25,6 +25,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.BusinessLogic",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.DataAccess", "Application.DataAccess\Application.DataAccess.csproj", "{87620A6E-005A-4A01-8491-D3535D4D5AC4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{4F8210B4-E6A5-487C-B95A-6F461E8A9520}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\WorkflowChart.jpg = Docs\WorkflowChart.jpg
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
