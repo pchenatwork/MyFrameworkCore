@@ -22,6 +22,7 @@ namespace Application.DataAccess.Workflow
                      "NodeTypeEnum, dbo.GetEnumStrVal('NodeType', NodeTypeEnum) as NodeType, NodeFromId, NodeToId," +
                      "StepId, Action, " +
                      "CASE IsPermissioned WHEN 'Y' THEN 1 ELSE 0 END AS IsPermissioned " +
+                     "CASE IsAuto WHEN 'Y' THEN 1 ELSE 0 END AS IsAuto " +
                      "from WorkflowNode WHERE Id=@id";
 
                 var entity = dbSession.DbConnection.QueryFirstOrDefault<WorkflowNode>(sql, new { Id = id });

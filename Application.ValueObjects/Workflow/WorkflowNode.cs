@@ -46,6 +46,9 @@ namespace Application.ValueObjects.Workflow
         [XmlAttribute()]
         public int NodeConditionEnum { get; set; }
 
+        [XmlAttribute()]
+        public bool IsAuto { get; set; }
+
         /// <summary>
         /// Property WorkflowActions (WorkflowActionCollection)
         /// </summary>
