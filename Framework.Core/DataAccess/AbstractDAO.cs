@@ -22,6 +22,8 @@ namespace Framework.Core.DataAccess
         }
         #endregion constructor
 
+        protected string ClassName { get; } = typeof(T).Name + "DAO";
+
         public virtual int Create(IDbSession dbSession, T newObject)
         {
             throw new NotImplementedException();
@@ -53,7 +55,12 @@ namespace Framework.Core.DataAccess
                 BindingFlags.Public | BindingFlags.Instance | BindingFlags.InvokeMethod,
                 null, this, parameters);
         }
-
+        /// <summary>
+        /// </summary>
+        /// <param name="dbSession"></param>
+        /// <param name="commandText"></param>
+        /// <param name="parameters">parameters[0] = new SqlParameter("@ReturnValue", SqlDbType.Int);</param>
+        /// <returns></returns>
         protected XmlReader ExecuteXmlReader(IDbSession dbSession, string commandText, SqlParameter[] parameters)
         {
             XmlReader reader;
@@ -110,13 +117,13 @@ namespace Framework.Core.DataAccess
 
         protected T Deserialize(XmlReader reader)
         {
-            object result = XMLUtility.Deserialize<T>(reader);
-            return (T)result;
+            return XMLUtility.Deserialize<T>(reader);
+            //return (T)result;
         }
-        protected IEnumerable<T> DeserializeCollection(XmlReader reader)
+        protected ICollection<T> DeserializeCollection(XmlReader reader)
         {
-            object result = XMLUtility.Deserialize<ValueObjectCollection<T>>(reader);
-            return (IEnumerable<T>)result;
+            return XMLUtility.Deserialize<ValueObjectCollection<T>>(reader);
+            //return (ICollection<T>)result;
         }
     }
 }

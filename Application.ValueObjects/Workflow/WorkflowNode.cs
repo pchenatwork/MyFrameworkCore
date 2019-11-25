@@ -36,7 +36,7 @@ namespace Application.ValueObjects.Workflow
         [XmlAttribute()]
         public int StepId { get; set; }
         [XmlAttribute()]
-        public string Action { get; set; } = string.Empty;
+        public string ActionName { get; set; } = string.Empty;
         [XmlAttribute()]
         public bool IsPermissioned { get; set; }
         [XmlAttribute()]
@@ -72,7 +72,7 @@ namespace Application.ValueObjects.Workflow
             NodeFromId = source.NodeFromId;
             NodeToId = source.NodeToId;
             StepId = source.StepId;
-            Action = source.Action;
+            ActionName = source.ActionName;
             IsPermissioned = source.IsPermissioned;
             TimeToSkip = source.TimeToSkip;
             NodeValue = source.NodeValue;
