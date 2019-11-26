@@ -61,7 +61,7 @@ namespace Application.DataAccess.Workflow
                 parameters[4] = new SqlParameter("@IsActive", SqlDbType.Char, 1);
                 parameters[4].Value = newObject.IsActive ? "Y" : "N";
 
-                return ExecuteNonQuery(dbSession, "WorkflowUpSert", parameters);
+                return ExecuteNonQuery(dbSession, "WorkflowListUpSert", parameters);
             }
             catch (System.Exception e)
             {
