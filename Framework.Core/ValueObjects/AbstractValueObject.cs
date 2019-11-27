@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
 using System.Xml.Serialization;
 
 namespace Framework.Core.ValueObjects
@@ -139,10 +140,7 @@ namespace Framework.Core.ValueObjects
         {
             return XMLUtility.ToXml(this);
         }
-        public string ToJSON()
-        {
-            return " Newtonsoft.Json.JsonConvert.SerializeObject(this) ";
-        }
+        
         #endregion methods
 
     }

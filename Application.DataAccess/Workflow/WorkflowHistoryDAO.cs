@@ -41,12 +41,12 @@ namespace Application.DataAccess.Workflow
                 parameters[0].Direction = ParameterDirection.ReturnValue;
                 parameters[1] = new SqlParameter("@id", SqlDbType.Int);
                 parameters[1].Value = newObject.Id;
-                parameters[2] = new SqlParameter("@name", SqlDbType.NVarChar, 50);
-                parameters[2].Value = newObject.;
-                parameters[3] = new SqlParameter("@description", SqlDbType.NVarChar, 200);
-                parameters[3].Value = newObject.Description;
+                parameters[2] = new SqlParameter("@ApprovalUser", SqlDbType.NVarChar, 50);
+                parameters[2].Value = newObject.ApprovalUser;
+                parameters[3] = new SqlParameter("@Comment", SqlDbType.NVarChar, 200);
+                parameters[3].Value = newObject.Comment;
                 parameters[4] = new SqlParameter("@IsCurrent", SqlDbType.Char, 1);
-                parameters[4].Value = newObject.IsActive ? "Y" : "N";
+                parameters[4].Value = newObject.IsCurrent ? "Y" : "N";
 
                 return ExecuteNonQuery(dbSession, "WorkflowHistoryUpSert", parameters);
             }

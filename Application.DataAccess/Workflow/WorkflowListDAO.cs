@@ -36,7 +36,7 @@ namespace Application.DataAccess.Workflow
             parameters[1] = new SqlParameter("@id", SqlDbType.Int);
             parameters[1].Value = id;
 
-            XmlReader reader = ExecuteXmlReader(dbSession, "WorkflowGetXML", parameters);
+            XmlReader reader = ExecuteXmlReader(dbSession, "WorkflowListGetXML", parameters);
             return Deserialize(reader);
         }
 

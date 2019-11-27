@@ -11,7 +11,9 @@ namespace Framework.Core.Utilities
     {
         public static string ToXml(object obj)
         {
-            return ToXml(obj, string.Empty);
+            var a = obj.GetType();
+            //var x = typeof(a);
+            return ToXml(obj, obj.GetType().Name);
         }
         public static string ToXml(object obj, string xmlRootName)
         {
@@ -97,7 +99,7 @@ namespace Framework.Core.Utilities
             {
                 xmlSerializer.Serialize(writer, toSerialize);
                 var x = writer.ToString();
-                writer.Close();
+                //writer.Close();
                 return x;
             }
 

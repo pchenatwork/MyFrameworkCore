@@ -9,6 +9,7 @@ using Application.DataAccess;
 using Framework.Core.ValueObjects;
 using Framework.Core.BusinessLogic;
 using Application.BusinessLogic;
+using Framework.Core.Utilities;
 
 namespace _TesterConsoleApp
 {
@@ -22,18 +23,17 @@ namespace _TesterConsoleApp
 
             //string providerName = "System.Data.SqlClient";
             string providerName = "Microsoft.Data.SqlClient";
-
-
            string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\GitHub\\Source\\Repos\\pchenatwork\\MyFrameworkCore\\Application.DB\\Workflow.mdf;Integrated Security=True";
-           // string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\_GitHub\\Source\\Repos\\pchenatwork\\MyFrameworkCore\\Application.DB\\Workflow.mdf;Integrated Security=True";
+            // string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\_GitHub\\Source\\Repos\\pchenatwork\\MyFrameworkCore\\Application.DB\\Workflow.mdf;Integrated Security=True";
             //  string connectionString = "Data Source=.;Initial Catalog=MyFramework;Integrated Security=True;";
 
 
-            //testManagerFactory(providerName, connectionString);
 
             ///    testDAO(providerName, connectionString);
             ///  testDapperDAO(providerName, connectionString); 
-             TestWorkflowNodeDAO(providerName, connectionString);
+            /// TestWorkflowNodeDAO(providerName, connectionString);
+            /// testManagerFactory(providerName, connectionString);
+            testValueObjectXML();
 
             /**** Working ****
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
@@ -114,6 +114,18 @@ namespace _TesterConsoleApp
                 
                 session.Commit();
             }
+        }
+
+        static private void testValueObjectXML()
+        {
+            var wfh = ValueObjectFactory<WorkflowHistory>.Instance.Create();
+            wfh.ApprovalDate = new DateTime(2019,11,16);
+            wfh.IsCurrent = false;
+            wfh.Id = 123;
+            wfh.NodeId = 9;
+            wfh.Comment = "<How much> wood n/// would a <!-- --> woodchop chop?? ";
+            var a = wfh.ToJson();
+            var b = wfh.ToString();
         }
 
         static private void testDAO(string providerName, string connectionString)

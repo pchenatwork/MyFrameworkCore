@@ -1,6 +1,7 @@
 ﻿using Framework.Core.Common;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace Framework.Core.ValueObjects
@@ -9,7 +10,9 @@ namespace Framework.Core.ValueObjects
     {
         public T Create()
         {
-            object o = Activator.CreateInstance(typeof(T));
+            object o = Activator.CreateInstance(typeof(T),
+                    BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public, null,
+                    null, null);
             return (T)o;
         }
     }

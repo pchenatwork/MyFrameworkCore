@@ -15,6 +15,10 @@ namespace Application.ValueObjects.Workflow
         private WorkflowHistory()
         {
         }
+        static WorkflowHistory()
+        {
+        }
+
         #endregion Constructors
 
         #region	Properties
@@ -26,7 +30,7 @@ namespace Application.ValueObjects.Workflow
         [XmlAttribute()]
         public int NodeId { get; set; }
         [XmlAttribute()]
-        public int ApprovalUserId { get; set; }
+        public string ApprovalUser { get; set; }
         [XmlAttribute()]
         public DateTime ApprovalDate { get; set; }
         [XmlAttribute()]
