@@ -23,10 +23,7 @@ namespace Application.DataAccess.Workflow
                 "Comment, CreateBy, CreateDate, LastUpdateBy, LastUpdateDate " +
                 "from WorkflowHistory WHERE Id=@id";
 
-            //if (dbSession.Transaction != null)
             return dbSession.DbConnection.QueryFirstOrDefault<WorkflowHistory>(sql, new { Id = id }, dbSession.Transaction );
-           
-
         }
         public override int Create(IDbSession dbSession, WorkflowHistory newObject)
         {
