@@ -37,7 +37,7 @@ namespace Application.DataAccess.Workflow
                      "CASE IsAuto WHEN 'Y' THEN 1 ELSE 0 END AS IsAuto " +
                      "from WorkflowNode WHERE Id=@id";
 
-                var entity = dbSession.DbConnection.QueryFirstOrDefault<WorkflowNode>(sql, new { Id = id });
+                var entity = dbSession.DbConnection.QueryFirstOrDefault<WorkflowNode>(sql, new { Id = id }, dbSession.Transaction);
 
                 return entity;
             //}
@@ -80,11 +80,6 @@ namespace Application.DataAccess.Workflow
                // _logger.Error(methodName, e);
                 return null;
             }
-        }
-
-        public override object InvokeByMethodName(IDbSession dbSession, string methodName, params object[] parameters)
-        {
-            return base.InvokeByMethodName(dbSession, methodName, parameters);
         }
     }
 }

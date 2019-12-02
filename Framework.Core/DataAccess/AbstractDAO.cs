@@ -96,7 +96,7 @@ namespace Framework.Core.DataAccess
             using (SqlCommand cmd = new SqlCommand())
             {
                 cmd.Connection = (SqlConnection)dbSession.DbConnection;
-                if (dbSession.Transaction != null) 
+                if (dbSession.Transaction != null)
                     cmd.Transaction = (SqlTransaction)dbSession.Transaction;
 
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -114,6 +114,30 @@ namespace Framework.Core.DataAccess
             }
 
         }
+
+        //protected int ExecuteNonQuery(IDbSession dbSession, string commandText, List<SqlParameter> parameters)
+        //{
+        //    using (SqlCommand cmd = new SqlCommand())
+        //    {
+        //        cmd.Connection = (SqlConnection)dbSession.DbConnection;
+        //        if (dbSession.Transaction != null)
+        //            cmd.Transaction = (SqlTransaction)dbSession.Transaction;
+
+        //        cmd.CommandType = CommandType.StoredProcedure;
+        //        cmd.CommandText = commandText;
+
+        //        foreach (SqlParameter p in parameters)
+        //        {
+        //            cmd.Parameters.Add(p);
+        //        }
+
+        //        if (cmd.Connection.State != ConnectionState.Open) cmd.Connection.Open();
+        //        object returnValue = cmd.ExecuteNonQuery();
+
+        //        return (int)cmd.Parameters[0].Value;
+        //    }
+
+        //}
 
         protected T Deserialize(XmlReader reader)
         {

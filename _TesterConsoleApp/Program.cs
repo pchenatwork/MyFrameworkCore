@@ -23,8 +23,8 @@ namespace _TesterConsoleApp
 
             //string providerName = "System.Data.SqlClient";
             string providerName = "Microsoft.Data.SqlClient";
-           string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\GitHub\\Source\\Repos\\pchenatwork\\MyFrameworkCore\\Application.DB\\Workflow.mdf;Integrated Security=True";
-            // string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\_GitHub\\Source\\Repos\\pchenatwork\\MyFrameworkCore\\Application.DB\\Workflow.mdf;Integrated Security=True";
+           //string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\GitHub\\Source\\Repos\\pchenatwork\\MyFrameworkCore\\Application.DB\\Workflow.mdf;Integrated Security=True";
+             string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\_GitHub\\Source\\Repos\\pchenatwork\\MyFrameworkCore\\Application.DB\\Workflow.mdf;Integrated Security=True";
             //  string connectionString = "Data Source=.;Initial Catalog=MyFramework;Integrated Security=True;";
 
 
@@ -32,8 +32,9 @@ namespace _TesterConsoleApp
             ///    testDAO(providerName, connectionString);
             ///  testDapperDAO(providerName, connectionString); 
             /// TestWorkflowNodeDAO(providerName, connectionString);
+            testWorkflowHistoryDAO(providerName, connectionString);
             /// testManagerFactory(providerName, connectionString);
-            testValueObjectXML();
+            /// testValueObjectXML();
 
             /**** Working ****
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
@@ -156,6 +157,41 @@ namespace _TesterConsoleApp
 
                 session.Commit();
                 // session.Rollback();
+            }
+        }
+        static private void testWorkflowHistoryDAO(string providerName, string connectionString)
+        {
+            using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
+            {
+                
+                var o = ValueObjectFactory<WorkflowHistory>.Instance.Create();
+                o.WorkflowId = 1;
+                o.NodeId = 1;
+                o.Comment = "asdf <  //n/ <!--> {{}} :: ";
+                var dao = DataAccessObjectFactory<WorkflowHistory>.Instance.GetDAO();
+
+                var aaa = dao.FindByCriteria(session, WorkflowHistoryDAO.FIND_BY_TRAN, new object[] { 1, 1 });
+
+                //var bbb = dao.FindByCriteria(session, WorkflowHistoryDAO.FIND_BY_TRAN, new object[] { 1, -1 });
+
+                var ccc = dao.FindByCriteria(session, WorkflowHistoryDAO.FIND_BY_TRAN, new object[] { 1 });
+                var x = dao.Get(session, 11);
+                
+                session.BeginTrans();
+                int lastid = 0;
+                for (int j = 10; j<=15; j++)
+                {
+                    o.Id = 0; // make sure insert first
+                    o.PrevHistoryId = lastid;
+                    var i = dao.Create(session, o);
+                    o = dao.Get(session, i);
+                    o.NodeId = j;
+                    var b = dao.Update(session, o);
+                    o.NodeId = 0;
+                    lastid = o.Id;
+                }
+                session.Commit();
+                //session.Rollback();
             }
         }
 

@@ -109,6 +109,7 @@ namespace Framework.Core.DataAccess
         
         public IDbTransaction BeginTrans(IsolationLevel isolation = IsolationLevel.ReadCommitted)
         {
+            if (_dbConn.State == ConnectionState.Closed) _dbConn.Open();
             return _dbTran = _dbConn.BeginTransaction(isolation);
         }
         public void Commit()

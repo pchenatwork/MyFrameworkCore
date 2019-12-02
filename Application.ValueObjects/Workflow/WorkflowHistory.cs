@@ -32,7 +32,7 @@ namespace Application.ValueObjects.Workflow
         [XmlAttribute()]
         public string ApprovalUser { get; set; }
         [XmlAttribute()]
-        public DateTime ApprovalDate { get; set; }
+        public DateTime? ApprovalDate { get; set; }
         [XmlAttribute()]
         public int PrevHistoryId { get; set; }
         [XmlAttribute()]

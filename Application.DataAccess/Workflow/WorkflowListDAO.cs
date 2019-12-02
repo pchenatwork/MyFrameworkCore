@@ -46,9 +46,9 @@ namespace Application.DataAccess.Workflow
         #region private method
         private int _UpSert(IDbSession dbSession, WorkflowList newObject)
         {
-            string methodName = newObject.Id ==0?  "Create" : "Update";
+            string methodName = ClassName + ( newObject.Id ==0?  ".Create" : ".Update");
             try
-            {
+            {   
                 SqlParameter[] parameters = new SqlParameter[5];
                 parameters[0] = new SqlParameter("@ReturnValue", SqlDbType.Int);
                 parameters[0].Direction = ParameterDirection.ReturnValue;
