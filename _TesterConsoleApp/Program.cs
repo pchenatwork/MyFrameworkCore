@@ -10,6 +10,7 @@ using Framework.Core.ValueObjects;
 using Framework.Core.BusinessLogic;
 using Application.BusinessLogic;
 using Framework.Core.Utilities;
+using Application.BusinessLogic.Workflow;
 
 namespace _TesterConsoleApp
 {
@@ -23,18 +24,18 @@ namespace _TesterConsoleApp
 
             //string providerName = "System.Data.SqlClient";
             string providerName = "Microsoft.Data.SqlClient";
-         //  string connectionString = @"Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
-             string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\_GitHub\\Source\\Repos\\pchenatwork\\MyFrameworkCore\\Application.DB\\Workflow.mdf;Integrated Security=True";
-            //  string connectionString = "Data Source=.;Initial Catalog=MyFramework;Integrated Security=True;";
-
+          string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
+            //    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\_GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
 
 
             ///    testDAO(providerName, connectionString);
             ///  testDapperDAO(providerName, connectionString); 
-             TestWorkflowNodeDAO(providerName, connectionString);
-           /// testWorkflowHistoryDAO(providerName, connectionString);
+            //  TestWorkflowNodeDAO(providerName, connectionString);
+            /// testWorkflowHistoryDAO(providerName, connectionString);
             /// testManagerFactory(providerName, connectionString);
             /// testValueObjectXML();
+
+            testWorkflowControl(providerName, connectionString);
 
             /**** Working ****
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
@@ -77,6 +78,14 @@ namespace _TesterConsoleApp
 
             Console.ReadKey();
 
+        }
+
+        static private void testWorkflowControl(string providerName, string connectionString)
+        {
+            using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
+            {
+                int tranId = WorkflowControl.NewTransaction(session, 2, "PCHEN", "Blar blar blar ...");
+            }
         }
 
         static private void testManagerFactory(string providerName, string connectionString)

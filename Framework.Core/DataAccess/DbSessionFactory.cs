@@ -7,9 +7,9 @@ namespace Framework.Core.DataAccess
 {
     public sealed class DbSessionFactory : FactoryBase<DbSessionFactory>
     {
-        public IDbSession GetSession(string providerName, string connectionString)
+        public DbSession GetSession(string providerName, string connectionString)
         {
-            IDbSession session = new DbSession(providerName, connectionString);
+            DbSession session = new DbSession(providerName, connectionString);
             return session;
         }
     }
