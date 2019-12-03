@@ -23,7 +23,7 @@ namespace _TesterConsoleApp
 
             //string providerName = "System.Data.SqlClient";
             string providerName = "Microsoft.Data.SqlClient";
-           //string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\GitHub\\Source\\Repos\\pchenatwork\\MyFrameworkCore\\Application.DB\\Workflow.mdf;Integrated Security=True";
+         //  string connectionString = @"Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
              string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\_GitHub\\Source\\Repos\\pchenatwork\\MyFrameworkCore\\Application.DB\\Workflow.mdf;Integrated Security=True";
             //  string connectionString = "Data Source=.;Initial Catalog=MyFramework;Integrated Security=True;";
 
@@ -31,8 +31,8 @@ namespace _TesterConsoleApp
 
             ///    testDAO(providerName, connectionString);
             ///  testDapperDAO(providerName, connectionString); 
-            /// TestWorkflowNodeDAO(providerName, connectionString);
-            testWorkflowHistoryDAO(providerName, connectionString);
+             TestWorkflowNodeDAO(providerName, connectionString);
+           /// testWorkflowHistoryDAO(providerName, connectionString);
             /// testManagerFactory(providerName, connectionString);
             /// testValueObjectXML();
 
@@ -129,7 +129,7 @@ namespace _TesterConsoleApp
             var b = wfh.ToString();
         }
 
-        static private void testDAO(string providerName, string connectionString)
+        static private void testWorkflowListDAO(string providerName, string connectionString)
         {
 
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
@@ -197,13 +197,15 @@ namespace _TesterConsoleApp
 
         static private void TestWorkflowNodeDAO(string providerName, string connectionString)
         {
-
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
             {
                 int workflowId = 1; string actionName = "SubmitPlan";
 
                 var dao1 = DataAccessObjectFactory<WorkflowNode>.Instance.GetDAO();
                 var o = dao1.FindByCriteria(session, "WorkflowNodesFindByActionName", new object[] { workflowId, actionName });
+
+                var x = dao1.FindByCriteria(session, WorkflowNodeDAO.FIND_BY_WORKFLOWID, new object[] { workflowId });
+
             }
         }
 

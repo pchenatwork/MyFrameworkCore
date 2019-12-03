@@ -18,6 +18,7 @@ namespace Application.DataAccess.Workflow
         //				 constants
         // *************************************************************************
         public const string FIND_BY_ACTIONNAME = "WorkflowNodesFindByActionName";
+        public const string FIND_BY_WORKFLOWID = "WorkflowNodesFindByWorkflowId";
         #endregion Constants
 
         #region Constructor
@@ -32,8 +33,8 @@ namespace Application.DataAccess.Workflow
             //{
             string sql = @"select Id, WorkflowId, Name, Description, " +
                      "NodeTypeEnum, dbo.GetEnumStrVal('NodeType', NodeTypeEnum) as NodeType, NodeFromId, NodeToId," +
-                     "StepId, Action, " +
-                     "CASE IsPermissioned WHEN 'Y' THEN 1 ELSE 0 END AS IsPermissioned " +
+                     "StepId, ActionName, " +
+                     "CASE IsPermissioned WHEN 'Y' THEN 1 ELSE 0 END AS IsPermissioned, " +
                      "CASE IsAuto WHEN 'Y' THEN 1 ELSE 0 END AS IsAuto " +
                      "from WorkflowNode WHERE Id=@id";
 
@@ -70,6 +71,18 @@ namespace Application.DataAccess.Workflow
                             parameters[2].Value = actionName;                            
                             XmlReader reader = ExecuteXmlReader(dbSession, "WorkflowNodesFindByActionNameXml", parameters);
                             return DeserializeCollection(reader);
+                        }
+                    case FIND_BY_WORKFLOWID:
+                        {
+                            int workflowId = (int)criteria[0];
+                            string sql = @"select Id, WorkflowId, Name, Description, " +
+                                     "NodeTypeEnum, dbo.GetEnumStrVal('NodeType', NodeTypeEnum) as NodeType, NodeFromId, NodeToId," +
+                                     "StepId, ActionName, " +
+                                     "CASE IsPermissioned WHEN 'Y' THEN 1 ELSE 0 END AS IsPermissioned, " +
+                                     "CASE IsAuto WHEN 'Y' THEN 1 ELSE 0 END AS IsAuto " +
+                                     "from WorkflowNode WHERE WorkflowId=@id " ;
+
+                            return (ICollection < WorkflowNode >) dbSession.DbConnection.Query<WorkflowNode>(sql, new { Id = workflowId }, dbSession.Transaction);
                         }
                     default:
                         return null;
