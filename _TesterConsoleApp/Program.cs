@@ -84,7 +84,7 @@ namespace _TesterConsoleApp
         {
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
             {
-                int tranId = WorkflowControl.NewTransaction(session, 2, "PCHEN", "Blar blar blar ...");
+                var x = WorkflowControl.NewTransaction(session, 2, "PCHEN", "Blar blar blar ...");
             }
         }
 
