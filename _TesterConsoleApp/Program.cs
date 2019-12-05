@@ -23,14 +23,14 @@ namespace _TesterConsoleApp
           //  Console.ReadKey();
 
             //string providerName = "System.Data.SqlClient";
-            string providerName = "Microsoft.Data.SqlClient";
-           //string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
-               string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\_GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
-
+           string providerName = "Microsoft.Data.SqlClient";
+           string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
+           //  string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\_GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
+           //   string connectionString = @"Data Source=localhost;Initial Catalog=MyFramework;Integrated Security=True";
 
             ///    testDAO(providerName, connectionString);
             ///  testDapperDAO(providerName, connectionString); 
-            //  TestWorkflowNodeDAO(providerName, connectionString);
+            /// TestWorkflowNodeDAO(providerName, connectionString);
             /// testWorkflowHistoryDAO(providerName, connectionString);
             /// testManagerFactory(providerName, connectionString);
             /// testValueObjectXML();
@@ -87,18 +87,29 @@ namespace _TesterConsoleApp
                 WorkflowHistory hist; 
                 WorkflowNode actionNode;
                 int TransactionId = 0;
+                //////////////////////////////
+                actionNode = ValueObjectFactory<WorkflowNode>.Instance.Create();
+                actionNode = ManagerFactory<WorkflowNode>.Instance.GetManager(session).Get(11);
+                var x = WorkflowControl.GetActionGroup(session, actionNode);
 
-                for (int i = 0; i<2; i++)
-                {
-                    hist = WorkflowControl.NewTransaction(session, 1, "NewWorkflowUser", "Blar blar blar ...");
-                    TransactionId = hist.TransactionId;
-                    actionNode = ManagerFactory<WorkflowNode>.Instance.GetManager(session).Get(9); // Route to HR
-                    hist = WorkflowControl.DoActionNode(session, TransactionId, actionNode, "Route2HR_fail", "Route to HR should fail");
-                    actionNode = ManagerFactory<WorkflowNode>.Instance.GetManager(session).Get(8); // User submit
-                    hist = WorkflowControl.DoActionNode(session, TransactionId, actionNode, "SubmitUser", "User submit plan");
-                    actionNode = ManagerFactory<WorkflowNode>.Instance.GetManager(session).Get(9); // Route to HR
-                    hist = WorkflowControl.DoActionNode(session, TransactionId, actionNode, "Route2HR_OK", "Route to HR should success");
-                 }
+                actionNode = ManagerFactory<WorkflowNode>.Instance.GetManager(session).Get(14);
+                var y = WorkflowControl.GetActionGroup(session, actionNode);
+
+                var b = x == y;
+
+
+
+                //for (int i = 0; i<2; i++)
+                //{  //tested
+                //    hist = WorkflowControl.NewTransaction(session, 1, "NewWorkflowUser", "Blar blar blar ...");
+                //    TransactionId = hist.TransactionId;
+                //    actionNode = ManagerFactory<WorkflowNode>.Instance.GetManager(session).Get(9); // Route to HR
+                //    hist = WorkflowControl.DoActionNode(session, TransactionId, actionNode, "Route2HR_fail", "Route to HR should fail");
+                //    actionNode = ManagerFactory<WorkflowNode>.Instance.GetManager(session).Get(8); // User submit
+                //    hist = WorkflowControl.DoActionNode(session, TransactionId, actionNode, "SubmitUser", "User submit plan");
+                //    actionNode = ManagerFactory<WorkflowNode>.Instance.GetManager(session).Get(9); // Route to HR
+                //    hist = WorkflowControl.DoActionNode(session, TransactionId, actionNode, "Route2HR_OK", "Route to HR should success");
+                // }
             }
         }
 
@@ -225,9 +236,10 @@ namespace _TesterConsoleApp
                 int workflowId = 1; string actionName = "SubmitPlan";
 
                 var dao1 = DataAccessObjectFactory<WorkflowNode>.Instance.GetDAO();
-                var o = dao1.FindByCriteria(session, "WorkflowNodesFindByActionName", new object[] { workflowId, actionName });
-
-                var x = dao1.FindByCriteria(session, WorkflowNodeDAO.FIND_BY_WORKFLOWID, new object[] { workflowId });
+                //var o = dao1.FindByCriteria(session, "WorkflowNodesFindByActionName", new object[] { workflowId, actionName });
+                var z = dao1.FindByCriteria(session, WorkflowNodeDAO.FIND_BY_WORKFLOWID, new object[] { workflowId });
+                var x = dao1.Get(session, 6);
+                var y = dao1.GetAll(session);
 
             }
         }

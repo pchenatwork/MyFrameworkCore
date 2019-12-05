@@ -13,15 +13,20 @@ namespace Application.DataAccess.Workflow
     public class WorkflowHistoryDAO : AbstractDAO<WorkflowHistory>
     {
         public const string FIND_BY_TRAN = "WorkflowHistoryFindByTran";
+        //public const string FIND_BY_WORKFLOW = "WorkflowHistoryFindByWorkflow";
+
+        private static string SELECT_ALL = @"" +
+            "SELECT Id, TransactionId, WorkflowId, NodeId, " +
+            "ApprovalUser, ApprovalDate, PrevHistoryId, " +
+            "CASE WHEN IsCurrent = 'Y' THEN 1 ELSE 0 END AS IsCurrent, " +
+            "Comment, CreateBy, CreateDate, LastUpdateBy, LastUpdateDate " +
+            "FROM WorkflowHistory";
+
         private WorkflowHistoryDAO() { }
 
         public override WorkflowHistory Get(IDbSession dbSession, dynamic id)
         {
-            string sql = @"select Id, TransactionId, WorkflowId, NodeId, " +
-                "ApprovalUser, ApprovalDate, PrevHistoryId, " +
-                "case when IsCurrent = 'Y' Then 1 else 0 end as IsCurrent, " +
-                "Comment, CreateBy, CreateDate, LastUpdateBy, LastUpdateDate " +
-                "from WorkflowHistory WHERE Id=@id";
+            string sql = SELECT_ALL + @" WHERE Id=@id";
 
             return dbSession.DbConnection.QueryFirstOrDefault<WorkflowHistory>(sql, new { Id = id }, dbSession.Transaction );
         }
@@ -51,20 +56,36 @@ namespace Application.DataAccess.Workflow
                             {
                                 //return null;
                             }
-                            string sql = @""+
-                                "select Id, TransactionId, WorkflowId, NodeId," + 
-                                "ApprovalUser, ApprovalDate, PrevHistoryId, " +
-                                "CASE IsCurrent WHEN 'Y' THEN 1 ELSE 0 END AS IsCurrent, " +
-                                "Comment, CreateBy, CreateDate, LastUpdateBy, LastUpdateDate " +
-                                "from WorkflowHistory " +
+                            string sql = SELECT_ALL + 
                                 "WHERE TransactionId = @TranId " + 
-                               //" (WfId >0 ? " AND WorkflowId = @Wfid " : "AND 1=1 ") +
                                 "AND (WorkflowId=@WfId or @WfId=-1) " +
-                                "Order by CreateDate desc";
+                                "ORDER BY CreateDate DESC";
 
                             return (ICollection<WorkflowHistory>)dbSession.DbConnection.Query<WorkflowHistory>(sql, new { TranId = TranId, WfId = WfId }, dbSession.Transaction);
 
-                    }
+                        }
+                    //case FIND_BY_WORKFLOW:
+                    //    {
+                    //        int TranId = -1, WfId = -1;
+                    //        try
+                    //        {
+                    //            TranId = (int)criteria[0];
+                    //            WfId = (int)criteria[1];
+                    //        }
+                    //        catch (System.Exception e)
+                    //        {
+                    //            //return null;
+                    //        }
+                    //        string sql = SELECT_ALL +
+                    //            "WHERE TransactionId = @TranId " +
+                    //            //" (WfId >0 ? " AND WorkflowId = @Wfid " : "AND 1=1 ") +
+                    //            "AND (WorkflowId=@WfId or @WfId=-1) " +
+                    //            "ORDER BY CreateDate DESC";
+
+                    //        return (ICollection<WorkflowHistory>)dbSession.DbConnection.Query<WorkflowHistory>(sql, new { TranId = TranId, WfId = WfId }, dbSession.Transaction);
+
+
+                    //    }
                     default:
                         return null;
                 }
