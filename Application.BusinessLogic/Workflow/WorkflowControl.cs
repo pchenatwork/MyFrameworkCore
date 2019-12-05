@@ -45,7 +45,6 @@ namespace Application.BusinessLogic.Workflow
             //?????
             return ValueObjectFactory<WorkflowHistory>.Instance.Create();
         }
-
         /// return destination StatusNodeID, or 0 for failed
         public static int ExecAction(int WorkflowId, int TranId, string ActionName, ref string errmsg)
         {
@@ -60,8 +59,7 @@ namespace Application.BusinessLogic.Workflow
             ****/
             return -1;
         }
-
-        private static WorkflowHistory NextStatus(IDbSession session, WorkflowNode actionNode, int transactionid, string user, string comment)
+        public static WorkflowHistory DoActionNode(IDbSession session, int transactionid, WorkflowNode actionNode, string user, string comment)
         {
             WorkflowHistory newHist = ValueObjectFactory<WorkflowHistory>.Instance.Create();
 
@@ -82,22 +80,24 @@ namespace Application.BusinessLogic.Workflow
             // If existing current doesn't match to actionNode.FromId, invalid operation, then exit
             if (currhist == null || currhist.NodeId != actionNode.NodeFromId) return newHist; 
 
-            currhist.ApprovalUser = currhist.LastUpdateBy = user;
-            currhist.ApprovalDate = currhist.LastUpdateDate = DateTime.Now;
-            currhist.IsCurrent = false;
-            currhist.LastUpdateBy = user;
-            currhist.LastUpdateDate = DateTime.Now;
+            if (toNode.WorkflowId == currhist.WorkflowId)
+            {
+                // if same workflow, put into history, otherwise stays current
+                currhist.ApprovalUser = currhist.LastUpdateBy = user;
+                currhist.ApprovalDate = currhist.LastUpdateDate = DateTime.Now;
+                currhist.IsCurrent = false;
+                manager.Update(currhist);
+            }
 
             newHist.TransactionId = currhist.TransactionId;
-            newHist.WorkflowId = currhist.WorkflowId;
-            newHist.NodeId = actionNode.NodeToId;
+            newHist.WorkflowId = toNode.WorkflowId; // currhist.WorkflowId;
+            newHist.NodeId = toNode.Id; //.NodeToId;
             newHist.PrevHistoryId = currhist.Id;
             newHist.IsCurrent = true;
             newHist.Comment = comment;
             newHist.CreateBy = newHist.LastUpdateBy = user;
             newHist.CreateDate = newHist.LastUpdateDate = DateTime.Now;
 
-            manager.Update(currhist);
             newHist.Id = manager.Create(newHist);
 
             if (!wasInTransaction) session.Commit();

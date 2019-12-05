@@ -24,8 +24,8 @@ namespace _TesterConsoleApp
 
             //string providerName = "System.Data.SqlClient";
             string providerName = "Microsoft.Data.SqlClient";
-          string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
-            //    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\_GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
+           //string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
+               string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\_GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
 
 
             ///    testDAO(providerName, connectionString);
@@ -84,7 +84,21 @@ namespace _TesterConsoleApp
         {
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
             {
-                var x = WorkflowControl.NewTransaction(session, 2, "PCHEN", "Blar blar blar ...");
+                WorkflowHistory hist; 
+                WorkflowNode actionNode;
+                int TransactionId = 0;
+
+                for (int i = 0; i<2; i++)
+                {
+                    hist = WorkflowControl.NewTransaction(session, 1, "NewWorkflowUser", "Blar blar blar ...");
+                    TransactionId = hist.TransactionId;
+                    actionNode = ManagerFactory<WorkflowNode>.Instance.GetManager(session).Get(9); // Route to HR
+                    hist = WorkflowControl.DoActionNode(session, TransactionId, actionNode, "Route2HR_fail", "Route to HR should fail");
+                    actionNode = ManagerFactory<WorkflowNode>.Instance.GetManager(session).Get(8); // User submit
+                    hist = WorkflowControl.DoActionNode(session, TransactionId, actionNode, "SubmitUser", "User submit plan");
+                    actionNode = ManagerFactory<WorkflowNode>.Instance.GetManager(session).Get(9); // Route to HR
+                    hist = WorkflowControl.DoActionNode(session, TransactionId, actionNode, "Route2HR_OK", "Route to HR should success");
+                 }
             }
         }
 
