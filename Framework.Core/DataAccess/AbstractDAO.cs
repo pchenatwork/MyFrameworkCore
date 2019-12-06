@@ -7,6 +7,7 @@ using System.Text;
 using System.Xml;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Collections.ObjectModel;
 
 namespace Framework.Core.DataAccess
 {
@@ -32,7 +33,7 @@ namespace Framework.Core.DataAccess
         {
             throw new NotImplementedException();
         }
-        public virtual ICollection<T> FindByCriteria(IDbSession dbSession, string finderType, params object[] criteria)
+        public virtual IEnumerable<T> FindByCriteria(IDbSession dbSession, string finderType, params object[] criteria)
         {
             throw new NotImplementedException();
         }
@@ -40,7 +41,7 @@ namespace Framework.Core.DataAccess
         {
             throw new NotImplementedException();
         }
-        public virtual ICollection<T> GetAll(IDbSession dbSession)
+        public virtual IEnumerable<T> GetAll(IDbSession dbSession)
         {
             throw new NotImplementedException();
         }
@@ -144,10 +145,13 @@ namespace Framework.Core.DataAccess
             return XMLUtility.Deserialize<T>(reader);
             //return (T)result;
         }
-        protected ICollection<T> DeserializeCollection(XmlReader reader)
+        ////protected ICollection<T> DeserializeCollection_ORG(XmlReader reader)
+        ////{
+        ////    return XMLUtility.Deserialize<ValueObjectCollection<T>>(reader);
+        ////}
+        protected IEnumerable<T> DeserializeCollection(XmlReader reader)
         {
-            return XMLUtility.Deserialize<ValueObjectCollection<T>>(reader);
-            //return (ICollection<T>)result;
+            return XMLUtility.Deserialize<Collection<T>>(reader);
         }
     }
 }

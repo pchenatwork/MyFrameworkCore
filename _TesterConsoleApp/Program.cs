@@ -30,12 +30,12 @@ namespace _TesterConsoleApp
 
             ///    testDAO(providerName, connectionString);
             ///  testDapperDAO(providerName, connectionString); 
-            /// TestWorkflowNodeDAO(providerName, connectionString);
+            ///  TestWorkflowNodeDAO(providerName, connectionString);
             /// testWorkflowHistoryDAO(providerName, connectionString);
             /// testManagerFactory(providerName, connectionString);
             /// testValueObjectXML();
 
-            testWorkflowControl(providerName, connectionString);
+           testWorkflowControl(providerName, connectionString);
 
             /**** Working ****
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
@@ -249,7 +249,7 @@ namespace _TesterConsoleApp
                 int workflowId = 1; string actionName = "SubmitPlan";
 
                 var dao1 = DataAccessObjectFactory<WorkflowNode>.Instance.GetDAO();
-                //var o = dao1.FindByCriteria(session, "WorkflowNodesFindByActionName", new object[] { workflowId, actionName });
+                var o = dao1.FindByCriteria(session, WorkflowNodeDAO.FIND_BY_ACTIONNAME, new object[] { workflowId, actionName });
                 var z = dao1.FindByCriteria(session, WorkflowNodeDAO.FIND_BY_WORKFLOWID, new object[] { workflowId });
                 var x = dao1.Get(session, 6);
                 var y = dao1.GetAll(session);

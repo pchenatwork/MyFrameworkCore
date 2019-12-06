@@ -39,7 +39,7 @@ namespace Application.DataAccess.Workflow
             return _UpSert(dbSession, obj) >0 ? true : false;
         }
 
-        public override ICollection<WorkflowHistory> FindByCriteria(IDbSession dbSession, string finderType, params object[] criteria)
+        public override IEnumerable<WorkflowHistory> FindByCriteria(IDbSession dbSession, string finderType, params object[] criteria)
         {
             try
             {

@@ -44,7 +44,7 @@ namespace Framework.Core.BusinessLogic
         /// Gets all the value objects.
         /// </summary>
         /// <returns>a valid non-empty collection or null</returns>
-        ICollection<T> GetAll();
+        IEnumerable<T> GetAll();
 
         /// <summary>
         /// Generic search function to get a list of value objects by certain criteria.
@@ -52,7 +52,7 @@ namespace Framework.Core.BusinessLogic
         /// <param name="finderType">a defined finder type</param>
         /// <param name="criteria">the list of arguments as criteria to the finder method</param>
         /// <returns>a valid non-empty collection or null</returns>
-        ICollection<T> FindByCriteria(string finderType, object[] criteria);
+        IEnumerable<T> FindByCriteria(string finderType, object[] criteria);
         #endregion        
     }
 }

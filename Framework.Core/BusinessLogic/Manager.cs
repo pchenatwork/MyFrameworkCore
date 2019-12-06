@@ -41,7 +41,7 @@ namespace Framework.Core.BusinessLogic
             return _dao.Delete(_dbSession, id);
         }
 
-        public ICollection<T> FindByCriteria(string finderType, object[] criteria)
+        public IEnumerable<T> FindByCriteria(string finderType, object[] criteria)
         {
             return _dao.FindByCriteria(_dbSession, finderType, criteria);
         }
@@ -51,7 +51,7 @@ namespace Framework.Core.BusinessLogic
             return _dao.Get(_dbSession, id);
         }
 
-        public ICollection<T> GetAll()
+        public IEnumerable<T> GetAll()
         {
             return _dao.GetAll(_dbSession);
         }

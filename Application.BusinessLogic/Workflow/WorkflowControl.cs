@@ -131,7 +131,7 @@ namespace Application.BusinessLogic.Workflow
 
             // 2 trigger auto-ActionNodes if there is any
             var NodeManager = ManagerFactory<WorkflowNode>.Instance.GetManager(session);
-            var ActionNodes = NodeManager.GetAll().AsQueryable().Where(i => (i.NodeFromId == nodeId && i.IsAuto == true));
+            var ActionNodes = NodeManager.GetAll().Where(i => (i.NodeFromId == nodeId && i.IsAuto == true));
             foreach(WorkflowNode node in ActionNodes)
             {
                 string jsonOutput = string.Empty;
@@ -152,7 +152,7 @@ namespace Application.BusinessLogic.Workflow
             //var keyNode = Get_Key_ActionNode(session, ActionNode);
             var NodeManager = ManagerFactory<WorkflowNode>.Instance.GetManager(session);
             // All ActionNode pointing to KEY ActionNOde
-            var x = NodeManager.GetAll().AsQueryable().Where(i => (i.NodeToId == keyNode.Id && i.IsAuto == true) || i.Id==keyNode.Id);
+            var x = NodeManager.GetAll().Where(i => (i.NodeToId == keyNode.Id && i.IsAuto == true) || i.Id==keyNode.Id);
             return x; 
         }        
         /// <summary>

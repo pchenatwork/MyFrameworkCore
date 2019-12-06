@@ -42,12 +42,12 @@ namespace Application.DataAccess.Workflow
             return dbSession.DbConnection.QueryFirstOrDefault<WorkflowNode>(sql, new { Id = id }, dbSession.Transaction);
         }
 
-        public override ICollection<WorkflowNode> GetAll(IDbSession dbSession)
+        public override IEnumerable<WorkflowNode> GetAll(IDbSession dbSession)
         {
-            return dbSession.DbConnection.Query<WorkflowNode>(SELECT_ALL, null, dbSession.Transaction) as ICollection<WorkflowNode>;
+            return dbSession.DbConnection.Query<WorkflowNode>(SELECT_ALL, null, dbSession.Transaction); 
         }
         
-        public override ICollection<WorkflowNode> FindByCriteria(IDbSession dbSession, string finderType, params object[] criteria)
+        public override IEnumerable<WorkflowNode> FindByCriteria(IDbSession dbSession, string finderType, params object[] criteria)
         {
             String methodName = ClassName + ".FindByCriteria() - " + finderType ;
             //if (_logger.IsDebugEnabled)
@@ -78,7 +78,7 @@ namespace Application.DataAccess.Workflow
                             int workflowId = (int)criteria[0];
                             string sql = SELECT_ALL + @" WHERE WorkflowId=@id" ;
 
-                            return (ICollection < WorkflowNode >) dbSession.DbConnection.Query<WorkflowNode>(sql, new { Id = workflowId }, dbSession.Transaction);
+                            return dbSession.DbConnection.Query<WorkflowNode>(sql, new { Id = workflowId }, dbSession.Transaction);
                         }
                     default:
                         return null;
