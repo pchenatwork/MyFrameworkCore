@@ -23,8 +23,8 @@ namespace Application.BusinessLogic.Workflow
         public static WorkflowHistory NewTransaction(IDbSession session, int workflowId, string user, string comment = null)
         {
             // Get 'Start' WorkflowNode
-            var mgr_WorkflowNode = ManagerFactory<WorkflowNode>.Instance.GetManager(session);
-            WorkflowNode startNode = (mgr_WorkflowNode.FindByCriteria(WorkflowNodeDAO.FIND_BY_WORKFLOWID, new object[] { workflowId }))
+            var NodeManager = ManagerFactory<WorkflowNode>.Instance.GetManager(session);
+            WorkflowNode startNode = (NodeManager.FindByCriteria(WorkflowNodeDAO.FIND_BY_WORKFLOWID, new object[] { workflowId }))
                 .AsQueryable()
                 .Where(i => i.NodeType == "Start").FirstOrDefault(); ;
 
@@ -36,28 +36,33 @@ namespace Application.BusinessLogic.Workflow
             history.IsCurrent = true;
 
             // Create WorkflowHistory
-            var mgr_WorkflowHistory = ManagerFactory<WorkflowHistory>.Instance.GetManager(session);
-            int id= mgr_WorkflowHistory.Create(history);
+            var HistManager = ManagerFactory<WorkflowHistory>.Instance.GetManager(session);
+            int id= HistManager.Create(history);
 
             // Get TransactionID from newly created WorkflowHistory
-            return mgr_WorkflowHistory.Get(id);
+            return HistManager.Get(id);
         }
-        public static WorkflowHistory GetActiveNode(IDbSession session, int workflowId, int tranId)
-        {
-            //?????
-            return ValueObjectFactory<WorkflowHistory>.Instance.Create();
-        }
-        /// return destination StatusNodeID, or 0 for failed
-        public static WorkflowHistory DoActionNode(IDbSession session, int transactionid, WorkflowNode actionNode, string user, string comment, ref string msg)
-        {
+        
+        /// <summary>
+        /// DoActionNode will move forward the workflow Status from FromNodeId to ToNodeId
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="transactionid"></param>
+        /// <param name="actionNode"></param>
+        /// <param name="user"></param>
+        /// <param name="comment"></param>
+        /// <param name="msgJson"></param>
+        /// <returns></returns>
+        public static WorkflowHistory DoActionNode(IDbSession session, int transactionid, WorkflowNode actionNode, string user, string comment, ref string msgJson)
+        { 
             // replace actionNode with Key ActionNode (ActionNode Status->Status)
             Collection<string> errs = new Collection<string>();
 
             WorkflowNode keyNode = GetActionKeyNode(session, actionNode);
             
-            var managerHist = ManagerFactory<WorkflowHistory>.Instance.GetManager(session);
+            var HistoryManager = ManagerFactory<WorkflowHistory>.Instance.GetManager(session);
 
-            var hist = managerHist.FindByCriteria(WorkflowHistoryDAO.FIND_BY_TRAN, new object[] { transactionid });
+            var hist = HistoryManager.FindByCriteria(WorkflowHistoryDAO.FIND_BY_TRAN, new object[] { transactionid });
       
             foreach(WorkflowNode node in GetActionNodeGroup(session, keyNode))
             {
@@ -70,16 +75,16 @@ namespace Application.BusinessLogic.Workflow
 
             if (errs.Count > 0) // Not all workflows are ready to move ahead
             {
-                msg = errs.ToJson();
+                msgJson = errs.ToJson();
                 return null; // 
             }    
                        
-            bool wasInTransaction = session.Transaction == null;
+            bool TransactionExists = session.Transaction != null;
 
-            if (!wasInTransaction) session.BeginTrans(); // Start the transaction if not in one ye
+            if (!TransactionExists) session.BeginTrans(); // Start the transaction if not in one ye
 
             // Find the existing current WorkflowHistory from Key Action Node
-            WorkflowHistory currhist =  managerHist
+            WorkflowHistory currhist =  HistoryManager
                 .FindByCriteria(WorkflowHistoryDAO.FIND_BY_TRAN, new object[] { transactionid, keyNode.WorkflowId })
                 .AsQueryable().Where(p=>p.IsCurrent).FirstOrDefault();
             // If existing current doesn't match to actionNode.FromId, invalid operation, then exit
@@ -92,12 +97,12 @@ namespace Application.BusinessLogic.Workflow
                 currhist.ApprovalUser = currhist.LastUpdateBy = user;
                 currhist.ApprovalDate = currhist.LastUpdateDate = DateTime.Now;
                 currhist.IsCurrent = false;
-                managerHist.Update(currhist);
+                HistoryManager.Update(currhist);
             }
 
             /// Create workflowhistory records
             WorkflowHistory newHist = ValueObjectFactory<WorkflowHistory>.Instance.Create();
-            newHist.TransactionId = currhist.TransactionId;
+            newHist.TransactionId = transactionid; // currhist.TransactionId;
             newHist.WorkflowId = toNode.WorkflowId; // currhist.WorkflowId;
             newHist.NodeId = toNode.Id; //.NodeToId;
             newHist.PrevHistoryId = currhist.Id;
@@ -106,21 +111,56 @@ namespace Application.BusinessLogic.Workflow
             newHist.CreateBy = newHist.LastUpdateBy = user;
             newHist.CreateDate = newHist.LastUpdateDate = DateTime.Now;
 
-            newHist.Id = managerHist.Create(newHist);
+            newHist.Id = HistoryManager.Create(newHist);
 
-            if (!wasInTransaction) session.Commit();
+            if (!TransactionExists) session.Commit();
+
+
+            string xxx = string.Empty;
+            DoStatusNode(session, transactionid, toNode.Id, user, ref xxx);
 
             return newHist;
         }
+       
+        public static bool DoStatusNode(IDbSession session, int tranId, int nodeId,  string user, ref string msgJson)
+        {
+            Collection<string> errs = new Collection<string>();
+            // 1 Execute Action defines in [WorkflowAction]
+            // This should be virtual function that is specific to each workflow
+
+
+            // 2 trigger auto-ActionNodes if there is any
+            var NodeManager = ManagerFactory<WorkflowNode>.Instance.GetManager(session);
+            var ActionNodes = NodeManager.GetAll().AsQueryable().Where(i => (i.NodeFromId == nodeId && i.IsAuto == true));
+            foreach(WorkflowNode node in ActionNodes)
+            {
+                string jsonOutput = string.Empty;
+                var x = DoActionNode(session, tranId, node, user, "(Auto)", ref jsonOutput);
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Given an Action KeyNode, find all linked Auto Actions
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="keyNode"></param>
+        /// <returns></returns>
         public static IEnumerable<WorkflowNode> GetActionNodeGroup(IDbSession session, WorkflowNode keyNode)
         {
             //var keyNode = Get_Key_ActionNode(session, ActionNode);
-            var manager = ManagerFactory<WorkflowNode>.Instance.GetManager(session);
+            var NodeManager = ManagerFactory<WorkflowNode>.Instance.GetManager(session);
             // All ActionNode pointing to KEY ActionNOde
-            var x = manager.GetAll().AsQueryable().Where(i => (i.NodeToId == keyNode.Id && i.IsAuto == true) || i.Id==keyNode.Id);
+            var x = NodeManager.GetAll().AsQueryable().Where(i => (i.NodeToId == keyNode.Id && i.IsAuto == true) || i.Id==keyNode.Id);
             return x; 
         }        
-
+        /// <summary>
+        /// Given an Action Node, find the Key Node (From Status to Status)
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="actionNode"></param>
+        /// <returns></returns>
         public static WorkflowNode GetActionKeyNode(IDbSession session, WorkflowNode actionNode)
         {
             /* -------------------------------------------
@@ -134,6 +174,19 @@ namespace Application.BusinessLogic.Workflow
                 return GetActionKeyNode(session, toNode);
             else // toNode is to a status node
                 return actionNode;
+        }
+        public static WorkflowNode GetActionKeyNode2(IDbSession session, int actionNodeId)
+        {
+            /* -------------------------------------------
+             * Recurrsive function to get the KEY ActionNode (defined as "Status->Status")
+             * ------------------------------------------- */
+            WorkflowNode node = ManagerFactory<WorkflowNode>.Instance.GetManager(session).Get(actionNodeId);
+            if (node.NodeType.Equals("Action")) {
+                return GetActionKeyNode2(session, node.NodeToId);
+            } else
+            {
+                return node;
+            }
         }
     }
 }
