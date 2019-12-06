@@ -20,7 +20,7 @@ namespace Application.DataAccess.Workflow
             "ApprovalUser, ApprovalDate, PrevHistoryId, " +
             "CASE WHEN IsCurrent = 'Y' THEN 1 ELSE 0 END AS IsCurrent, " +
             "Comment, CreateBy, CreateDate, LastUpdateBy, LastUpdateDate " +
-            "FROM WorkflowHistory";
+            "FROM WorkflowHistory ";
 
         private WorkflowHistoryDAO() { }
 
