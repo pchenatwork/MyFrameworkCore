@@ -10,4 +10,8 @@
     <ProjectReference Include="..\Framework.Core\Framework.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="WorkflowCore\" />
+  </ItemGroup>
+
 </Project>

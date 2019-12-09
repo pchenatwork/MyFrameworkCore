@@ -129,7 +129,7 @@ namespace Application.BusinessLogic.Workflow
             // This should be virtual function that is specific to each workflow
 
 
-            // 2 trigger auto-ActionNodes if there is any
+            // 2 execute auto-ActionNodes(IsAuto==TRUE) that NodeFromId==nodeId, if there is any
             var NodeManager = ManagerFactory<WorkflowNode>.Instance.GetManager(session);
             var ActionNodes = NodeManager.GetAll().Where(i => (i.NodeFromId == nodeId && i.IsAuto == true));
             foreach(WorkflowNode node in ActionNodes)
