@@ -30,6 +30,12 @@ namespace Application.DataAccess.Workflow
 
             return dbSession.DbConnection.QueryFirstOrDefault<WorkflowHistory>(sql, new { Id = id }, dbSession.Transaction );
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dbSession"></param>
+        /// <param name="newObject"></param>
+        /// <returns></returns>
         public override int Create(IDbSession dbSession, WorkflowHistory newObject)
         {
             return _UpSert(dbSession, newObject);

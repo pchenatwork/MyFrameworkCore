@@ -35,7 +35,9 @@ namespace _TesterConsoleApp
             /// testManagerFactory(providerName, connectionString);
             /// testValueObjectXML();
 
-           testWorkflowControl(providerName, connectionString);
+           ///testWorkflowControl(providerName, connectionString);
+
+            testTimeOffRequest(providerName, connectionString);
 
             /**** Working ****
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
@@ -79,6 +81,16 @@ namespace _TesterConsoleApp
             Console.ReadKey();
 
          }
+
+        static private void testTimeOffRequest(string providerName, string connectionString)
+        {
+            using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
+            {
+                var x = new TimeoffWorkflow();
+
+                int transactionId = x.NewWorkflow(session, 2, "NewWorkflow-er");
+            }
+        }
 
         static private void testWorkflowControl(string providerName, string connectionString)
         {

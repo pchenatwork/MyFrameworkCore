@@ -11,7 +11,7 @@ namespace Application.BusinessLogic.Workflow
         /* ==========================================================================
          * PCHEN 201911
          * ==========================================================================*/
-        public static readonly WorkflowListEnum AEContactReminder = new WorkflowListEnum(1, "AE Contact 90-day Reminder", typeof(WorkflowControl).FullName);
+        public static readonly WorkflowListEnum TimeoffWorkflow = new WorkflowListEnum(1, nameof(TimeoffWorkflow), typeof(TimeoffWorkflow).FullName);
         #endregion
 
         protected WorkflowListEnum(int id, string name, string description) : base(id, name, description)
