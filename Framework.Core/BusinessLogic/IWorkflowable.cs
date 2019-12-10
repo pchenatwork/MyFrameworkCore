@@ -7,6 +7,8 @@ namespace Framework.Core.BusinessLogic
 {
     public interface IWorkflowable
     {
-        bool TakeAction(IDbSession session, int WorkflowId, int TransactionId, string User, string Note, ref List<string> msg);
+        int NewWorkflow(IDbSession session, int workflowId, string user);
+       
+        bool ExecuteAction(IDbSession session, int WorkflowId, int TransactionId, string ActionName, string User, string Note, ref List<string> msg);
     }
 }
