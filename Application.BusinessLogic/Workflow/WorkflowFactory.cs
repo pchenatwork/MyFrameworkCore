@@ -9,28 +9,28 @@ namespace Application.BusinessLogic.Workflow
 {
     public class WorkflowFactory : FactoryBase<WorkflowFactory>
     {
-        public IWorkflowable GetJob(WorkflowListEnum job)
+        public IWorkflowable GetWorkflow(WorkflowListEnum wf)
         {
-            IWorkflowable _job = null;
-            object[] args = { "ConstructorParameter1" };  // For parametered Constructor 
+            IWorkflowable _wf = null;
+            ///object[] args = { "ConstructorParameter1" };  // For parametered Constructor 
 
             try
             {
-                // create IJob incident using reflection (parameters)
-                _job = Activator.CreateInstance(Type.GetType(job.Description),
-                    BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public, null,
-                    args, null) as IWorkflowable;
+                // create IWorkflowable incident using reflection (parameters)
+                //_wf = Activator.CreateInstance(Type.GetType(wf.Extra),
+                //    BindingFlags.NonPublic | BindingFlags.Instance, null,
+                //    null, null) as IWorkflowable;
 
-                /* parameterless
-                  _job = (IJob)Activator.CreateInstance(Type.GetType(job.Description));
-                    */
+                /* parameterless*/
+                _wf = (IWorkflowable)Activator.CreateInstance(Type.GetType(wf.Extra));
+                    
             }
             catch (TargetInvocationException e)
             {
                 throw new SystemException(e.InnerException.Message, e.InnerException);
             }
 
-            return _job;
+            return _wf;
         }
     }
 }

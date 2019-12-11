@@ -14,7 +14,7 @@ namespace Application.BusinessLogic.Workflow
         public static readonly WorkflowListEnum TimeoffWorkflow = new WorkflowListEnum(1, nameof(TimeoffWorkflow), typeof(TimeoffWorkflow).FullName);
         #endregion
 
-        protected WorkflowListEnum(int id, string name, string description) : base(id, name, description)
+        private WorkflowListEnum(int id, string name, string extra) : base(id, name, extra)
         {
         }
     }

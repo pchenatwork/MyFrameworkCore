@@ -7,12 +7,17 @@ namespace Application.BusinessLogic.Workflow
 {
     public sealed class TimeoffWorkflow : WorkflowBase
     {
-        protected override void DoCustomActions(IDbSession session, int StatusNodeId, int TransactionId, string User, ref List<string> msg)
+        public TimeoffWorkflow()
+        {
+            base._workflowId = 1;
+        }
+
+        protected override void _CustomActions(IDbSession session, int StatusNodeId, int TransactionId, string User, ref List<string> msg)
         {
             var i = 2;
         }
 
-        protected override void UpdateMyTransaction(IDbSession session, int TransactionId, int WorkflowId, int StatusId, string User, ref List<string> msg)
+        protected override void _UpdateTransaction(IDbSession session, int TransactionId, int WorkflowId, int StatusId, string User, ref List<string> msg)
         {
             var i = 2;
         }

@@ -108,7 +108,7 @@ namespace Application.JobServices
             try
             {
                 // create IJob incident using reflection (parameters)
-                _job = Activator.CreateInstance(Type.GetType(job.Description),
+                _job = Activator.CreateInstance(Type.GetType(job.Extra),
                     BindingFlags.NonPublic | BindingFlags.Instance, null,
                     args, null) as IJob;
 

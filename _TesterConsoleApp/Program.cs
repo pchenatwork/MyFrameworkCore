@@ -11,6 +11,7 @@ using Framework.Core.BusinessLogic;
 using Application.BusinessLogic;
 using Framework.Core.Utilities;
 using Application.BusinessLogic.Workflow;
+using System.Collections.Generic;
 
 namespace _TesterConsoleApp
 {
@@ -78,17 +79,32 @@ namespace _TesterConsoleApp
 
             **** Working ****/
 
-            Console.ReadKey();
+            //Console.ReadKey();
 
          }
 
         static private void testTimeOffRequest(string providerName, string connectionString)
         {
+            var a = TimeoffAction.SubmitPlan.Name;
+            var b = TimeoffAction.SubmitPlan.Extra;
+            var c = TimeoffAction.SubmitPlan.Id;
+
+            var WFRunner = WorkflowFactory.Instance.GetWorkflow(WorkflowListEnum.TimeoffWorkflow);
+            int workflowId = WFRunner.WorkflowId;
+
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
             {
-                var x = new TimeoffWorkflow();
+               //int transactionId = WFRunner.Create(session, "User", "Create a new plan");
 
-                int transactionId = x.NewWorkflow(session, 2, "NewWorkflow-er");
+                List<string> messages = new List<string>();
+                bool OK = false;
+                // OK = WFRunner.ExecuteAction(session, 2, 2, TimeoffAction.SubmitMoreInfo.Name, "Subbmitter", "Try to Submit with wrong ation", ref messages);
+                //OK = WFRunner.ExecuteAction(session, 1, 2, TimeoffAction.SubmitPlan.Name, "Subbmitter", "Try to Submit again", ref messages);
+
+                //OK = WFRunner.ExecuteAction(session, 2, 2, TimeoffAction.HRRequestMoreInfo.Name, "HR", "request More Indo", ref messages);
+                //OK = WFRunner.ExecuteAction(session, 2, 2, TimeoffAction.SubmitMoreInfo.Name, "User", "Submit More Info", ref messages);
+                //OK = WFRunner.ExecuteAction(session, 2, 2, TimeoffAction.HRApproval.Name, "HR", "HR Approved now", ref messages);
+                OK = WFRunner.ExecuteAction(session, 1, 2, TimeoffAction.ManagerApproval.Name, "Manager", "Manager Approved now", ref messages);
             }
         }
 

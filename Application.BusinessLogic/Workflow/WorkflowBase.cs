@@ -12,19 +12,23 @@ namespace Application.BusinessLogic.Workflow
 {
     public abstract class WorkflowBase : IWorkflowable
     {
+        protected int _workflowId = 0;
+
+        public int WorkflowId => _workflowId;
+
         /// Return TransactionId.
-        public int NewWorkflow(IDbSession session, int workflowId, string user)
+        public int Create(IDbSession session, string user, string note=null)
         {
             // Get 'Start' WorkflowNode
             var NodeManager = ManagerFactory<WorkflowNode>.Instance.GetManager(session);
-            WorkflowNode startNode = (NodeManager.FindByCriteria(WorkflowNodeDAO.FIND_BY_WORKFLOWID, new object[] { workflowId }))
+            WorkflowNode startNode = (NodeManager.FindByCriteria(WorkflowNodeDAO.FIND_BY_WORKFLOWID, new object[] { _workflowId }))
                 .Where(i => i.NodeType == "Start").FirstOrDefault(); 
 
             WorkflowHistory history = ValueObjectFactory<WorkflowHistory>.Instance.Create();
-            history.WorkflowId = workflowId;
+            history.WorkflowId = _workflowId;
             history.NodeId = startNode.Id;
             history.LastUpdateBy = user;
-            //history.Comment = comment;
+            history.Comment = note;
             history.IsCurrent = true;
 
             // Create WorkflowHistory
@@ -38,13 +42,18 @@ namespace Application.BusinessLogic.Workflow
         {
             bool bOK = true; // Assume OK;
 
-            // Step 1, Get ActionNodes from ActionName
+            // Get ActionNodes from ActionName
             var actionNodes = ManagerFactory<WorkflowNode>.Instance.GetManager(session)
                 .FindByCriteria(WorkflowNodeDAO.FIND_BY_ACTIONNAME, new object[] { WorkflowId, ActionName });
+
+            if (actionNodes == null || actionNodes.Count()==0)
+            {
+                msg.Add("Action not found. ActionName=" + ActionName+ "; WorkflowId="+WorkflowId.ToString()); return false;
+            }
+
             foreach(WorkflowNode node in actionNodes)
             {
                bOK = bOK && _doActionNode(session, TransactionId, node, User, Note, ref msg);
-
             }
             return bOK;
         }
@@ -63,7 +72,7 @@ namespace Application.BusinessLogic.Workflow
         /// <returns></returns>
         private bool _doActionNode(IDbSession session, int transactionid, WorkflowNode actionNode, string user, string comment, ref List<string> msgs)
         {
-            bool bRunning = true; // Assume Successed
+            bool bOK = true; // Assume Successed
 
             var histManager = ManagerFactory<WorkflowHistory>.Instance.GetManager(session);
             var nodeManager = ManagerFactory<WorkflowNode>.Instance.GetManager(session);
@@ -84,13 +93,15 @@ namespace Application.BusinessLogic.Workflow
                     // if [History] doesn't have a ActionNode.FromID, then it is invalid operation.
                     if (!hist.Any(i => i.NodeId == node.NodeFromId && i.IsCurrent))
                     {
-                        msgs.Add("Not A Valid Operation -- Transaction: " + transactionid.ToString() + " Workflow: " + node.WorkflowId.ToString() + " Action: '" + node.Name + "'");
+                        msgs.Add("Not A Valid Operation -- Transaction: " + transactionid.ToString() + "; Workflow: " + node.WorkflowId.ToString() + "; Action: '" + node.Name + "'");
+                        // msgs.Add("Not A Valid Operation -- WorkflowId: " + node.WorkflowId.ToString()  + " Transaction: " + transactionid.ToString() + " Action: '" + node.Name + "'");
                     }
                 }
 
                 if (msgs.Count > 0) // Not all workflows are ready to move ahead
                 {
-                    return false; 
+                    // If actionNode.IsAuto==true, then it is OK Status not ready to move ahead (return true, but do nothing)
+                    return actionNode.IsAuto? true : false;  
                 }
 
                 #endregion Step 1
@@ -114,8 +125,10 @@ namespace Application.BusinessLogic.Workflow
                 if (toNode.WorkflowId == currhist.WorkflowId)
                 {
                     // if same workflow, put into history (IsCurrent = false), otherwise stays current
-                    currhist.ApprovalUser = currhist.LastUpdateBy = user;
-                    currhist.ApprovalDate = currhist.LastUpdateDate = DateTime.Now;
+                    //currhist.ApprovalUser = 
+                        currhist.LastUpdateBy = user;
+                    //currhist.ApprovalDate = 
+                        currhist.LastUpdateDate = DateTime.Now;
                     currhist.IsCurrent = false;
                     histManager.Update(currhist);
                 }
@@ -134,7 +147,7 @@ namespace Application.BusinessLogic.Workflow
                 newHist.Id = histManager.Create(newHist);
                 
                 // Update {{TransactionHeader}} table
-                UpdateMyTransaction(session, transactionid, newHist.WorkflowId, newHist.NodeId, user, ref msgs);
+                _UpdateTransaction(session, transactionid, newHist.WorkflowId, newHist.NodeId, user, ref msgs);
 
                 if (!TransactionExists) session.Commit();
 
@@ -142,7 +155,7 @@ namespace Application.BusinessLogic.Workflow
                 /* -------------------------------------------- 
                  *  Step 3: Workflow Status has been updated, now do the Actions (email, etc) related to the status (Defined in [WorkflowAction])
                  ---------------------------------------------- */
-                DoCustomActions(session, newHist.NodeId, transactionid, user, ref msgs);
+                _CustomActions(session, newHist.NodeId, transactionid, user, ref msgs);
 
                 /* -------------------------------------------- 
                  *  Step 4: Execute Auto-Steps, if there is any
@@ -150,16 +163,16 @@ namespace Application.BusinessLogic.Workflow
                 var ActionNodes = nodeManager.GetAll().Where(i => (i.NodeFromId == keyNode.NodeToId && i.IsAuto == true));
                 foreach (WorkflowNode node in ActionNodes)
                 {
-                    bRunning = bRunning && _doActionNode(session, transactionid, node, user, "(Auto)", ref msgs);
+                    bOK = bOK && _doActionNode(session, transactionid, node, user, "(Auto)", ref msgs);
                 }
 
             }
             catch(Exception e) 
             {
-                msgs.Add(e.Message); bRunning = false;
+                msgs.Add(e.Message); bOK = false;
             }
 
-            return bRunning;
+            return bOK;
         }
 
 
@@ -206,7 +219,7 @@ namespace Application.BusinessLogic.Workflow
         /// <param name="TransactionId"></param>
         /// <param name="User"></param>
         /// <param name="msg"></param>
-        protected virtual void DoCustomActions(IDbSession session, int StatusNodeId, int TransactionId, string User, ref List<string> msg)
+        protected virtual void _CustomActions(IDbSession session, int StatusNodeId, int TransactionId, string User, ref List<string> msg)
         {
         }
         /// <summary>
@@ -218,9 +231,10 @@ namespace Application.BusinessLogic.Workflow
         /// <param name="StatusId"></param>
         /// <param name="User"></param>
         /// <param name="msg"></param>
-        protected virtual void UpdateMyTransaction(IDbSession session, int TransactionId, int WorkflowId, int StatusId, string User, ref List<string> msg)
+        protected virtual void _UpdateTransaction(IDbSession session, int TransactionId, int WorkflowId, int StatusId, string User, ref List<string> msg)
         {
         }
+
 
         #endregion Private Methods
     }

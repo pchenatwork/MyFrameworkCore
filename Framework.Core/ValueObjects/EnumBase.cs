@@ -23,7 +23,7 @@ namespace Framework.Core.ValueObjects
         #region Private Variables
         private int _id;
         private string _name;
-        private string _description;
+        private string _extra;
 
         private static readonly Lazy<IEnumerable<T>> _list = new Lazy<IEnumerable<T>>(() => _GetList());
         private static IEnumerable<T> _GetList()
@@ -42,11 +42,11 @@ namespace Framework.Core.ValueObjects
 
         #region Constructors
         private EnumBase() { }
-        protected EnumBase(int id, string name, string description)
+        protected EnumBase(int id, string name, string extra)
         {
             this._id = id;
             this._name = (name??string.Empty).Trim();
-            this._description = (description??string.Empty).Trim();
+            this._extra = (extra??string.Empty).Trim();
         }
         #endregion
 
@@ -130,10 +130,10 @@ namespace Framework.Core.ValueObjects
         public string Name => _name;
 
         /// <summary>
-        /// Description value of the Enum
+        /// Extra info about the Enum
         /// </summary>
         [XmlIgnore]
-        public string Description => _description;
+        public string Extra => _extra;
 
         /// <summary>
         /// Override the base Id and make it read only.
