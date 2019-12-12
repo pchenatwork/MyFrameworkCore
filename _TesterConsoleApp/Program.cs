@@ -1,17 +1,18 @@
-﻿using Application.JobServices;
-using Framework.Core.DataAccess;
-using Application.ValueObjects.Workflow;
-
+﻿
 using System;
-
-using Application.DataAccess.Workflow;
-using Application.DataAccess;
-using Framework.Core.ValueObjects;
-using Framework.Core.BusinessLogic;
-using Application.BusinessLogic;
-using Framework.Core.Utilities;
-using Application.BusinessLogic.Workflow;
 using System.Collections.Generic;
+
+using Framework.Core.BusinessLogic;
+using Framework.Core.DataAccess;
+using Framework.Core.Static;
+using Framework.Core.Utilities;
+using Framework.Core.ValueObjects;
+using Application.BusinessLogic;
+using Application.BusinessLogic.Workflow;
+using Application.DataAccess;
+using Application.DataAccess.Workflow;
+using Application.JobServices;
+using Application.ValueObjects.Workflow;
 
 namespace _TesterConsoleApp
 {
@@ -19,13 +20,18 @@ namespace _TesterConsoleApp
     {
         static void Main(string[] args)
         {
-          //  JobRunner.RunJob("Job1", "Hello World");
-          //  JobRunner.RunJob("Job2", "Ni Hao");
-          //  Console.ReadKey();
+            DbParams.ProviderName = "Microsoft.Data.SqlClient";
+            DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
+
+            // DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\_GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
+            // DbParams.ConnectionString = @"Data Source=localhost;Initial Catalog=MyFramework;Integrated Security=True";
+            //  JobRunner.RunJob("Job1", "Hello World");
+            //  JobRunner.RunJob("Job2", "Ni Hao");
+            //  Console.ReadKey();
 
             //string providerName = "System.Data.SqlClient";
-           string providerName = "Microsoft.Data.SqlClient";
-             string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
+          //  string providerName = "Microsoft.Data.SqlClient";
+          //   string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
            //  string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\_GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
            // string connectionString = @"Data Source=localhost;Initial Catalog=MyFramework;Integrated Security=True";
 
@@ -38,7 +44,7 @@ namespace _TesterConsoleApp
 
            ///testWorkflowControl(providerName, connectionString);
 
-            testTimeOffRequest(providerName, connectionString);
+            testTimeOffRequest();
 
             /**** Working ****
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
@@ -83,7 +89,7 @@ namespace _TesterConsoleApp
 
          }
 
-        static private void testTimeOffRequest(string providerName, string connectionString)
+        static private void testTimeOffRequest()
         {
             var a = TimeoffAction.SubmitPlan.Name;
             var b = TimeoffAction.SubmitPlan.Extra;
@@ -92,7 +98,7 @@ namespace _TesterConsoleApp
             var WFRunner = WorkflowFactory.Instance.GetWorkflow(WorkflowListEnum.TimeoffWorkflow);
             int workflowId = WFRunner.WorkflowId;
 
-            using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
+            using (IDbSession session = DbSessionFactory.Instance.GetSession(DbParams.ProviderName, DbParams.ConnectionString))
             {
                //int transactionId = WFRunner.Create(session, "User", "Create a new plan");
 

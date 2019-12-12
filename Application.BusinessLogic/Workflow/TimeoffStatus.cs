@@ -11,7 +11,7 @@ namespace Application.BusinessLogic.Workflow
         #region Enumeration Elements
         /* ==========================================================================
          * Name: 
-         * Description:  TypeName for reflection
+         * Description:  
          * ==========================================================================*/
         public static readonly TimeoffStatus NewPlan = new TimeoffStatus(1, "NewPlan", "New Plan");
         public static readonly TimeoffStatus PlanSubmitted = new TimeoffStatus(2, "PlanSubmitted", "Plan Submitted");

@@ -10,8 +10,8 @@ namespace Application.BusinessLogic.Workflow
 
         #region Enumeration Elements
         /* ==========================================================================
-         * Name: 
-         * Description:  TypeName for reflection
+         * Name: Need to match to [WorkflowNode].ActionName
+         * Extra: Just description
          * ==========================================================================*/
         public static readonly TimeoffAction SubmitPlan = new TimeoffAction(8, nameof(SubmitPlan), "Submit Plan");
         public static readonly TimeoffAction ManagerApproval = new TimeoffAction(10, "ManagerApproval", "Manager Approval");
