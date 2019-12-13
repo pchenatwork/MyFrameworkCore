@@ -60,14 +60,14 @@ namespace Application.DataAccess.Workflow
                 {
                     case FIND_BY_ACTIONNAME:
                         {
-                            int workflowId = (int)criteria[0];
+                            string workflowIds = (string)criteria[0];
                             string actionName = (string)criteria[1];
 
                             SqlParameter[] parameters = new SqlParameter[3];
                             parameters[0] = new SqlParameter("@ReturnValue", SqlDbType.Int);
                             parameters[0].Direction = ParameterDirection.ReturnValue;
-                            parameters[1] = new SqlParameter("@workflowId", SqlDbType.Int);
-                            parameters[1].Value = workflowId;
+                            parameters[1] = new SqlParameter("@workflowIds", SqlDbType.VarChar, 100);
+                            parameters[1].Value = workflowIds;
                             parameters[2] = new SqlParameter("@ActionName", SqlDbType.NVarChar, 50);
                             parameters[2].Value = actionName;                            
                             XmlReader reader = ExecuteXmlReader(dbSession, "WorkflowNodesFindByActionNameXml", parameters);
@@ -75,10 +75,10 @@ namespace Application.DataAccess.Workflow
                         }
                     case FIND_BY_WORKFLOWID:
                         {
-                            int workflowId = (int)criteria[0];
-                            string sql = SELECT_ALL + @" WHERE WorkflowId=@id" ;
+                            string workflowIds = (string)criteria[0];
+                            string sql = SELECT_ALL + @" WHERE WorkflowId in (@id)" ;
 
-                            return dbSession.DbConnection.Query<WorkflowNode>(sql, new { Id = workflowId }, dbSession.Transaction);
+                            return dbSession.DbConnection.Query<WorkflowNode>(sql, new { Id = workflowIds }, dbSession.Transaction);
                         }
                     default:
                         return null;

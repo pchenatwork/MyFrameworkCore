@@ -1,26 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Application.ValueObjects.Workflow;
 using Framework.Core.DataAccess;
 
 namespace Application.BusinessLogic.Workflow
 {
     public sealed class TimeoffWorkflow : WorkflowBase
     {
-        public TimeoffWorkflow()
+        protected override void _setupWorkflowIds()
         {
-            base._workflowId = 1;
+            _workflowIds = new int[]
+            {
+                WorkflowListEnum.TimeoffWorkflow.Id, WorkflowListEnum.TimeoffHRWorkflow.Id
+            };
         }
 
-        protected override void _CustomActions(IDbSession session, int StatusNodeId, int TransactionId, string User, ref List<string> msg)
-        {
-            var i = 2;
-        }
-
-        protected override void _UpdateTransaction(IDbSession session, int TransactionId, int WorkflowId, int StatusId, string User, ref List<string> msg)
+        protected override void _customActions(IDbSession session, int StatusNodeId, int TransactionId, string User, ref List<string> msg)
         {
             var i = 2;
         }
 
+        protected override void _updateHeaderTransaction(IDbSession session, WorkflowHistory hist)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -20,6 +20,7 @@ namespace _TesterConsoleApp
     {
         static void Main(string[] args)
         {
+
             DbParams.ProviderName = "Microsoft.Data.SqlClient";
             DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
 
@@ -96,7 +97,7 @@ namespace _TesterConsoleApp
             var c = TimeoffAction.SubmitPlan.Id;
 
             var WFRunner = WorkflowFactory.Instance.GetWorkflow(WorkflowListEnum.TimeoffWorkflow);
-            int workflowId = WFRunner.WorkflowId;
+            var workflowId = WFRunner.WorkflowIds;
 
             using (IDbSession session = DbSessionFactory.Instance.GetSession(DbParams.ProviderName, DbParams.ConnectionString))
             {
@@ -110,7 +111,7 @@ namespace _TesterConsoleApp
                 //OK = WFRunner.ExecuteAction(session, 2, 2, TimeoffAction.HRRequestMoreInfo.Name, "HR", "request More Indo", ref messages);
                 //OK = WFRunner.ExecuteAction(session, 2, 2, TimeoffAction.SubmitMoreInfo.Name, "User", "Submit More Info", ref messages);
                 //OK = WFRunner.ExecuteAction(session, 2, 2, TimeoffAction.HRApproval.Name, "HR", "HR Approved now", ref messages);
-                OK = WFRunner.ExecuteAction(session, 1, 2, TimeoffAction.ManagerApproval.Name, "Manager", "Manager Approved now", ref messages);
+                OK = WFRunner.ExecuteAction(session, 2, TimeoffAction.ManagerApproval.Name, "Manager", "Manager Approved now", ref messages);
             }
         }
 

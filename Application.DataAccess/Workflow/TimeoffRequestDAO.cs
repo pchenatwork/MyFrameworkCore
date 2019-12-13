@@ -79,42 +79,44 @@ namespace Application.DataAccess.Workflow
             string methodName = ClassName + ".Create()" ;
             try
             {
-                SqlParameter[] parameters = new SqlParameter[10];
+                SqlParameter[] param = new SqlParameter[10];
 
-                parameters[0] = new SqlParameter("@ReturnValue", SqlDbType.Int);
-                parameters[0].Direction = ParameterDirection.ReturnValue;
+                param[0] = new SqlParameter("@ReturnValue", SqlDbType.Int);
+                param[0].Direction = ParameterDirection.ReturnValue;
 
-                parameters[1] = new SqlParameter("@TransactionId", SqlDbType.Int);
-                parameters[1].Value = newObject.TransactionId;
-                parameters[2] = new SqlParameter("@TimeoffTypeEnum", SqlDbType.Int);
-                parameters[2].Value = newObject.TimeoffTypeEnum ;
-                parameters[3] = new SqlParameter("@User", SqlDbType.NVarChar, 50);
+                param[1] = new SqlParameter("@TransactionId", SqlDbType.Int);
+                param[1].Value = newObject.TransactionId;
+
+                param[2] = new SqlParameter("@TimeoffTypeEnum", SqlDbType.Int);
+                param[2].Value = newObject.TimeoffTypeEnum ;
+
+                param[3] = new SqlParameter("@User", SqlDbType.NVarChar, 50);
                 //parameters[3].IsNullable = true;
-                parameters[3].Value = newObject.User ?? string.Empty;
+                param[3].Value = newObject.User ?? string.Empty;
 
-                parameters[4] = new SqlParameter("@FromDate", SqlDbType.DateTime);
-                parameters[4].IsNullable = true;
-                parameters[4].Value = newObject.FromDate;
+                param[4] = new SqlParameter("@FromDate", SqlDbType.DateTime);
+                param[4].IsNullable = true;
+                param[4].Value = newObject.FromDate;
 
-                parameters[5] = new SqlParameter("@ToDate", SqlDbType.DateTime);
-                parameters[5].IsNullable = true;
-                parameters[5].Value = newObject.ToDate;
+                param[5] = new SqlParameter("@ToDate", SqlDbType.DateTime);
+                param[5].IsNullable = true;
+                param[5].Value = newObject.ToDate;
 
-                parameters[6] = new SqlParameter("@Note", SqlDbType.NVarChar, -1);  // VARCHAR(MAX)
-                parameters[6].Value = newObject.Note;
+                param[6] = new SqlParameter("@Note", SqlDbType.NVarChar, -1);  // VARCHAR(MAX)
+                param[6].Value = newObject.Note;
 
-                parameters[7] = new SqlParameter("@StatusId", SqlDbType.Int);
-                parameters[7].Value = newObject.StatusId;
+                param[7] = new SqlParameter("@StatusId", SqlDbType.Int);
+                param[7].Value = newObject.StatusId;
 
-                parameters[8] = new SqlParameter("@HRStatusId", SqlDbType.Int);
-                parameters[8].Value = newObject.HRStatusId;
+                param[8] = new SqlParameter("@HRStatusId", SqlDbType.Int);
+                param[8].Value = newObject.HRStatusId;
 
                 //parameters[8] = new SqlParameter("@IsActive", SqlDbType.Char, 1);
                 //parameters[8].Value = newObject.IsActive ? "Y" : "N";
-                parameters[9] = new SqlParameter("@ByUser", SqlDbType.NVarChar, 50);
-                parameters[9].Value = newObject.LastUpdateBy ?? string.Empty;
+                param[9] = new SqlParameter("@ByUser", SqlDbType.NVarChar, 50);
+                param[9].Value = newObject.LastUpdateBy ?? string.Empty;
 
-                return ExecuteNonQuery(dbSession, "TimeoffRequestInsert", parameters);
+                return ExecuteNonQuery(dbSession, "TimeoffRequestInsert", param);
             }
             catch (System.Exception e)
             {

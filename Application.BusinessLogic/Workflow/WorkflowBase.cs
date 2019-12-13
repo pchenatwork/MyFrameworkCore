@@ -12,20 +12,27 @@ namespace Application.BusinessLogic.Workflow
 {
     public abstract class WorkflowBase : IWorkflowable
     {
-        protected int _workflowId = 0;
+        protected int[] _workflowIds;
 
-        public int WorkflowId => _workflowId;
+        public int[] WorkflowIds => _workflowIds;
+
+        public IValueObject HeaderWorkflow { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        protected WorkflowBase()
+        {
+            _setupWorkflowIds();
+        }
 
         /// Return TransactionId.
         public int Create(IDbSession session, string user, string note=null)
         {
             // Get 'Start' WorkflowNode
             var NodeManager = ManagerFactory<WorkflowNode>.Instance.GetManager(session);
-            WorkflowNode startNode = (NodeManager.FindByCriteria(WorkflowNodeDAO.FIND_BY_WORKFLOWID, new object[] { _workflowId }))
-                .Where(i => i.NodeType == "Start").FirstOrDefault(); 
+            WorkflowNode startNode = (NodeManager.FindByCriteria(WorkflowNodeDAO.FIND_BY_WORKFLOWID, new object[] { string.Join(",", _workflowIds) }))
+                .Where(i => i.NodeType == "Start" && i.NodeFromId==0).FirstOrDefault(); 
 
             WorkflowHistory history = ValueObjectFactory<WorkflowHistory>.Instance.Create();
-            history.WorkflowId = _workflowId;
+            history.WorkflowId = startNode.WorkflowId;
             history.NodeId = startNode.Id;
             history.LastUpdateBy = user;
             history.Comment = note;
@@ -35,20 +42,24 @@ namespace Application.BusinessLogic.Workflow
             var HistManager = ManagerFactory<WorkflowHistory>.Instance.GetManager(session);
             int id = HistManager.Create(history);
 
+            // Update {{TransactionHeader}} table, eg [TimeoffRequest]
+            history = HistManager.Get(id);
+            _updateHeaderTransaction(session, history);
+
             // Get TransactionID from newly created WorkflowHistory
-            return HistManager.Get(id).TransactionId;
+            return history.TransactionId;
         }
-        public bool ExecuteAction(IDbSession session, int WorkflowId, int TransactionId, string ActionName, string User, string Note, ref List<string> msg)
+        public bool ExecuteAction(IDbSession session, int TransactionId, string ActionName, string User, string Note, ref List<string> msg)
         {
             bool bOK = true; // Assume OK;
 
             // Get ActionNodes from ActionName
             var actionNodes = ManagerFactory<WorkflowNode>.Instance.GetManager(session)
-                .FindByCriteria(WorkflowNodeDAO.FIND_BY_ACTIONNAME, new object[] { WorkflowId, ActionName });
+                .FindByCriteria(WorkflowNodeDAO.FIND_BY_ACTIONNAME, new object[] { string.Join(",", _workflowIds), ActionName });
 
             if (actionNodes == null || actionNodes.Count()==0)
             {
-                msg.Add("Action not found. ActionName=" + ActionName+ "; WorkflowId="+WorkflowId.ToString()); return false;
+                msg.Add("Action not found. ActionName=" + ActionName+ "; WorkflowId="+ string.Join(",", _workflowIds)); return false;
             }
 
             foreach(WorkflowNode node in actionNodes)
@@ -57,8 +68,7 @@ namespace Application.BusinessLogic.Workflow
             }
             return bOK;
         }
-
-
+        
         #region Private Methods
         /// <summary>
         /// DoActionNode will move forward the workflow Status from FromNodeId to ToNodeId
@@ -147,7 +157,7 @@ namespace Application.BusinessLogic.Workflow
                 newHist.Id = histManager.Create(newHist);
                 
                 // Update {{TransactionHeader}} table
-                _UpdateTransaction(session, transactionid, newHist.WorkflowId, newHist.NodeId, user, ref msgs);
+                _updateHeaderTransaction(session, newHist);
 
                 if (!TransactionExists) session.Commit();
 
@@ -155,7 +165,7 @@ namespace Application.BusinessLogic.Workflow
                 /* -------------------------------------------- 
                  *  Step 3: Workflow Status has been updated, now do the Actions (email, etc) related to the status (Defined in [WorkflowAction])
                  ---------------------------------------------- */
-                _CustomActions(session, newHist.NodeId, transactionid, user, ref msgs);
+                _customActions(session, newHist.NodeId, transactionid, user, ref msgs);
 
                 /* -------------------------------------------- 
                  *  Step 4: Execute Auto-Steps, if there is any
@@ -210,7 +220,9 @@ namespace Application.BusinessLogic.Workflow
                 .GetAll()
                 .Where(i => (i.NodeToId == keyNode.Id && i.IsAuto == true) || i.Id == keyNode.Id);
         }
-        
+
+        protected abstract void _setupWorkflowIds();
+
         /// <summary>
         /// Custom Node action like Email etc.. defined by each specify WorkFlow [WorkflowAction], should be overrided in there own specific implementation
         /// </summary>
@@ -219,9 +231,7 @@ namespace Application.BusinessLogic.Workflow
         /// <param name="TransactionId"></param>
         /// <param name="User"></param>
         /// <param name="msg"></param>
-        protected virtual void _CustomActions(IDbSession session, int StatusNodeId, int TransactionId, string User, ref List<string> msg)
-        {
-        }
+        protected abstract void _customActions(IDbSession session, int StatusNodeId, int TransactionId, string User, ref List<string> msg);
         /// <summary>
         /// To update status in Header transaction Table
         /// </summary>
@@ -231,10 +241,8 @@ namespace Application.BusinessLogic.Workflow
         /// <param name="StatusId"></param>
         /// <param name="User"></param>
         /// <param name="msg"></param>
-        protected virtual void _UpdateTransaction(IDbSession session, int TransactionId, int WorkflowId, int StatusId, string User, ref List<string> msg)
-        {
-        }
-
+        //protected abstract void _updateHeaderTransaction(IDbSession session, int TransactionId, int WorkflowId, int StatusId, string User);
+        protected abstract void _updateHeaderTransaction(IDbSession session, WorkflowHistory hist);
 
         #endregion Private Methods
     }

@@ -12,6 +12,7 @@ namespace Application.BusinessLogic.Workflow
          * PCHEN 201911
          * ==========================================================================*/
         public static readonly WorkflowListEnum TimeoffWorkflow = new WorkflowListEnum(1, nameof(TimeoffWorkflow), typeof(TimeoffWorkflow).FullName);
+        public static readonly WorkflowListEnum TimeoffHRWorkflow = new WorkflowListEnum(2, nameof(TimeoffHRWorkflow), typeof(TimeoffWorkflow).FullName);
         #endregion
 
         private WorkflowListEnum(int id, string name, string extra) : base(id, name, extra)
