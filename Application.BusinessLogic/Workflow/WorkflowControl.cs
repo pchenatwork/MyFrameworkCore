@@ -26,7 +26,7 @@ namespace Application.BusinessLogic.Workflow
             var NodeManager = ManagerFactory<WorkflowNode>.Instance.GetManager(session);
             WorkflowNode startNode = (NodeManager.FindByCriteria(WorkflowNodeDAO.FIND_BY_WORKFLOWID, new object[] { workflowId }))
                 .AsQueryable()
-                .Where(i => i.NodeType == "Start").FirstOrDefault(); ;
+                .Where(i => i.NodeType == "Start").FirstOrDefault();
 
             WorkflowHistory history = ValueObjectFactory<WorkflowHistory>.Instance.Create();
             history.WorkflowId = workflowId;

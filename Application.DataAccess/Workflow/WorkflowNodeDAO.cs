@@ -76,9 +76,10 @@ namespace Application.DataAccess.Workflow
                     case FIND_BY_WORKFLOWID:
                         {
                             string workflowIds = (string)criteria[0];
-                            string sql = SELECT_ALL + @" WHERE WorkflowId in (@id)" ;
+                            // string sql = SELECT_ALL + @" WHERE WorkflowId in (@id)";
+                            string sql = SELECT_ALL + @" WHERE EXISTS (SELECT 1 FROM STRING_SPLIT(@ids, ',') WHERE [value]=WorkflowNode.WorkflowId)";
 
-                            return dbSession.DbConnection.Query<WorkflowNode>(sql, new { Id = workflowIds }, dbSession.Transaction);
+                            return dbSession.DbConnection.Query<WorkflowNode>(sql, new { ids = workflowIds }, dbSession.Transaction);
                         }
                     default:
                         return null;

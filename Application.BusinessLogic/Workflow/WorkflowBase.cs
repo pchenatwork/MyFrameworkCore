@@ -1,6 +1,5 @@
 ﻿using Application.DataAccess.Workflow;
 using Application.ValueObjects.Workflow;
-using Framework.Core.BusinessLogic;
 using Framework.Core.DataAccess;
 using Framework.Core.ValueObjects;
 using System;
@@ -23,8 +22,8 @@ namespace Application.BusinessLogic.Workflow
             _setupWorkflowIds();
         }
 
-        /// Return TransactionId.
-        public int Create(IDbSession session, string user, string note=null)
+        /// Return WorkflowHistory.
+        public WorkflowHistory Create(IDbSession session, string user, string note=null)
         {
             // Get 'Start' WorkflowNode
             var NodeManager = ManagerFactory<WorkflowNode>.Instance.GetManager(session);
@@ -43,11 +42,10 @@ namespace Application.BusinessLogic.Workflow
             int id = HistManager.Create(history);
 
             // Update {{TransactionHeader}} table, eg [TimeoffRequest]
-            history = HistManager.Get(id);
-            _updateHeaderTransaction(session, history);
+            // _updateHeaderTransaction(session, history);
 
-            // Get TransactionID from newly created WorkflowHistory
-            return history.TransactionId;
+            // return WorkflowHistory
+            return HistManager.Get(id);  //.TransactionId;
         }
         public bool ExecuteAction(IDbSession session, int TransactionId, string ActionName, string User, string Note, ref List<string> msg)
         {
@@ -103,8 +101,8 @@ namespace Application.BusinessLogic.Workflow
                     // if [History] doesn't have a ActionNode.FromID, then it is invalid operation.
                     if (!hist.Any(i => i.NodeId == node.NodeFromId && i.IsCurrent))
                     {
-                        msgs.Add("Not A Valid Operation -- Transaction: " + transactionid.ToString() + "; Workflow: " + node.WorkflowId.ToString() + "; Action: '" + node.Name + "'");
-                        // msgs.Add("Not A Valid Operation -- WorkflowId: " + node.WorkflowId.ToString()  + " Transaction: " + transactionid.ToString() + " Action: '" + node.Name + "'");
+                        //if (!actionNode.IsAuto)
+                            msgs.Add("Not A Valid Operation -- Transaction: " + transactionid.ToString() + "; Workflow: " + node.WorkflowId.ToString() + "; Action: '" + node.Name + "'");
                     }
                 }
 

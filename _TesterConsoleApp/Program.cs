@@ -13,6 +13,7 @@ using Application.DataAccess;
 using Application.DataAccess.Workflow;
 using Application.JobServices;
 using Application.ValueObjects.Workflow;
+using Application.BusinessLogic.Utilities;
 
 namespace _TesterConsoleApp
 {
@@ -22,9 +23,9 @@ namespace _TesterConsoleApp
         {
 
             DbParams.ProviderName = "Microsoft.Data.SqlClient";
-            DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
+            // DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
 
-            // DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\_GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
+            DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\_GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
             // DbParams.ConnectionString = @"Data Source=localhost;Initial Catalog=MyFramework;Integrated Security=True";
             //  JobRunner.RunJob("Job1", "Hello World");
             //  JobRunner.RunJob("Job2", "Ni Hao");
@@ -45,7 +46,8 @@ namespace _TesterConsoleApp
 
            ///testWorkflowControl(providerName, connectionString);
 
-            testTimeOffRequest();
+            /// testTimeOffWorkflow();
+            testTimeOffUtilities();
 
             /**** Working ****
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
@@ -90,13 +92,41 @@ namespace _TesterConsoleApp
 
          }
 
-        static private void testTimeOffRequest()
+        static private void testTimeOffUtilities()
+        {
+            TimeoffRequest request = ValueObjectFactory<TimeoffRequest>.Instance.Create();
+
+            request.User = "PChen";
+            request.FromDate = new DateTime(2020, 1, 11);
+            request.Note = "Not decided yet";
+            request.LastUpdateBy = "tmppch";
+            
+            using (DbSession session = DbSessionFactory.Instance.GetSession(DbParams.ProviderName, DbParams.ConnectionString))
+            {
+
+                //var tranId = TimeoffUtility.Create(session, request, "This is workflow note that shouldn't be part of TimeoffRequest");
+
+                //int transactionId = WFRunner.Create(session, "User", "Create a new plan");
+
+                List<string> messages = new List<string>();
+                bool OK = false;
+                //OK = TimeoffUtility.Workflow(session, 10, TimeoffAction.SubmitMoreInfo.Name, "Subbmitter", "Try to Submit with wrong ation", ref messages);
+                //OK = TimeoffUtility.Workflow(session, 1, TimeoffAction.SubmitPlan.Name, "Subbmitter", "Try to Submit again", ref messages);
+
+                //OK = TimeoffUtility.Workflow(session, 1, TimeoffAction.HRRequestMoreInfo.Name, "HR", "request More Indo", ref messages);
+                //OK = TimeoffUtility.Workflow(session, 1, TimeoffAction.SubmitMoreInfo.Name, "User", "Submit More Info", ref messages);
+                //OK = TimeoffUtility.Workflow(session, 1, TimeoffAction.HRApproval.Name, "HR", "HR Approved now", ref messages);
+                OK = TimeoffUtility.Workflow(session, 1, TimeoffAction.ManagerApproval.Name, "Manager", "Manager Approved now", ref messages);
+            }
+        }
+
+        static private void testTimeOffWorkflow()
         {
             var a = TimeoffAction.SubmitPlan.Name;
             var b = TimeoffAction.SubmitPlan.Extra;
             var c = TimeoffAction.SubmitPlan.Id;
 
-            var WFRunner = WorkflowFactory.Instance.GetWorkflow(WorkflowListEnum.TimeoffWorkflow);
+            var WFRunner = WorkflowFactory.Instance.GetWorkflow(WorkflowEnum.TimeoffMainFlow);
             var workflowId = WFRunner.WorkflowIds;
 
             using (IDbSession session = DbSessionFactory.Instance.GetSession(DbParams.ProviderName, DbParams.ConnectionString))

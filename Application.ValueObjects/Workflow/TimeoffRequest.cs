@@ -17,7 +17,7 @@ namespace Application.ValueObjects.Workflow
 
         public DateTime FromDate { get; set; }
 
-        public DateTime ToDate { get; set; }
+        public DateTime? ToDate { get; set; }
 
         public string Note { get; set; }
 

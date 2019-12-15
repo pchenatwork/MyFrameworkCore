@@ -9,7 +9,7 @@ namespace Application.BusinessLogic.Workflow
 {
     public class WorkflowFactory : FactoryBase<WorkflowFactory>
     {
-        public IWorkflowable GetWorkflow(WorkflowListEnum wf)
+        public IWorkflowable GetWorkflow(WorkflowEnum wf)
         {
             IWorkflowable _wf = null;
             ///object[] args = { "ConstructorParameter1" };  // For parametered Constructor 

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Application.DataAccess.Workflow;
 using Application.ValueObjects.Workflow;
 using Framework.Core.DataAccess;
 
@@ -12,7 +14,7 @@ namespace Application.BusinessLogic.Workflow
         {
             _workflowIds = new int[]
             {
-                WorkflowListEnum.TimeoffWorkflow.Id, WorkflowListEnum.TimeoffHRWorkflow.Id
+                WorkflowEnum.TimeoffMainFlow.Id, WorkflowEnum.TimeoffHRFlow.Id
             };
         }
 
@@ -23,7 +25,27 @@ namespace Application.BusinessLogic.Workflow
 
         protected override void _updateHeaderTransaction(IDbSession session, WorkflowHistory hist)
         {
-            throw new NotImplementedException();
+            var tManager =  ManagerFactory<TimeoffRequest>.Instance.GetManager(session);
+            TimeoffRequest requst = tManager.FindByCriteria(TimeoffRequestDAO.FIND_BY_TRANSACTION, new object[] { hist.TransactionId })
+                .FirstOrDefault();
+            bool tobeUpdated = false;
+            if (WorkflowEnum.GetById(hist.WorkflowId) == WorkflowEnum.TimeoffMainFlow)
+            {
+                requst.StatusId = hist.NodeId;
+                requst.LastUpdateBy = hist.LastUpdateBy;
+                tobeUpdated = true;
+            } 
+            else if (WorkflowEnum.GetById(hist.WorkflowId) == WorkflowEnum.TimeoffHRFlow)
+            {
+                requst.HRStatusId = hist.NodeId;
+                requst.LastUpdateBy = hist.LastUpdateBy;
+                tobeUpdated = true;
+            }
+
+            if (tobeUpdated)
+            {
+                tManager.Update(requst);
+            }
         }
     }
 }

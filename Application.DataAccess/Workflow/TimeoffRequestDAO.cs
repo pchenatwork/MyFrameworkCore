@@ -16,8 +16,9 @@ namespace Application.DataAccess.Workflow
         //				 constants
         // *************************************************************************
         public const string FIND_BY_USER = "TimeoffRequestsFindByActionName";
+        public const string FIND_BY_TRANSACTION = "FIND_BY_TRANSACTION";
         private static string SELECT_SQL = @"" +
-            "SELECT Id,TransactionId,UserId,," +
+            "SELECT Id,TransactionId,User," +
             "TimeoffTypeEnum,dbo.GetEnumStrVal('TimeoffType', TimeoffTypeEnum) as TimeoffType," +
             "FromDate, ToDate,Note, StatusId, HRStatusId, " +
             "CASE IsActive WHEN 'Y' THEN 1 ELSE 0 END AS IsActive, " +
@@ -57,10 +58,17 @@ namespace Application.DataAccess.Workflow
                 {
                     case FIND_BY_USER:
                         {
-                            int workflowId = (int)criteria[0];
-                            string sql = SELECT_SQL + @" WHERE UserId=@id";
+                            string username = (string)criteria[0];
+                            string sql = SELECT_SQL + @"WHERE User=@id";
 
-                            return dbSession.DbConnection.Query<TimeoffRequest>(sql, new { Id = workflowId }, dbSession.Transaction);
+                            return dbSession.DbConnection.Query<TimeoffRequest>(sql, new { user = username }, dbSession.Transaction);
+                        }
+                    case FIND_BY_TRANSACTION:
+                        {
+                            int tranId = (int)criteria[0];
+                            string sql = SELECT_SQL + @"WHERE TransactionId=@id";
+
+                            return dbSession.DbConnection.Query<TimeoffRequest>(sql, new { id = tranId }, dbSession.Transaction);
                         }
                     default:
                         return null;
@@ -164,7 +172,7 @@ namespace Application.DataAccess.Workflow
                 parameters[9] = new SqlParameter("@ByUser", SqlDbType.NVarChar, 50);
                 parameters[9].Value = o.LastUpdateBy ?? string.Empty;
 
-                return ExecuteNonQuery(dbSession, "TimeoffRequestInsert", parameters)>0;
+                return ExecuteNonQuery(dbSession, "TimeoffRequestUpdate", parameters)>0;
             }
             catch (System.Exception e)
             {
