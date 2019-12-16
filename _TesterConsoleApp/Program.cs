@@ -23,10 +23,10 @@ namespace _TesterConsoleApp
         {
 
             DbParams.ProviderName = "Microsoft.Data.SqlClient";
-            // DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
+            DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
 
-            DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\_GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
-            // DbParams.ConnectionString = @"Data Source=localhost;Initial Catalog=MyFramework;Integrated Security=True";
+           //  DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\_GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
+           //  DbParams.ConnectionString = @"Data Source=localhost;Initial Catalog=MyFramework;Integrated Security=True";
             //  JobRunner.RunJob("Job1", "Hello World");
             //  JobRunner.RunJob("Job2", "Ni Hao");
             //  Console.ReadKey();

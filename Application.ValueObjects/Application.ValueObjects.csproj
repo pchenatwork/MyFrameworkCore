@@ -8,8 +8,4 @@
     <ProjectReference Include="..\Framework.Core\Framework.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DAO\" />
-  </ItemGroup>
-
 </Project>

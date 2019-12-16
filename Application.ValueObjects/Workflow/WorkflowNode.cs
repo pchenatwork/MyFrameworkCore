@@ -53,7 +53,8 @@ namespace Application.ValueObjects.Workflow
         /// Property WorkflowActions (WorkflowActionCollection)
         /// </summary>
         [XmlArray("ArrayOfWorkflowAction")]
-        public ValueObjectCollection<WorkflowAction> WorkflowActions { get; set; } = null;
+        //public ValueObjectCollection<WorkflowAction> WorkflowActions { get; set; } = null;
+        public IEnumerable<WorkflowAction> WorkflowActions { get; set; } = null;
         #endregion Properties
 
         #region	override Methods

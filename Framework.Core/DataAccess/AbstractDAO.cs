@@ -151,7 +151,8 @@ namespace Framework.Core.DataAccess
         ////}
         protected IEnumerable<T> DeserializeCollection(XmlReader reader)
         {
-            return XMLUtility.Deserialize<Collection<T>>(reader);
+          //  return XMLUtility.Deserialize<Collection<T>>(reader);
+            return XMLUtility.Deserialize<T[]>(reader);
         }
     }
 }
