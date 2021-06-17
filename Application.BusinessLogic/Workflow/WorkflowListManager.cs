@@ -8,7 +8,7 @@ namespace Application.BusinessLogic.Workflow
 {
     public class WorkflowListManager : Manager<WorkflowList>
     {
-        internal const string DAO_CLASS_NAME = "Application.DataAccess.Workflow.WorkflowListDAO";
+        internal const string DAO_CLASS_NAME = "Application.DAO.Workflow.WorkflowListDAO";
 
         public WorkflowListManager() 
         {

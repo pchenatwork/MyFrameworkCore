@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Application.DataAccess
+namespace Application.DAO
 {
     public sealed class DataAccessObjectFactory<T> : FactoryBase<DataAccessObjectFactory<T>> where T : IValueObject
     {

@@ -9,11 +9,12 @@ using Framework.Core.Utilities;
 using Framework.Core.ValueObjects;
 using Application.BusinessLogic;
 using Application.BusinessLogic.Workflow;
-using Application.DataAccess;
-using Application.DataAccess.Workflow;
+using Application.DAO;
 using Application.JobServices;
 using Application.ValueObjects.Workflow;
 using Application.BusinessLogic.Utilities;
+using System.IO;
+using Application.DAO.Workflow;
 
 namespace _TesterConsoleApp
 {
@@ -23,37 +24,42 @@ namespace _TesterConsoleApp
         {
 
             DbParams.ProviderName = "Microsoft.Data.SqlClient";
-            DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
+            //DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
+            DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Directory.GetCurrentDirectory() + "\\Workflow.mdf;Integrated Security=True";
+
+
+            var x = Directory.GetCurrentDirectory();
+            var y = AppDomain.CurrentDomain.BaseDirectory; 
 
            //  DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\_GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
            //  DbParams.ConnectionString = @"Data Source=localhost;Initial Catalog=MyFramework;Integrated Security=True";
-            //  JobRunner.RunJob("Job1", "Hello World");
-            //  JobRunner.RunJob("Job2", "Ni Hao");
-            //  Console.ReadKey();
+           //  JobRunner.RunJob("Job1", "Hello World");
+           //  JobRunner.RunJob("Job2", "Ni Hao");
+           //  Console.ReadKey();
 
             //string providerName = "System.Data.SqlClient";
-          //  string providerName = "Microsoft.Data.SqlClient";
-          //   string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
-           //  string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\_GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
-           // string connectionString = @"Data Source=localhost;Initial Catalog=MyFramework;Integrated Security=True";
+            //  string providerName = "Microsoft.Data.SqlClient";
+            //   string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
+            //  string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\_GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
+            // string connectionString = @"Data Source=localhost;Initial Catalog=MyFramework;Integrated Security=True";
 
-            ///    testDAO(providerName, connectionString);
+            //   testDAO(providerName, connectionString);
             ///  testDapperDAO(providerName, connectionString); 
             ///  TestWorkflowNodeDAO(providerName, connectionString);
             /// testWorkflowHistoryDAO(providerName, connectionString);
             /// testManagerFactory(providerName, connectionString);
             /// testValueObjectXML();
 
-           ///testWorkflowControl(providerName, connectionString);
+            ///testWorkflowControl(providerName, connectionString);
 
             /// testTimeOffWorkflow();
-            testTimeOffUtilities();
+           // testTimeOffUtilities();
 
-            /**** Working ****
-            using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
+            /**** Working ****/
+            using (IDbSession session = DbSessionFactory.Instance.GetSession(DbParams.ProviderName, DbParams.ConnectionString))
             {
 
-                string daoClassName = "Application.DataAccess.Workflow.WorkflowListDAO";
+                string daoClassName = "Application.DAO.Workflow.WorkflowListDAO";
                 var dao = DataAccessObjectFactory<WorkflowList>.Instance.GetDAO(daoClassName);
 
                 //var mgr = new Manager<WorkflowList>(session, dao);
@@ -86,7 +92,7 @@ namespace _TesterConsoleApp
                 session.Commit();
             }
 
-            **** Working ****/
+            /**** Working ****/
 
             //Console.ReadKey();
 
@@ -195,7 +201,7 @@ namespace _TesterConsoleApp
         {
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
             {                
-                string daoClassName = "Application.DataAccess.Workflow.WorkflowListDAO";
+                string daoClassName = "Application.DAO.Workflow.WorkflowListDAO";
                 var mgr2 = ManagerFactory<WorkflowList>.Instance.GetManager(session, daoClassName);
                 var mgr1 = ManagerFactory<WorkflowList>.Instance.GetManager(session);
 
@@ -247,8 +253,8 @@ namespace _TesterConsoleApp
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
             {
                 //WorkflowListDAO dao = new WorkflowListDAO();
-               // var dao = DataAccessObjectFactory<WorkflowList>.Instance.GetDAO("Application.DataAccess.Workflow.WorkflowListDAO");
-               // var dao = DataAccessObjectFactory<WorkflowList>.Instance.GetDAO("Application.DataAccess.Workflow.WorkflowListDAO");
+               // var dao = DataAccessObjectFactory<WorkflowList>.Instance.GetDAO("Application.DAO.Workflow.WorkflowListDAO");
+               // var dao = DataAccessObjectFactory<WorkflowList>.Instance.GetDAO("Application.DAO.Workflow.WorkflowListDAO");
                 var dao2 = DataAccessObjectFactory<WorkflowList>.Instance.GetDAO();
                //var dao2 = DaoFactory<WorkflowList>.Instance.GetDAO();
                 //var x1 = dao2.Get(session, 1);

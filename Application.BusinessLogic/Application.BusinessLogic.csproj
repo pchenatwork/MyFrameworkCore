@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application.DataAccess\Application.DataAccess.csproj" />
+    <ProjectReference Include="..\Application.DAO\Application.DAO.csproj" />
     <ProjectReference Include="..\Application.ValueObjects\Application.ValueObjects.csproj" />
     <ProjectReference Include="..\Framework.Core\Framework.Core.csproj" />
   </ItemGroup>

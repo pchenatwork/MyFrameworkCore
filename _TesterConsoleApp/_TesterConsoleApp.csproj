@@ -2,12 +2,13 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Users\paul.chen\source\repos\pchenatwork\MyFrameworkCore\Application.DB\Application.DB.csproj" />
     <ProjectReference Include="..\Application.BusinessLogic\Application.BusinessLogic.csproj" />
-    <ProjectReference Include="..\Application.DataAccess\Application.DataAccess.csproj" />
+    <ProjectReference Include="..\Application.DAO\Application.DAO.csproj" />
     <ProjectReference Include="..\Application.JobServices\Application.JobServices.csproj" />
     <ProjectReference Include="..\Framework.Core\Framework.Core.csproj" />
   </ItemGroup>

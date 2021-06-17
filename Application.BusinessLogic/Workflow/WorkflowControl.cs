@@ -1,4 +1,4 @@
-﻿using Application.DataAccess.Workflow;
+﻿using Application.DAO.Workflow;
 using Application.ValueObjects.Workflow;
 using Framework.Core.DataAccess;
 using Framework.Core.Utilities;
