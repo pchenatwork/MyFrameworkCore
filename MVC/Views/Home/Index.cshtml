@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<div class="text-center">
+    <h2>Kendo UI DatePicker</h2>
+    @(Html.Kendo().DatePicker()
+            .Name("my-picker")
+     )
+</div>
+
+<div class="container">
+
+    @(Html.Kendo().Grid<MVC.Models.EmployeeVM>()
+        .Name("EmpGrid")
+        .Columns(columns =>
+        {
+            columns.Bound(o => o.Id).Width(150).Locked(true).Lockable(false);
+            columns.Bound(o => o.FirstName).Width(300);
+            columns.Bound(o => o.LastName).Width(300);
+            columns.Bound(o => o.UpdatedBy).Width(300).Locked(true);
+            columns.Bound(o => o.UpdatedDT).Width(400).Lockable(false);
+        })
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .PageSize(20)
+            .Read(read => read.Action("EmployeeList", "Home"))
+            )
+        .Scrollable(scrollable => scrollable.Height(540))
+        .Reorderable(reorderable => reorderable.Columns(true))
+        .Resizable(resizable => resizable.Columns(true))
+        .Pageable()
+        .Filterable()
+        .Sortable()
+        .Groupable()
+        .ColumnMenu()
+    )
+
+</div> 
