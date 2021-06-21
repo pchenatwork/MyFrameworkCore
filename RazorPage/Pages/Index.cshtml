@@ -1,0 +1,18 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+@using RazorPage.Models
+@using Kendo.Mvc.UI
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Html.AntiForgeryToken()
+
+<div class="text-center">
+    <h2>Kendo UI DatePicker</h2>
+    @(Html.Kendo().DatePicker()
+            .Name("my-picker")
+     )
+</div>
