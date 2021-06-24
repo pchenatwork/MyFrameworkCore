@@ -4,15 +4,31 @@
     ViewData["Title"] = "GridCrudOperations";
 }
 
-<h1>GridCrudOperations</h1>
-
 @using RazorPage.Models
 @using Kendo.Mvc.UI
 
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @Html.AntiForgeryToken()
 
-@(Html.Kendo().Grid<EmployeeVM>().Name("grid")
+<h1>GridCrudOperations</h1>
+
+<div class="container">
+    @(Html.Kendo().Menu()
+        .Name("menu_1")
+        .Items(its =>{
+            its.Add().Text("Action 1").Items(nested =>
+            {
+                nested.Add().Text("bar 11");
+                nested.Add().Text("bar 12");
+            });
+            its.Add().Text("Action 2").Items(nested =>
+            {
+                nested.Add().Text("bar 21");
+                nested.Add().Text("bar 22");
+            });
+        })
+	 )
+    @(Html.Kendo().Grid<EmployeeVM>().Name("grid")
                 .Groupable()
                 .Sortable()
                 .Editable()
@@ -23,16 +39,33 @@
                 })
                 .Columns(columns =>
                 {
-                    columns.Bound(o => o.Id).Width(150).Locked(true).Lockable(false);
-                    columns.Bound(o => o.FirstName).Width(300);
-                    columns.Bound(o => o.LastName).Width(300);
-                    columns.Bound(o => o.UpdatedBy).Width(300).Locked(true);
-                    columns.Bound(o => o.UpdatedDT).Width(400).Lockable(false);
-                    columns.Command(column =>
-                    {
-                        column.Edit();
-                        column.Destroy();
-                    });
+                columns.Bound(o => o.Id);
+                columns.Bound(o => o.FirstName);
+                columns.Bound(o => o.LastName);
+                columns.Bound(o => o.UpdatedBy);
+                columns.Command(column =>
+                {
+                    column.Edit();
+                    column.Destroy();
+                });
+                columns.Template(@"
+                        <strong>blar blar blar </strong>
+                    ");
+                    @*columns.Template("@<text></text>")
+                        .HtmlAttributes(new { @class = "templateCell" })
+                        .Template(@<template
+                            Html.Kendo().Menu()
+                                .Name("menu_#=Id#")
+                                .Items(its =>
+                                {
+                                    its.Add().Text("foo").Items(nested =>
+                                    {
+                                        nested.Add().Text("bar");
+                                        nested.Add().Text("baz");
+                                    });
+                                }
+                        )
+                    ).Width(300);*@
                 })
                 .DataSource(ds => ds.Ajax()
                        .Read(r => r.Url("/Grid/GridCrudOperations?handler=Read").Data("forgeryToken"))
@@ -44,7 +77,13 @@
                 )
                 .Pageable()
 )
-
+</div>
+<script>
+    function forgeryToken() {
+        return kendo.antiForgeryTokens();
+    }
+</script>
+</div>
 <script>
     function forgeryToken() {
         return kendo.antiForgeryTokens();

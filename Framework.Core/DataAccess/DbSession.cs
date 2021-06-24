@@ -118,13 +118,19 @@ namespace Framework.Core.DataAccess
             _dbTran = null;
         }
 
+        public void Rollback()
+        {
+            _dbTran.Rollback();
+            _dbTran = null;
+        }
+
         public void Dispose()
         {
             if (_dbConn.State != ConnectionState.Closed)
             {
                 if (_dbTran != null)
                 {
-                    //_transaction.Rollback();
+                    //_dbTran.Rollback();
                     _dbTran.Dispose();
                     _dbTran = null;
 
@@ -133,12 +139,6 @@ namespace Framework.Core.DataAccess
                 _dbConn = null;
             }
             GC.SuppressFinalize(this);
-        }
-
-        public void Rollback()
-        {
-            _dbTran.Rollback();
-            _dbTran = null;
         }
     }
 }

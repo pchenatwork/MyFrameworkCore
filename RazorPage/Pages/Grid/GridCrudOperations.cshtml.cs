@@ -18,7 +18,7 @@ namespace RazorPage.Pages.Grid
         {
             if (_emp == null)
             {
-                 _emp = new List<EmployeeVM>();
+                _emp = new List<EmployeeVM>();
                 _emp.Add(new EmployeeVM() { Id = 1, FirstName = "Bobb", LastName = "Ross" });
                 _emp.Add(new EmployeeVM() { Id = 2, FirstName = "Pradeep", LastName = "Raj" });
                 _emp.Add(new EmployeeVM() { Id = 3, FirstName = "Arun", LastName = "Kumar" });

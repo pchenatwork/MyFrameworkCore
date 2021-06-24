@@ -28,7 +28,8 @@ namespace RazorPage
                 .AddNewtonsoftJson(options =>
                        options.SerializerSettings.ContractResolver =
                           new DefaultContractResolver());
-            services.AddRazorPages();
+            services.AddRazorPages()
+                .AddRazorRuntimeCompilation();
             services.AddKendo();
         }
 
