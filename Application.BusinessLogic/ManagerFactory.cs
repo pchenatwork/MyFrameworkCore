@@ -13,6 +13,24 @@ namespace Application.BusinessLogic
 {
     public sealed class ManagerFactory<T> : FactoryBase<ManagerFactory<T>> where T : IValueObject
     {
+
+        public IManager<T> GetManager2(IDbSession session)
+        {
+            // get Manager ClassName, should by in the convention of "{{ValueObject}}Manager"
+            string name = typeof(T).Name.ToLower() + "manager";
+            // Search type in current assembly
+            Type type = (from t in Assembly.GetExecutingAssembly().GetTypes()
+                         where t.IsClass && t.Name.ToLower().Equals(name)
+                         select t).Single();
+
+            var dao = DataAccessObjectFactory<T>.Instance.GetDAO();
+            object[] args = { session, dao };  // For parametered Constructor 
+            // create instance by reflection
+            return Activator.CreateInstance(type,
+                 BindingFlags.NonPublic | BindingFlags.Instance, null,
+                 args, null) as IManager<T>;
+        }
+
         public IManager<T> GetManager(IDbSession session, string daoClassName = null)
         {
             var dao = DataAccessObjectFactory<T>.Instance.GetDAO(daoClassName);

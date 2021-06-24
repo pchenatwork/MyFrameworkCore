@@ -13,4 +13,12 @@
     <PackageReference Include="Telerik.UI.for.AspNet.Core" Version="2021.2.511" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Application.BusinessLogic\Application.BusinessLogic.csproj" />
+    <ProjectReference Include="..\Application.DAO\Application.DAO.csproj" />
+    <ProjectReference Include="..\Application.DB\Application.DB.csproj" />
+    <ProjectReference Include="..\Application.ValueObjects\Application.ValueObjects.csproj" />
+    <ProjectReference Include="..\Framework.Core\Framework.Core.csproj" />
+  </ItemGroup>
+
 </Project>

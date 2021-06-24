@@ -19,7 +19,7 @@ namespace Framework.Core.BusinessLogic
             _dbSession = dbSession;
             _dao = dao;
         }
-        protected Manager() { }
+        //protected Manager() { }
         #endregion
 
         public IDbSession dbSession => this._dbSession;

@@ -64,32 +64,38 @@ namespace _TesterConsoleApp
 
                 //var mgr = new Manager<WorkflowList>(session, dao);
 
-                var mgr = ManagerFactory<WorkflowList>.Instance.GetManager(session, daoClassName);
+                //var mgr = ManagerFactory<WorkflowList>.Instance.GetManager(session, daoClassName);
 
-                var wf1 = mgr.Get(1);
+                WorkflowListManager mgr = (WorkflowListManager) ManagerFactory<WorkflowList>.Instance.GetManager2(session);
 
-                var wf = ValueObjectFactory<WorkflowList>.Instance.Create();
-                wf.CopyFrom(wf1);
+                var wfl1 = mgr.Get(1);
 
-                session.BeginTrans();
-
-                wf.Name = wf1.Name + "(updated rollback)";
-                dao.Update(session, wf);
-                wf.Name = wf1.Name + "(insert rollback)";
-                wf.Id = 0;
-                dao.Create(session, wf);
-
-                session.Rollback();
-
+                var wfl_new = ValueObjectFactory<WorkflowList>.Instance.Create();
+                wfl_new.CopyFrom(wfl1);
 
                 session.BeginTrans();
-                wf.Name = wf1.Name + "(updated commit)";
-                dao.Update(session, wf);
-                wf.Name = wf1.Name + "(insert commit)";
-                wf.Id = 0;
-                dao.Create(session, wf);
 
+                wfl_new.Name = wfl1.Name + "(updated committed)";
+                mgr.Update(wfl_new);
+
+                //dao.Update(session, wf);
+                wfl_new.Name = wfl1.Name + "(insert committed)";
+                wfl_new.Id = 0;
+                mgr.Create(wfl_new);
+                //dao.Create(session, wf);
+
+                //session.Rollback();
                 session.Commit();
+
+
+                //session.BeginTrans();
+                //wf.Name = wfl1.Name + "(updated commit)";
+                //dao.Update(session, wf);
+                //wf.Name = wfl1.Name + "(insert commit)";
+                //wf.Id = 0;
+                //dao.Create(session, wf);
+
+                //session.Commit();
             }
 
             /**** Working ****/

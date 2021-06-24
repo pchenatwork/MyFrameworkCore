@@ -62,7 +62,7 @@ namespace Framework.Core.DataAccess
         /// <param name="commandText"></param>
         /// <param name="parameters">parameters[0] = new SqlParameter("@ReturnValue", SqlDbType.Int);</param>
         /// <returns></returns>
-        protected XmlReader ExecuteXmlReader(IDbSession dbSession, string commandText, SqlParameter[] parameters)
+        static protected XmlReader ExecuteXmlReader(IDbSession dbSession, string commandText, SqlParameter[] parameters)
         {
             XmlReader reader;
             using (SqlCommand cmd = new SqlCommand())
@@ -92,7 +92,7 @@ namespace Framework.Core.DataAccess
         /// <param name="commandText"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        protected int ExecuteNonQuery(IDbSession dbSession, string commandText, SqlParameter[] parameters)
+        static protected int ExecuteNonQuery(IDbSession dbSession, string commandText, SqlParameter[] parameters)
         {
             using (SqlCommand cmd = new SqlCommand())
             {
@@ -116,40 +116,12 @@ namespace Framework.Core.DataAccess
 
         }
 
-        //protected int ExecuteNonQuery(IDbSession dbSession, string commandText, List<SqlParameter> parameters)
-        //{
-        //    using (SqlCommand cmd = new SqlCommand())
-        //    {
-        //        cmd.Connection = (SqlConnection)dbSession.DbConnection;
-        //        if (dbSession.Transaction != null)
-        //            cmd.Transaction = (SqlTransaction)dbSession.Transaction;
-
-        //        cmd.CommandType = CommandType.StoredProcedure;
-        //        cmd.CommandText = commandText;
-
-        //        foreach (SqlParameter p in parameters)
-        //        {
-        //            cmd.Parameters.Add(p);
-        //        }
-
-        //        if (cmd.Connection.State != ConnectionState.Open) cmd.Connection.Open();
-        //        object returnValue = cmd.ExecuteNonQuery();
-
-        //        return (int)cmd.Parameters[0].Value;
-        //    }
-
-        //}
-
-        protected T Deserialize(XmlReader reader)
+        static protected T Deserialize(XmlReader reader)
         {
             return XMLUtility.Deserialize<T>(reader);
-            //return (T)result;
         }
-        ////protected ICollection<T> DeserializeCollection_ORG(XmlReader reader)
-        ////{
-        ////    return XMLUtility.Deserialize<ValueObjectCollection<T>>(reader);
-        ////}
-        protected IEnumerable<T> DeserializeCollection(XmlReader reader)
+
+        static protected IEnumerable<T> DeserializeCollection(XmlReader reader)
         {
           //  return XMLUtility.Deserialize<Collection<T>>(reader);
             return XMLUtility.Deserialize<T[]>(reader);

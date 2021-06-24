@@ -9,6 +9,11 @@ namespace Application.DAO
 {
     public sealed class DataAccessObjectFactory<T> : FactoryBase<DataAccessObjectFactory<T>> where T : IValueObject
     {
+        /// <summary>
+        /// if daoClassName not provided, daoClassName= {{T name}}dao
+        /// </summary>
+        /// <param name="daoClassName"></param>
+        /// <returns></returns>
         public IRepository<T> GetDAO(string daoClassName = null)
         {
             if (string.IsNullOrEmpty(daoClassName))
@@ -16,11 +21,11 @@ namespace Application.DAO
                 // get DaoClassName, should by in the convention of "{ValueObject}DAO"
                 daoClassName = typeof(T).Name.ToLower() + "dao";
                 // Search type in current assembly
-                Type typeObj = (from type in Assembly.GetExecutingAssembly().GetTypes()
-                                where type.IsClass && type.Name.ToLower().Equals(daoClassName)
-                                select type).Single();
+                Type type = (from t in Assembly.GetExecutingAssembly().GetTypes()
+                                where t.IsClass && t.Name.ToLower().Equals(daoClassName)
+                                select t).Single();
                 // create instance by reflection
-                return Activator.CreateInstance(typeObj,
+                return Activator.CreateInstance(type,
                      BindingFlags.NonPublic | BindingFlags.Instance, null,
                      null, null) as IRepository<T>;
             }
