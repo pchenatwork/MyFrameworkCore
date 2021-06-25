@@ -10,22 +10,26 @@ namespace Framework.Core.BusinessLogic
     {
         #region Manager
         IDbSession dbSession { get;  }
-        IRepository<T> dao { get;  }
+        //IRepository<T> dao { get;  }
         #endregion Manager
 
         T CreateObject();
-        /// <returns></returns>
-        int Create(T newObject);
 
         #region	IPersistence
         /// <summary>
-        /// Update the object in the database.
+        /// Create object in database
+        /// </summary>
+        /// <param name="newObject"></param>
+        /// <returns>PKId</returns>
+        int Create(T newObject);
+        /// <summary>
+        /// Update object in database.
         /// </summary>
         /// <param name="existingObject"></param>
         /// <returns></returns>
         bool Update(T existingObject);
         /// <summary>
-        /// Remove the object from the database.
+        /// Remove the object from database.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

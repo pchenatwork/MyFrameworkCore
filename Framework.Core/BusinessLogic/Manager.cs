@@ -6,59 +6,66 @@ using Framework.Core.ValueObjects;
 
 namespace Framework.Core.BusinessLogic
 {
-    public class Manager<T> : IManager<T> where T: IValueObject
+    public abstract class Manager<T> : IManager<T> where T: IValueObject
     {
         #region Private Variables
         private IDbSession _dbSession;
-        private IRepository<T> _dao;
+        private Lazy<IRepository<T>> _dao; // = new Lazy<IRepository<T>>(()=> _GetDAO());
+
+        //rivate Lazy<T> instance = new Lazy<T>(() => Activator.CreateInstance(typeof(T), true) as T);
+
         #endregion
 
+        protected abstract IRepository<T> _GetDAO();
+
         #region Constructors
-        protected Manager(IDbSession dbSession, IRepository<T> dao)
+        protected Manager(IDbSession dbSession)
         {
             _dbSession = dbSession;
-            _dao = dao;
+            _dao = new Lazy<IRepository<T>>(() => _GetDAO());
+            //_dao = _GetDAO();
         }
         //protected Manager() { }
         #endregion
 
+        // protected readonly string DAO_CLASS_NAME = typeof(T).Name.ToLower() + "manager";
+
         public IDbSession dbSession => this._dbSession;
 
-        public IRepository<T> dao => this._dao;
+        //public IRepository<T> dao => this._dao;
 
         public int Create(T newObject)
         {
-            return _dao.Create(_dbSession, newObject);
+            return _dao.Value.Create(_dbSession, newObject);
+        }
+
+        public bool Update(T existingObject)
+        {
+            return _dao.Value.Update(_dbSession, existingObject);
+        }
+        public bool Delete(int id)
+        {
+            return _dao.Value.Delete(_dbSession, id);
         }
 
         public T CreateObject()
         {
             return ValueObjectFactory<T>.Instance.Create();
         }
-
-        public virtual bool Delete(int id)
-        {
-            return _dao.Delete(_dbSession, id);
-        }
-
-        public IEnumerable<T> FindByCriteria(string finderType, object[] criteria)
-        {
-            return _dao.FindByCriteria(_dbSession, finderType, criteria);
-        }
-
         public T Get(int id)
         {
-            return _dao.Get(_dbSession, id);
+            return _dao.Value.Get(_dbSession, id);
         }
 
         public IEnumerable<T> GetAll()
         {
-            return _dao.GetAll(_dbSession);
+            return _dao.Value.GetAll(_dbSession);
         }
 
-        public bool Update(T existingObject)
+        public IEnumerable<T> FindByCriteria(string finderType, object[] criteria)
         {
-            return _dao.Update(_dbSession, existingObject);
+            return _dao.Value.FindByCriteria(_dbSession, finderType, criteria);
         }
+
     }
 }
