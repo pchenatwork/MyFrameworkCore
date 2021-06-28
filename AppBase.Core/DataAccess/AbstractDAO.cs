@@ -1,5 +1,4 @@
-﻿using Framework.Core.ValueObjects;
-using Framework.Core.Utilities;
+﻿using AppBase.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -7,9 +6,9 @@ using System.Text;
 using System.Xml;
 using Microsoft.Data.SqlClient;
 using System.Data;
-using System.Collections.ObjectModel;
+using AppBase.Core.Utilities;
 
-namespace Framework.Core.DataAccess
+namespace AppBase.Core.DataAccess
 {
     public abstract class AbstractDAO<T> : IDataAccessObject<T> where T : IValueObject // class, IValueObject, new()
     {
@@ -22,8 +21,6 @@ namespace Framework.Core.DataAccess
 
         }
         #endregion constructor
-
-        protected string ClassName { get; } = typeof(T).Name + "DAO";
 
         public virtual int Create(IDbSession dbSession, T newObject)
         {
@@ -62,7 +59,7 @@ namespace Framework.Core.DataAccess
         /// <param name="commandText"></param>
         /// <param name="parameters">parameters[0] = new SqlParameter("@ReturnValue", SqlDbType.Int);</param>
         /// <returns></returns>
-        static protected XmlReader ExecuteXmlReader(IDbSession dbSession, string commandText, SqlParameter[] parameters)
+        protected XmlReader ExecuteXmlReader(IDbSession dbSession, string commandText, SqlParameter[] parameters)
         {
             XmlReader reader;
             using (SqlCommand cmd = new SqlCommand())
@@ -92,7 +89,7 @@ namespace Framework.Core.DataAccess
         /// <param name="commandText"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        static protected int ExecuteNonQuery(IDbSession dbSession, string commandText, SqlParameter[] parameters)
+        protected int ExecuteNonQuery(IDbSession dbSession, string commandText, SqlParameter[] parameters)
         {
             using (SqlCommand cmd = new SqlCommand())
             {
@@ -113,18 +110,16 @@ namespace Framework.Core.DataAccess
 
                 return (int)cmd.Parameters[0].Value;
             }
-
         }
 
-        static protected T Deserialize(XmlReader reader)
+        protected T Deserialize(XmlReader reader)
         {
             return XMLSerializer.Deserialize<T>(reader);
         }
-
-        static protected IEnumerable<T> DeserializeCollection(XmlReader reader)
+        protected IEnumerable<T> DeserializeCollection(XmlReader reader)
         {
-          //  return XMLUtility.Deserialize<Collection<T>>(reader);
             return XMLSerializer.Deserialize<T[]>(reader);
         }
     }
 }
+

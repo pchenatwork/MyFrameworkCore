@@ -1,6 +1,7 @@
-﻿using Application.ValueObjects.Workflow;
+﻿using AppBase.Core.DataAccess;
+using AppBase.Core.Interfaces;
+using Application.ValueObjects.Workflow;
 using Dapper;
-using Framework.Core.DataAccess;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace Application.DAO.Workflow
 
         public override WorkflowNode Get(IDbSession dbSession, dynamic id)
         {
-            String methodName = ClassName + ".Get() - " + id.ToString();
+            String methodName = "ClassName"  + ".Get() - " + id.ToString();
 
             string sql = SELECT_ALL + @" WHERE Id=@id";
 
@@ -49,7 +50,7 @@ namespace Application.DAO.Workflow
         
         public override IEnumerable<WorkflowNode> FindByCriteria(IDbSession dbSession, string finderType, params object[] criteria)
         {
-            String methodName = ClassName + ".FindByCriteria() - " + finderType ;
+            String methodName = "ClassName" + ".FindByCriteria() - " + finderType ;
             //if (_logger.IsDebugEnabled)
             //{
             //    LoggingUtility.logMethodEntry(_logger, methodName);

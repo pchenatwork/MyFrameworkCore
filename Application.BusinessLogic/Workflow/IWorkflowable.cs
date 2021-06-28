@@ -1,5 +1,6 @@
-﻿using Application.ValueObjects.Workflow;
-using Framework.Core.DataAccess;
+﻿using AppBase.Core.Interfaces;
+using Application.ValueObjects.Workflow;
+//using Framework.Core.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Text;

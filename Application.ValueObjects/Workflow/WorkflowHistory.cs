@@ -1,4 +1,5 @@
-﻿using Framework.Core.ValueObjects;
+﻿using AppBase.Core.Interfaces;
+using AppBase.Core.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Xml.Serialization;
 
 namespace Application.ValueObjects.Workflow
 {
-    public class WorkflowHistory : AbstractValueObject<WorkflowHistory>
+    public class WorkflowHistory : ValueObjectBase
     {
         #region	Constructors
         ///	<summary>
@@ -42,12 +43,13 @@ namespace Application.ValueObjects.Workflow
         #endregion
 
         #region Override Methods
-        protected override void _CopyFrom(WorkflowHistory source)
+        protected override void _CopyFrom(IValueObject src)
         {
+            WorkflowHistory source = src as WorkflowHistory;
             this.TransactionId = source.TransactionId;
         }
 
-        protected override bool _Equals(WorkflowHistory that)
+        protected override bool _Equals(IValueObject that)
         {
             throw new NotImplementedException();
         }
@@ -56,7 +58,8 @@ namespace Application.ValueObjects.Workflow
         {
             throw new NotImplementedException();
         }
+
         #endregion Override Methods
-    
+
     }
 }

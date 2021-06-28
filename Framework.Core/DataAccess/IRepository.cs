@@ -9,7 +9,7 @@ namespace Framework.Core.DataAccess
     /// From VAS IRepository === DataAccessObject (DAO)
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IRepository<T> where T : IValueObject
+    public interface IDataAccessObject<T> where T : IValueObject
     {
         int Create(IDbSession dbSession, T entity);
         bool Update(IDbSession dbSession, T entity);

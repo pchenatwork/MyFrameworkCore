@@ -1,7 +1,9 @@
 ﻿
+using AppBase.Core.DataAccess;
+using AppBase.Core.Interfaces;
 using Application.ValueObjects.Workflow;
 using Dapper;
-using Framework.Core.DataAccess;
+//using Framework.Core.DataAccess;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -19,7 +21,7 @@ namespace Application.DAO.Workflow
             "SELECT Id, TransactionId, WorkflowId, NodeId, " +
             "ApprovalUser, ApprovalDate, PrevHistoryId, " +
             "CASE WHEN IsCurrent = 'Y' THEN 1 ELSE 0 END AS IsCurrent, " +
-            "Comment, CreateBy, CreateDate, LastUpdateBy, LastUpdateDate " +
+            "Comment, CreateBy, CreateDate, UpdatedBy, UpdatedDate " +
             "FROM WorkflowHistory ";
 
         private WorkflowHistoryDAO() { }
@@ -107,7 +109,7 @@ namespace Application.DAO.Workflow
         private int _UpSert(IDbSession dbSession, WorkflowHistory newObject)
         {
             // tested working 1129
-            string methodName = ClassName + (newObject.Id == 0 ? ".Create" : ".Update");
+            string methodName = "ClassName"  + (newObject.Id == 0 ? ".Create" : ".Update");
             try
             {
                 SqlParameter[] parameters = new SqlParameter[11];
@@ -134,7 +136,7 @@ namespace Application.DAO.Workflow
                 parameters[9] = new SqlParameter("@Comment", SqlDbType.NVarChar, 200);
                 parameters[9].Value = newObject.Comment;
                 parameters[10] = new SqlParameter("@User", SqlDbType.NVarChar, 200);
-                parameters[10].Value = newObject.LastUpdateBy ?? string.Empty;
+                parameters[10].Value = newObject.UpdatedBy ?? string.Empty;
 
                 return ExecuteNonQuery(dbSession, "WorkflowHistoryUpSert", parameters);
             }

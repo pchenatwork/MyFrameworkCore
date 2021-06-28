@@ -1,6 +1,7 @@
-﻿using Application.ValueObjects.Workflow;
+﻿using AppBase.Core.DataAccess;
+using AppBase.Core.Interfaces;
+using Application.ValueObjects.Workflow;
 using Dapper;
-using Framework.Core.DataAccess;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace Application.DAO.Workflow
             "TimeoffTypeEnum,dbo.GetEnumStrVal('TimeoffType', TimeoffTypeEnum) as TimeoffType," +
             "FromDate, ToDate,Note, StatusId, HRStatusId, " +
             "CASE IsActive WHEN 'Y' THEN 1 ELSE 0 END AS IsActive, " +
-            "CreateBy, CreateDate, LastUpdateBy, LastUpdateDate " +
+            "CreateBy, CreateDate, UpdatedBy, UpdatedDate " +
             "FROM TimeoffRequest ";
         #endregion Constants
 
@@ -33,7 +34,7 @@ namespace Application.DAO.Workflow
 
         public override TimeoffRequest Get(IDbSession dbSession, dynamic id)
         {
-            String methodName = ClassName + ".Get() - " + id.ToString();
+            String methodName = "ClassName" + ".Get() - " + id.ToString();
 
             string sql = SELECT_SQL + @" WHERE Id=@id";
 
@@ -47,7 +48,7 @@ namespace Application.DAO.Workflow
 
         public override IEnumerable<TimeoffRequest> FindByCriteria(IDbSession dbSession, string finderType, params object[] criteria)
         {
-            String methodName = ClassName + ".FindByCriteria() - " + finderType;
+            String methodName = "ClassName" + ".FindByCriteria() - " + finderType;
             //if (_logger.IsDebugEnabled)
             //{
             //    LoggingUtility.logMethodEntry(_logger, methodName);
@@ -84,7 +85,7 @@ namespace Application.DAO.Workflow
         public override int Create(IDbSession dbSession, TimeoffRequest newObject)
         {
             // tested working 1129
-            string methodName = ClassName + ".Create()" ;
+            string methodName = "ClassName" + ".Create()" ;
             try
             {
                 SqlParameter[] param = new SqlParameter[10];
@@ -122,7 +123,7 @@ namespace Application.DAO.Workflow
                 //parameters[8] = new SqlParameter("@IsActive", SqlDbType.Char, 1);
                 //parameters[8].Value = newObject.IsActive ? "Y" : "N";
                 param[9] = new SqlParameter("@ByUser", SqlDbType.NVarChar, 50);
-                param[9].Value = newObject.LastUpdateBy ?? string.Empty;
+                param[9].Value = newObject.UpdatedBy ?? string.Empty;
 
                 return ExecuteNonQuery(dbSession, "TimeoffRequestInsert", param);
             }
@@ -135,7 +136,7 @@ namespace Application.DAO.Workflow
         public override bool Update(IDbSession dbSession, TimeoffRequest o)
         {
             // tested working 1129
-            string methodName = ClassName + ".Update()";
+            string methodName = "ClassName" + ".Update()";
             try
             {
                 SqlParameter[] parameters = new SqlParameter[10];
@@ -170,7 +171,7 @@ namespace Application.DAO.Workflow
                 //parameters[8] = new SqlParameter("@IsActive", SqlDbType.Char, 1);
                 //parameters[8].Value = o.IsActive ? "Y" : "N";
                 parameters[9] = new SqlParameter("@ByUser", SqlDbType.NVarChar, 50);
-                parameters[9].Value = o.LastUpdateBy ?? string.Empty;
+                parameters[9].Value = o.UpdatedBy ?? string.Empty;
 
                 return ExecuteNonQuery(dbSession, "TimeoffRequestUpdate", parameters)>0;
             }

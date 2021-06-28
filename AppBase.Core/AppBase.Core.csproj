@@ -6,8 +6,11 @@
 
   <ItemGroup>
     <Folder Include="BusinessLogic\" />
-    <Folder Include="DataAccess\" />
     <Folder Include="Common\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="3.0.0" />
   </ItemGroup>
 
 </Project>

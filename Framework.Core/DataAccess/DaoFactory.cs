@@ -10,14 +10,14 @@ namespace Framework.Core.DataAccess
 {
     public class DaoFactory<T> : FactoryBase<DaoFactory<T>> where T : IValueObject
     {
-        public IRepository<T> GetDAO(string daoClassFullName)
+        public IDataAccessObject<T> GetDAO(string daoClassFullName)
         {
             return Activator.CreateInstance(Type.GetType(daoClassFullName),
                      BindingFlags.NonPublic | BindingFlags.Instance, null,
-                     null, null) as IRepository<T>;
+                     null, null) as IDataAccessObject<T>;
         }
 
-        public IRepository<T> GetDAO()
+        public IDataAccessObject<T> GetDAO()
         {
             string daoClassName = typeof(T).Name.ToLower() + "dao";
             // Note: *** Type can not be found is the assembly has not been loaded ***
@@ -28,7 +28,7 @@ namespace Framework.Core.DataAccess
 
             return Activator.CreateInstance(typeObj,
                      BindingFlags.NonPublic | BindingFlags.Instance, null,
-                     null, null) as IRepository<T>;
+                     null, null) as IDataAccessObject<T>;
         }
 
     }

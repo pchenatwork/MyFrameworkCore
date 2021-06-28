@@ -1,11 +1,14 @@
-﻿using Framework.Core.DataAccess;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿//using Fram/*ework.Core.DataAccess;*/
+//using System;
+//using System.Collections.Generic;
+//using System.Text;
 using Application.ValueObjects.Workflow;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Xml;
+using AppBase.Core.DataAccess;
+using AppBase.Core.Interfaces;
+using System.Collections.Generic;
 
 namespace Application.DAO.Workflow
 {
@@ -46,7 +49,7 @@ namespace Application.DAO.Workflow
         #region private method
         private int _UpSert(IDbSession dbSession, WorkflowList newObject)
         {
-            string methodName = ClassName + ( newObject.Id ==0?  ".Create" : ".Update");
+            string methodName = "ClassName" + ( newObject.Id ==0?  ".Create" : ".Update");
             try
             {   
                 SqlParameter[] parameters = new SqlParameter[5];

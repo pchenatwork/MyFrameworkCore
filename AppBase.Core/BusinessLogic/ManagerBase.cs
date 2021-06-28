@@ -10,61 +10,59 @@ namespace AppBase.Core.BusinessLogic
     {
         #region Private Variables
         private IDbSession _dbSession;
-        private Lazy<IDataAccessObject<T>> _dao; // = new Lazy<IRepository<T>>(()=> _GetDAO());
+        private IDataAccessObject<T> _dao; // = new Lazy<IDataAccessObject<T>>(()=> _GetDAO_()).Value;
 
         //rivate Lazy<T> instance = new Lazy<T>(() => Activator.CreateInstance(typeof(T), true) as T);
 
         #endregion
 
-        protected abstract IDataAccessObject<T> _GetDAO_();
+        protected abstract IDataAccessObject<T> GetDefaultDAO();
+
+        private IDataAccessObject<T> GetDAO()
+        {
+            return _dao?? GetDefaultDAO();
+        }
 
         #region Constructors
         protected ManagerBase(IDbSession dbSession)
         {
             _dbSession = dbSession;
-            _dao = new Lazy<IDataAccessObject<T>>(() => _GetDAO_());
-            //_dao = _GetDAO();
+            _dao = new Lazy<IDataAccessObject<T>>(() => GetDAO()).Value;
         }
-        //protected Manager() { }
         #endregion
 
-        // protected readonly string DAO_CLASS_NAME = typeof(T).Name.ToLower() + "manager";
+        public IDbSession DbSession => this._dbSession;
 
-        public IDbSession dbSession => this._dbSession;
+        public IDataAccessObject<T> DAO { set => _dao = value; }
 
         //public IRepository<T> dao => this._dao;
 
         public int Create(T newObject)
         {
-            return _dao.Value.Create(_dbSession, newObject);
+            return _dao.Create(_dbSession, newObject);
         }
 
         public bool Update(T existingObject)
         {
-            return _dao.Value.Update(_dbSession, existingObject);
+            return _dao.Update(_dbSession, existingObject);
         }
         public bool Delete(int id)
         {
-            return _dao.Value.Delete(_dbSession, id);
-        }
-
-        public T CreateObject()
-        {
-            return ValueObjectFactory<T>.Instance.Create();
+            return _dao.Delete(_dbSession, id);
         }
         public T Get(int id)
         {
-            return _dao.Value.Get(_dbSession, id);
+            return _dao.Get(_dbSession, id);
         }
 
         public IEnumerable<T> GetAll()
         {
-            return _dao.Value.GetAll(_dbSession);
+            return _dao.GetAll(_dbSession);
         }
 
         public IEnumerable<T> FindByCriteria(string finderType, object[] criteria)
         {
-            return _dao.Value.FindByCriteria(_dbSession, finderType, criteria);
+            return _dao.FindByCriteria(_dbSession, finderType, criteria);
         }
     }
 }

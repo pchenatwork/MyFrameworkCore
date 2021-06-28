@@ -1,5 +1,4 @@
-﻿using Framework.Core.ValueObjects;
-using System;
+﻿using AppBase.Core.ValueObjects;
 
 namespace Application.JobServices
 {

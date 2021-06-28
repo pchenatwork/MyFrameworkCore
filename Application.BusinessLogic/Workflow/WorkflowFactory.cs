@@ -1,5 +1,6 @@
-﻿using Framework.Core.BusinessLogic;
-using Framework.Core.Common;
+﻿//using Framework.Core.BusinessLogic;
+//using Framework.Core.Common;
+using AppBase.Core.Common;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

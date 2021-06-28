@@ -13,7 +13,7 @@ namespace Framework.Core.ValueObjects
     /// https://enterprisecraftsmanship.com/2015/01/03/value-objects-explained/
     /// </summary>
     [Serializable]
-    public abstract class AbstractValueObject<T> : IValueObject where T: AbstractValueObject<T>
+    public abstract class ValueObjectBase<T> : IValueObject where T: ValueObjectBase<T>
     {
 
         #region	Private Members
@@ -32,7 +32,7 @@ namespace Framework.Core.ValueObjects
         ///	<summary>
         ///	Private constructor to force using ValueObjectFactory<T>
         ///	</summary>
-        protected AbstractValueObject() // Private constructor to force using ValueObjectFactory<T> 
+        protected ValueObjectBase() // Private constructor to force using ValueObjectFactory<T> 
         {
         }
         #endregion constructor
@@ -45,9 +45,9 @@ namespace Framework.Core.ValueObjects
         [XmlAttribute()]
         public DateTime CreateDate { get => _createDate; set => _createDate = value; }
         [XmlAttribute()]
-        public string LastUpdateBy { get => _changeUser; set => _changeUser = value; }
+        public string UpdatedBy { get => _changeUser; set => _changeUser = value; }
         [XmlAttribute()]
-        public DateTime LastUpdateDate { get => _changeDate; set => _changeDate = value; }
+        public DateTime UpdatedDate { get => _changeDate; set => _changeDate = value; }
         [XmlAttribute()]
         public string Extra { get => _extra; set => _extra = value; }
 
@@ -87,7 +87,7 @@ namespace Framework.Core.ValueObjects
         #endregion properties
 
         #region Methods
-        public static bool operator ==(AbstractValueObject<T> a, AbstractValueObject<T> b)
+        public static bool operator ==(ValueObjectBase<T> a, ValueObjectBase<T> b)
         {
             if (ReferenceEquals(a, null) && ReferenceEquals(b, null))
                 return true;
@@ -95,7 +95,7 @@ namespace Framework.Core.ValueObjects
                 return false;
             return a.Equals(b);
         }
-        public static bool operator !=(AbstractValueObject<T> a, AbstractValueObject<T> b)
+        public static bool operator !=(ValueObjectBase<T> a, ValueObjectBase<T> b)
         {
             return !(a == b);
         }
@@ -126,8 +126,8 @@ namespace Framework.Core.ValueObjects
             _id = source.Id;
             _createUser = source.CreateBy;
             _createDate = source.CreateDate;
-            _changeUser = source.LastUpdateBy;
-            _changeDate = source.LastUpdateDate;
+            _changeUser = source.UpdatedBy;
+            _changeDate = source.UpdatedDate;
             _extra = source.Extra;
 
             _CopyFrom((T)source);
@@ -139,7 +139,7 @@ namespace Framework.Core.ValueObjects
         protected abstract void _CopyFrom(T source);
         public override String ToString()
         {
-            return XMLUtility.ToXml(this);
+            return XMLSerializer.ToXml(this);
         }
         
         #endregion methods

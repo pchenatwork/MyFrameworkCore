@@ -1,6 +1,8 @@
-﻿using Framework.Core.Common;
-using Framework.Core.DataAccess;
-using Framework.Core.ValueObjects;
+﻿//using Framework.Core.Common;
+//using Framework.Core.DataAccess;
+//using Framework.Core.ValueObjects;
+using AppBase.Core.Common;
+using AppBase.Core.Interfaces;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -14,7 +16,7 @@ namespace Application.DAO
         /// </summary>
         /// <param name="daoClassName"></param>
         /// <returns></returns>
-        public IRepository<T> GetDAO(string daoClassName = null)
+        public IDataAccessObject<T> GetDAO(string daoClassName = null)
         {
             if (string.IsNullOrEmpty(daoClassName))
             {
@@ -27,12 +29,12 @@ namespace Application.DAO
                 // create instance by reflection
                 return Activator.CreateInstance(type,
                      BindingFlags.NonPublic | BindingFlags.Instance, null,
-                     null, null) as IRepository<T>;
+                     null, null) as IDataAccessObject<T>;
             }
 
             return Activator.CreateInstance(Type.GetType(daoClassName),
                      BindingFlags.NonPublic | BindingFlags.Instance, null,
-                     null, null) as IRepository<T>;
+                     null, null) as IDataAccessObject<T>;
         }
 
         ////public IRepository<T> GetDAO()

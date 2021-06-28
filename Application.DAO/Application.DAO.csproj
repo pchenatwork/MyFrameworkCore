@@ -9,8 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AppBase.Core\AppBase.Core.csproj" />
     <ProjectReference Include="..\Application.ValueObjects\Application.ValueObjects.csproj" />
-    <ProjectReference Include="..\Framework.Core\Framework.Core.csproj" />
   </ItemGroup>
 
 </Project>

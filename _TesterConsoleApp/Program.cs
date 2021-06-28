@@ -2,19 +2,22 @@
 using System;
 using System.Collections.Generic;
 
-using Framework.Core.BusinessLogic;
-using Framework.Core.DataAccess;
-using Framework.Core.Static;
-using Framework.Core.Utilities;
-using Framework.Core.ValueObjects;
+//using Framework.Core.BusinessLogic;
+//using Framework.Core.DataAccess;
+//using Framework.Core.Static;
+//using Framework.Core.Utilities;
+//using Framework.Core.ValueObjects;
 using Application.BusinessLogic;
 using Application.BusinessLogic.Workflow;
 using Application.DAO;
 using Application.JobServices;
 using Application.ValueObjects.Workflow;
-using Application.BusinessLogic.Utilities;
+//using Application.BusinessLogic.Utilities;
 using System.IO;
 using Application.DAO.Workflow;
+using AppBase.Core.Interfaces;
+using AppBase.Core.ValueObjects;
+using AppBase.Core.DataAccess;
 
 namespace _TesterConsoleApp
 {
@@ -23,19 +26,19 @@ namespace _TesterConsoleApp
         static void Main(string[] args)
         {
 
-            DbParams.ProviderName = "Microsoft.Data.SqlClient";
-            //DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
-            DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Directory.GetCurrentDirectory() + "\\Workflow.mdf;Integrated Security=True";
+            //DbParams.ProviderName = "Microsoft.Data.SqlClient";
+            ////DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
+            //DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Directory.GetCurrentDirectory() + "\\Workflow.mdf;Integrated Security=True";
 
 
             var x = Directory.GetCurrentDirectory();
-            var y = AppDomain.CurrentDomain.BaseDirectory; 
+            var y = AppDomain.CurrentDomain.BaseDirectory;
 
-           //  DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\_GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
-           //  DbParams.ConnectionString = @"Data Source=localhost;Initial Catalog=MyFramework;Integrated Security=True";
-           //  JobRunner.RunJob("Job1", "Hello World");
-           //  JobRunner.RunJob("Job2", "Ni Hao");
-           //  Console.ReadKey();
+            //  DbParams.ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\_GitHub\Source\Repos\pchenatwork\MyFrameworkCore\Application.DB\Workflow.mdf;Integrated Security=True";
+            //  DbParams.ConnectionString = @"Data Source=localhost;Initial Catalog=MyFramework;Integrated Security=True";
+            //  JobRunner.RunJob("Job1", "Hello World");
+            //  JobRunner.RunJob("Job2", "Ni Hao");
+            //  Console.ReadKey();
 
             //string providerName = "System.Data.SqlClient";
             //  string providerName = "Microsoft.Data.SqlClient";
@@ -53,10 +56,10 @@ namespace _TesterConsoleApp
             ///testWorkflowControl(providerName, connectionString);
 
             /// testTimeOffWorkflow();
-           // testTimeOffUtilities();
+            // testTimeOffUtilities();
 
             /**** Working ****/
-            using (IDbSession session = DbSessionFactory.Instance.GetSession(DbParams.ProviderName, DbParams.ConnectionString))
+            using (IDbSession session = DbSessionFactory.Instance.GetSession(DbEnum.SQL.Name, DbEnum.SQL.Extra))
             {
 
                 string daoClassName = "Application.DAO.Workflow.WorkflowListDAO";
@@ -66,9 +69,15 @@ namespace _TesterConsoleApp
 
                 //var mgr = ManagerFactory<WorkflowList>.Instance.GetManager(session, daoClassName);
 
-                WorkflowListManager mgr = (WorkflowListManager) ManagerFactory<WorkflowList>.Instance.GetManager2(session);
+                var mgrNode = ManagerFactory<WorkflowNode>.Instance.GetManager(session);
+                //WorkflowNodeManager mgrNode = (WorkflowNodeManager)ManagerFactory<WorkflowNode>.Instance.GetManager(session);
+                var list = mgrNode.GetAll();
+                var list2 = mgrNode.FindByCriteria(WorkflowNodeManager.FIND_BY_WORKFLOWID, new object[] { "1" });
+
+                WorkflowListManager mgr = (WorkflowListManager)ManagerFactory<WorkflowList>.Instance.GetManager(session);
 
                 var wfl1 = mgr.Get(1);
+                //var wfl = mgr.GetAll();
 
                 var wfl_new = ValueObjectFactory<WorkflowList>.Instance.Create();
                 wfl_new.CopyFrom(wfl1);
@@ -104,33 +113,33 @@ namespace _TesterConsoleApp
 
          }
 
-        static private void testTimeOffUtilities()
-        {
-            TimeoffRequest request = ValueObjectFactory<TimeoffRequest>.Instance.Create();
+        //static private void testTimeOffUtilities()
+        //{
+        //    TimeoffRequest request = ValueObjectFactory<TimeoffRequest>.Instance.Create();
 
-            request.User = "PChen";
-            request.FromDate = new DateTime(2020, 1, 11);
-            request.Note = "Not decided yet";
-            request.LastUpdateBy = "tmppch";
+        //    request.User = "PChen";
+        //    request.FromDate = new DateTime(2020, 1, 11);
+        //    request.Note = "Not decided yet";
+        //    request.UpdatedBy = "tmppch";
             
-            using (DbSession session = DbSessionFactory.Instance.GetSession(DbParams.ProviderName, DbParams.ConnectionString))
-            {
+        //    using (DbSession session = DbSessionFactory.Instance.GetSession(DbParams.ProviderName, DbParams.ConnectionString))
+        //    {
 
-                //var tranId = TimeoffUtility.Create(session, request, "This is workflow note that shouldn't be part of TimeoffRequest");
+        //        //var tranId = TimeoffUtility.Create(session, request, "This is workflow note that shouldn't be part of TimeoffRequest");
 
-                //int transactionId = WFRunner.Create(session, "User", "Create a new plan");
+        //        //int transactionId = WFRunner.Create(session, "User", "Create a new plan");
 
-                List<string> messages = new List<string>();
-                bool OK = false;
-                //OK = TimeoffUtility.Workflow(session, 10, TimeoffAction.SubmitMoreInfo.Name, "Subbmitter", "Try to Submit with wrong ation", ref messages);
-                //OK = TimeoffUtility.Workflow(session, 1, TimeoffAction.SubmitPlan.Name, "Subbmitter", "Try to Submit again", ref messages);
+        //        List<string> messages = new List<string>();
+        //        bool OK = false;
+        //        //OK = TimeoffUtility.Workflow(session, 10, TimeoffAction.SubmitMoreInfo.Name, "Subbmitter", "Try to Submit with wrong ation", ref messages);
+        //        //OK = TimeoffUtility.Workflow(session, 1, TimeoffAction.SubmitPlan.Name, "Subbmitter", "Try to Submit again", ref messages);
 
-                //OK = TimeoffUtility.Workflow(session, 1, TimeoffAction.HRRequestMoreInfo.Name, "HR", "request More Indo", ref messages);
-                //OK = TimeoffUtility.Workflow(session, 1, TimeoffAction.SubmitMoreInfo.Name, "User", "Submit More Info", ref messages);
-                //OK = TimeoffUtility.Workflow(session, 1, TimeoffAction.HRApproval.Name, "HR", "HR Approved now", ref messages);
-                OK = TimeoffUtility.Workflow(session, 1, TimeoffAction.ManagerApproval.Name, "Manager", "Manager Approved now", ref messages);
-            }
-        }
+        //        //OK = TimeoffUtility.Workflow(session, 1, TimeoffAction.HRRequestMoreInfo.Name, "HR", "request More Indo", ref messages);
+        //        //OK = TimeoffUtility.Workflow(session, 1, TimeoffAction.SubmitMoreInfo.Name, "User", "Submit More Info", ref messages);
+        //        //OK = TimeoffUtility.Workflow(session, 1, TimeoffAction.HRApproval.Name, "HR", "HR Approved now", ref messages);
+        //        OK = TimeoffUtility.Workflow(session, 1, TimeoffAction.ManagerApproval.Name, "Manager", "Manager Approved now", ref messages);
+        //    }
+        //}
 
         static private void testTimeOffWorkflow()
         {
@@ -141,7 +150,9 @@ namespace _TesterConsoleApp
             var WFRunner = WorkflowFactory.Instance.GetWorkflow(WorkflowEnum.TimeoffMainFlow);
             var workflowId = WFRunner.WorkflowIds;
 
-            using (IDbSession session = DbSessionFactory.Instance.GetSession(DbParams.ProviderName, DbParams.ConnectionString))
+            //using (IDbSession session = DbSessionFactory.Instance.GetSession(DbParams.ProviderName, DbParams.ConnectionString))
+
+            using (IDbSession session = DbSessionFactory.Instance.GetSession(DbEnum.SQL.Name, DbEnum.SQL.Extra))
             {
                //int transactionId = WFRunner.Create(session, "User", "Create a new plan");
 
@@ -187,7 +198,7 @@ namespace _TesterConsoleApp
                 //TransactionId = hist.TransactionId;
                 string msg = string.Empty;
 
-                actionNode = ManagerFactory<WorkflowNode>.Instance.GetManager(session).Get(10); // Manager Approval
+                actionNode = ManagerFactory<WorkflowNode>.Instance.GetManager_Old_XX(session).Get(10); // Manager Approval
                 hist = WorkflowControl.DoActionNode(session, 1, actionNode, "manager", "Manager Approval ", ref msg);
 
              //   actionNode = ManagerFactory<WorkflowNode>.Instance.GetManager(session).Get(14); // HR Rount "Auto"
@@ -208,8 +219,8 @@ namespace _TesterConsoleApp
             using (IDbSession session = DbSessionFactory.Instance.GetSession(providerName, connectionString))
             {                
                 string daoClassName = "Application.DAO.Workflow.WorkflowListDAO";
-                var mgr2 = ManagerFactory<WorkflowList>.Instance.GetManager(session, daoClassName);
-                var mgr1 = ManagerFactory<WorkflowList>.Instance.GetManager(session);
+                var mgr2 = ManagerFactory<WorkflowList>.Instance.GetManager_Old_XX(session, daoClassName);
+                var mgr1 = ManagerFactory<WorkflowList>.Instance.GetManager_Old_XX(session);
 
                 var wf1 = mgr1.Get(1);
                 wf1 = mgr2.Get(1);
@@ -249,7 +260,7 @@ namespace _TesterConsoleApp
             wfh.Id = 123;
             wfh.NodeId = 9;
             wfh.Comment = "<How much> wood n/// would a <!-- --> woodchop chop?? ";
-            var a = wfh.ToJson();
+            //var a = wfh.ToJson();
             var b = wfh.ToString();
         }
 

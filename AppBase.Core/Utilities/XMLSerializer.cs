@@ -5,39 +5,10 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Framework.Core.Utilities
+namespace AppBase.Core.Utilities
 {
     public static class XMLSerializer
     {
-        public static string ToXml(object obj)
-        {
-            var a = obj.GetType();
-            //var x = typeof(a);
-            return ToXml(obj, obj.GetType().Name);
-        }
-        public static string ToXml(object obj, string xmlRootName)
-        {
-            TextReader reader = null;
-            try
-            {
-                return Serialize(obj, xmlRootName);
-                //   return reader.ReadToEnd();
-            }
-
-            catch (System.Exception e)
-            {
-                //if (_logger.IsErrorEnabled)
-                //{
-                //    _logger.Error(e.Message);
-                //}
-                return null;
-            }
-            finally
-            {
-                reader.Close();
-            }
-        }
-
         /// <summary>
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -64,25 +35,8 @@ namespace Framework.Core.Utilities
         {
             object result = null;
             XmlSerializer mySerializer;
-            try
-            {
-                mySerializer = new XmlSerializer(typeof(T));
-                result = mySerializer.Deserialize(reader);
-            }
-            catch (System.Exception e)
-            {
-
-                var a = e.Message;
-                var b = reader.Name;
-                //  if (_logger.IsErrorEnabled)
-                //  {
-                //      _logger.Error(e.Message + reader.Name);
-                //  }
-            }
-            finally
-            {
-                mySerializer = null;
-            }
+            mySerializer = new XmlSerializer(typeof(T));
+            result = mySerializer.Deserialize(reader);
             return (T)result;
         }
 
@@ -109,11 +63,8 @@ namespace Framework.Core.Utilities
             settings.NamespaceHandling
             StringWriter sw = new StringWriter();
 
-            using (XmlWriter writer = XmlWriter.Create(sw, settings))
-    ****/
+            using (XmlWriter writer = XmlWriter.Create(sw, settings))    ****/
         }
-
-
 
         #region	Private Methods
 

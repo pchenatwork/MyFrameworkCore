@@ -59,18 +59,18 @@ namespace AppBase.Core.ValueObjects
             _updatedBy = source.UpdatedBy;
             _updatedDate = source.UpdatedDate;
             _extra = source.Extra;
-            _CopyFrom_(source);
+            _CopyFrom(source);
         }
-        protected abstract void _CopyFrom_(IValueObject source);
+        protected abstract void _CopyFrom(IValueObject source);
 
         public override bool Equals(object obj)
         {
             var o = obj as IValueObject;
             if (ReferenceEquals(o, null))
                 return false;
-            return _Equals_(o);
+            return _Equals(o);
         }
-        protected abstract bool _Equals_(IValueObject that);
+        protected abstract bool _Equals(IValueObject that);
 
         public static bool operator ==(ValueObjectBase a, ValueObjectBase b)
         {

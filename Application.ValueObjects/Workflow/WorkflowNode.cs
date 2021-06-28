@@ -1,4 +1,6 @@
-﻿using Framework.Core.ValueObjects;
+﻿using AppBase.Core.Interfaces;
+using AppBase.Core.ValueObjects;
+//using Framework.Core.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,7 +9,7 @@ using System.Xml.Serialization;
 namespace Application.ValueObjects.Workflow
 {
     [Serializable]
-    public class WorkflowNode : AbstractValueObject<WorkflowNode>
+    public class WorkflowNode : ValueObjectBase
     {        
         #region	Constructors
         ///	<summary>
@@ -63,8 +65,9 @@ namespace Application.ValueObjects.Workflow
         /// Call base.CopyFrom first in the implementation.
         /// </summary>
         /// <param name="source">The source object.</param>
-        protected override void _CopyFrom(WorkflowNode source)
+        protected override void _CopyFrom(IValueObject src)
         {
+            WorkflowNode source = src as WorkflowNode;
             WorkflowId = source.WorkflowId;
             Name = source.Name;
             Description = source.Description;
@@ -80,7 +83,7 @@ namespace Application.ValueObjects.Workflow
             NodeConditionEnum = source.NodeConditionEnum;
         }
 
-        protected override bool _Equals(WorkflowNode that)
+        protected override bool _Equals(IValueObject that)
         {
             throw new NotImplementedException();
         }

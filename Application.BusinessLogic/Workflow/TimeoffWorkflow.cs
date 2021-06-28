@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AppBase.Core.Interfaces;
 using Application.DAO.Workflow;
 using Application.ValueObjects.Workflow;
-using Framework.Core.DataAccess;
+//using Framework.Core.DataAccess;
 
 namespace Application.BusinessLogic.Workflow
 {
@@ -25,20 +26,20 @@ namespace Application.BusinessLogic.Workflow
 
         protected override void _updateHeaderTransaction(IDbSession session, WorkflowHistory hist)
         {
-            var tManager =  ManagerFactory<TimeoffRequest>.Instance.GetManager(session);
+            var tManager =  ManagerFactory<TimeoffRequest>.Instance.GetManager_Old_XX(session);
             TimeoffRequest requst = tManager.FindByCriteria(TimeoffRequestDAO.FIND_BY_TRANSACTION, new object[] { hist.TransactionId })
                 .FirstOrDefault();
             bool tobeUpdated = false;
             if (WorkflowEnum.GetById(hist.WorkflowId) == WorkflowEnum.TimeoffMainFlow)
             {
                 requst.StatusId = hist.NodeId;
-                requst.LastUpdateBy = hist.LastUpdateBy;
+                requst.UpdatedBy = hist.UpdatedBy;
                 tobeUpdated = true;
             } 
             else if (WorkflowEnum.GetById(hist.WorkflowId) == WorkflowEnum.TimeoffHRFlow)
             {
                 requst.HRStatusId = hist.NodeId;
-                requst.LastUpdateBy = hist.LastUpdateBy;
+                requst.UpdatedBy = hist.UpdatedBy;
                 tobeUpdated = true;
             }
 

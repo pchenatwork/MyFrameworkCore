@@ -1,7 +1,9 @@
-﻿using Application.DAO.Workflow;
+﻿using AppBase.Core.Interfaces;
+using AppBase.Core.ValueObjects;
+using Application.DAO.Workflow;
 using Application.ValueObjects.Workflow;
-using Framework.Core.DataAccess;
-using Framework.Core.ValueObjects;
+//using Framework.Core.DataAccess;
+//using Framework.Core.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,19 +28,19 @@ namespace Application.BusinessLogic.Workflow
         public WorkflowHistory Create(IDbSession session, string user, string note=null)
         {
             // Get 'Start' WorkflowNode
-            var NodeManager = ManagerFactory<WorkflowNode>.Instance.GetManager(session);
+            var NodeManager = ManagerFactory<WorkflowNode>.Instance.GetManager_Old_XX(session);
             WorkflowNode startNode = (NodeManager.FindByCriteria(WorkflowNodeDAO.FIND_BY_WORKFLOWID, new object[] { string.Join(",", _workflowIds) }))
                 .Where(i => i.NodeType == "Start" && i.NodeFromId==0).FirstOrDefault(); 
 
             WorkflowHistory history = ValueObjectFactory<WorkflowHistory>.Instance.Create();
             history.WorkflowId = startNode.WorkflowId;
             history.NodeId = startNode.Id;
-            history.LastUpdateBy = user;
+            history.UpdatedBy = user;
             history.Comment = note;
             history.IsCurrent = true;
 
             // Create WorkflowHistory
-            var HistManager = ManagerFactory<WorkflowHistory>.Instance.GetManager(session);
+            var HistManager = ManagerFactory<WorkflowHistory>.Instance.GetManager_Old_XX(session);
             int id = HistManager.Create(history);
 
             // Update {{TransactionHeader}} table, eg [TimeoffRequest]
@@ -52,7 +54,7 @@ namespace Application.BusinessLogic.Workflow
             bool bOK = true; // Assume OK;
 
             // Get ActionNodes from ActionName
-            var actionNodes = ManagerFactory<WorkflowNode>.Instance.GetManager(session)
+            var actionNodes = ManagerFactory<WorkflowNode>.Instance.GetManager_Old_XX(session)
                 .FindByCriteria(WorkflowNodeDAO.FIND_BY_ACTIONNAME, new object[] { string.Join(",", _workflowIds), ActionName });
 
             if (actionNodes == null || actionNodes.Count()==0)
@@ -82,8 +84,8 @@ namespace Application.BusinessLogic.Workflow
         {
             bool bOK = true; // Assume Successed
 
-            var histManager = ManagerFactory<WorkflowHistory>.Instance.GetManager(session);
-            var nodeManager = ManagerFactory<WorkflowNode>.Instance.GetManager(session);
+            var histManager = ManagerFactory<WorkflowHistory>.Instance.GetManager_Old_XX(session);
+            var nodeManager = ManagerFactory<WorkflowNode>.Instance.GetManager_Old_XX(session);
 
             try             
             {
@@ -134,9 +136,9 @@ namespace Application.BusinessLogic.Workflow
                 {
                     // if same workflow, put into history (IsCurrent = false), otherwise stays current
                     //currhist.ApprovalUser = 
-                        currhist.LastUpdateBy = user;
+                        currhist.UpdatedBy = user;
                     //currhist.ApprovalDate = 
-                        currhist.LastUpdateDate = DateTime.Now;
+                        currhist.UpdatedDate = DateTime.Now;
                     currhist.IsCurrent = false;
                     histManager.Update(currhist);
                 }
@@ -149,8 +151,8 @@ namespace Application.BusinessLogic.Workflow
                 newHist.PrevHistoryId = currhist.Id;
                 newHist.IsCurrent = true;
                 newHist.Comment = comment;
-                newHist.CreateBy = newHist.LastUpdateBy = user;
-                newHist.CreateDate = newHist.LastUpdateDate = DateTime.Now;
+                newHist.CreatedBy = newHist.UpdatedBy = user;
+                newHist.CreatedDate = newHist.UpdatedDate = DateTime.Now;
 
                 newHist.Id = histManager.Create(newHist);
                 
@@ -197,7 +199,7 @@ namespace Application.BusinessLogic.Workflow
              * ------------------------------------------- */
             if (!actionNode.NodeType.Equals("Action")) return null;
 
-            WorkflowNode toNode = ManagerFactory<WorkflowNode>.Instance.GetManager(session).Get(actionNode.NodeToId);
+            WorkflowNode toNode = ManagerFactory<WorkflowNode>.Instance.GetManager_Old_XX(session).Get(actionNode.NodeToId);
 
             if (toNode.NodeType.Equals("Action")) 
                 // toNode is to an Action Node, Keep looking
@@ -214,7 +216,7 @@ namespace Application.BusinessLogic.Workflow
         /// <returns></returns>
         private IEnumerable<WorkflowNode> _getActionNodeGroup(IDbSession session, WorkflowNode keyNode)
         {
-            return ManagerFactory<WorkflowNode>.Instance.GetManager(session)
+            return ManagerFactory<WorkflowNode>.Instance.GetManager_Old_XX(session)
                 .GetAll()
                 .Where(i => (i.NodeToId == keyNode.Id && i.IsAuto == true) || i.Id == keyNode.Id);
         }

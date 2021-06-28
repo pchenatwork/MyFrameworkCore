@@ -1,5 +1,6 @@
+using AppBase.Core.ValueObjects;
 using Application.ValueObjects.Workflow;
-using Framework.Core.ValueObjects;
+//using Framework.Core.ValueObjects;
 using System;
 using Xunit;
 

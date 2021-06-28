@@ -1,8 +1,11 @@
-﻿using Application.DAO;
-using Framework.Core.BusinessLogic;
-using Framework.Core.Common;
-using Framework.Core.DataAccess;
-using Framework.Core.ValueObjects;
+﻿using AppBase.Core.Common;
+using AppBase.Core.Interfaces;
+using AppBase.Core.BusinessLogic;
+using Application.DAO;
+//using Framework.Core.BusinessLogic;
+//using Framework.Core.Common;
+//using Framework.Core.DataAccess;
+//using Framework.Core.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +16,7 @@ namespace Application.BusinessLogic
 {
     public sealed class ManagerFactory<T> : FactoryBase<ManagerFactory<T>> where T : IValueObject
     {
-        public IManager<T> GetManager2(IDbSession session)
+        public IManager<T> GetManager(IDbSession session)
         {
             // get Manager ClassName, should by in the convention of "{{ValueObject}}Manager"
             string name = typeof(T).Name.ToLower() + "manager";
@@ -30,13 +33,13 @@ namespace Application.BusinessLogic
                  args, null) as IManager<T>;
         }
 
-        public IManager<T> GetManager(IDbSession session, string daoClassName = null)
+        public IManager<T> GetManager_Old_XX(IDbSession session, string daoClassName = null)
         {
             var dao = DataAccessObjectFactory<T>.Instance.GetDAO(daoClassName);
             object[] args = { session, dao };  // For parametered Constructor 
             try
             {
-                return Activator.CreateInstance(typeof(Manager<T>),
+                return Activator.CreateInstance(typeof(ManagerBase<T>),
                     BindingFlags.NonPublic | BindingFlags.Instance, null,
                     args, null) as IManager<T>;
             }

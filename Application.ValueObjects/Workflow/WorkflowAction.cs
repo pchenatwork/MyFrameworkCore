@@ -1,4 +1,6 @@
-﻿using Framework.Core.ValueObjects;
+﻿//using Framework.Core.ValueObjects;
+using AppBase.Core.Interfaces;
+using AppBase.Core.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,7 +9,7 @@ using System.Xml.Serialization;
 namespace Application.ValueObjects.Workflow
 {
     [Serializable]
-    public class WorkflowAction : AbstractValueObject<WorkflowAction>
+    public class WorkflowAction : ValueObjectBase
     {
         #region	Private Members
         // *************************************************************************
@@ -161,8 +163,10 @@ namespace Application.ValueObjects.Workflow
 
         #region	Overide Methods
 
-        protected override void _CopyFrom(WorkflowAction source)
+
+        protected override void _CopyFrom(IValueObject src)
         {
+            WorkflowAction source = src as WorkflowAction;
             _name = source._name;
             _actionTypeEnum = source._actionTypeEnum;
             _actionType = source._actionType;
@@ -173,7 +177,12 @@ namespace Application.ValueObjects.Workflow
             _status = source._status;
         }
 
-        protected override bool _Equals(WorkflowAction that)
+        //protected override bool _Equals(WorkflowAction that)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        protected override bool _Equals(IValueObject that)
         {
             throw new NotImplementedException();
         }

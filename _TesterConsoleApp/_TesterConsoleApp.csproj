@@ -6,11 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AppBase.Core\AppBase.Core.csproj" />
     <ProjectReference Include="..\Application.BusinessLogic\Application.BusinessLogic.csproj" />
     <ProjectReference Include="..\Application.DAO\Application.DAO.csproj" />
     <ProjectReference Include="..\Application.DB\Application.DB.csproj" />
     <ProjectReference Include="..\Application.JobServices\Application.JobServices.csproj" />
-    <ProjectReference Include="..\Framework.Core\Framework.Core.csproj" />
   </ItemGroup>
 
 </Project>

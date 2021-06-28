@@ -1,4 +1,6 @@
-﻿using Framework.Core.ValueObjects;
+﻿//using Framework.Core.ValueObjects;
+using AppBase.Core.Interfaces;
+using AppBase.Core.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,14 +9,14 @@ namespace Application.ValueObjects.Supplier
 {
 
     [Serializable]
-    public class SupplierAddress : AbstractValueObject<SupplierAddress>
-    {
-        protected override void _CopyFrom(SupplierAddress source)
+    public class SupplierAddress : ValueObjectBase
+    { 
+        protected override void _CopyFrom(IValueObject source)
         {
             throw new NotImplementedException();
         }
 
-        protected override bool _Equals(SupplierAddress that)
+        protected override bool _Equals(IValueObject that)
         {
             throw new NotImplementedException();
         }

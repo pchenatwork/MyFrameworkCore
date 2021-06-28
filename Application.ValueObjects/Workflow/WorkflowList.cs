@@ -1,4 +1,5 @@
-﻿using Framework.Core.ValueObjects;
+﻿using AppBase.Core.Interfaces;
+using AppBase.Core.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,7 +14,7 @@ namespace Application.ValueObjects.Workflow
     #endregion
 
     [Serializable]
-    public class WorkflowList : AbstractValueObject<WorkflowList>
+    public class WorkflowList : ValueObjectBase
     {
 
         #region	Constants
@@ -74,15 +75,16 @@ namespace Application.ValueObjects.Workflow
 
         #region	Overide Methods
 
-        protected override void _CopyFrom(WorkflowList source)
+        protected override void _CopyFrom(IValueObject src)
         {
+            WorkflowList source = (WorkflowList)src;
             _name = source.Name;
             _description = source.Description;
         }
 
-        protected override bool _Equals(WorkflowList that)
+        protected override bool _Equals(IValueObject that)
         {
-            return _name.Equals(that.Name) && _description.Equals(that.Description);
+            throw new NotImplementedException();
         }
 
         protected override int _GetHashCode()

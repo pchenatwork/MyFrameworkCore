@@ -10,19 +10,19 @@ namespace Framework.Core.BusinessLogic
     {
         #region Private Variables
         private IDbSession _dbSession;
-        private Lazy<IRepository<T>> _dao; // = new Lazy<IRepository<T>>(()=> _GetDAO());
+        private Lazy<IDataAccessObject<T>> _dao; // = new Lazy<IRepository<T>>(()=> _GetDAO());
 
         //rivate Lazy<T> instance = new Lazy<T>(() => Activator.CreateInstance(typeof(T), true) as T);
 
         #endregion
 
-        protected abstract IRepository<T> _GetDAO();
+        protected abstract IDataAccessObject<T> _GetDAO();
 
         #region Constructors
         protected Manager(IDbSession dbSession)
         {
             _dbSession = dbSession;
-            _dao = new Lazy<IRepository<T>>(() => _GetDAO());
+            _dao = new Lazy<IDataAccessObject<T>>(() => _GetDAO());
             //_dao = _GetDAO();
         }
         //protected Manager() { }

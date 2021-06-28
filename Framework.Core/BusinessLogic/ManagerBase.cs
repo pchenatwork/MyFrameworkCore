@@ -10,11 +10,11 @@ namespace Framework.Core.BusinessLogic
     {
         #region Private Variables
         private IDbSession _dbSession;
-        private IRepository<T> _dao;
+        private IDataAccessObject<T> _dao;
         #endregion
 
         #region Constructors
-        protected ManagerBase(IDbSession dbSession, IRepository<T> dao)
+        protected ManagerBase(IDbSession dbSession, IDataAccessObject<T> dao)
         {
             _dbSession = dbSession;
             _dao = dao;
@@ -24,7 +24,7 @@ namespace Framework.Core.BusinessLogic
 
         public IDbSession dbSession => this._dbSession;
 
-        public IRepository<T> dao => this._dao;
+        public IDataAccessObject<T> dao => this._dao;
 
         public int Create(T newObject)
         {

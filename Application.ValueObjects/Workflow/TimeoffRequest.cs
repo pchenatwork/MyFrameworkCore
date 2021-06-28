@@ -1,11 +1,13 @@
-﻿using Framework.Core.ValueObjects;
+﻿
+using AppBase.Core.Interfaces;
+using AppBase.Core.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Application.ValueObjects.Workflow
 {
-    public class TimeoffRequest : AbstractValueObject<TimeoffRequest>
+    public class TimeoffRequest : ValueObjectBase
     {
         public int TransactionId { get; set; }
 
@@ -27,12 +29,12 @@ namespace Application.ValueObjects.Workflow
         public bool IsActive { get; set; }
 
 
-        protected override void _CopyFrom(TimeoffRequest source)
+        protected override void _CopyFrom(IValueObject source)
         {
             throw new NotImplementedException();
         }
 
-        protected override bool _Equals(TimeoffRequest that)
+        protected override bool _Equals(IValueObject that)
         {
             throw new NotImplementedException();
         }
