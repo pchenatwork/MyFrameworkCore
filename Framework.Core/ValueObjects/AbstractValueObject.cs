@@ -105,6 +105,7 @@ namespace Framework.Core.ValueObjects
             if (ReferenceEquals(_o, null))
                 return false;
             return _Equals(_o);
+
         }
         protected abstract bool _Equals(T that);
 
