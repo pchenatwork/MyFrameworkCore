@@ -42,6 +42,14 @@ namespace Application.DAO.Workflow
 
             return dbSession.DbConnection.QueryFirstOrDefault<WorkflowNode>(sql, new { Id = id }, dbSession.Transaction);
         }
+        public override int Create(IDbSession dbSession, WorkflowNode newObject)
+        {
+            return _UpSert(dbSession, newObject);
+        }
+        public override bool Update(IDbSession dbSession, WorkflowNode obj)
+        {
+            return obj.Id == _UpSert(dbSession, obj);
+        }
 
         public override IEnumerable<WorkflowNode> GetAll(IDbSession dbSession)
         {
@@ -92,5 +100,38 @@ namespace Application.DAO.Workflow
                 return null;
             }
         }
+
+
+        #region private methods
+        private int _UpSert(IDbSession dbSession, WorkflowNode newObject)
+        {
+            string methodName = "ClassName" + (newObject.Id == 0 ? ".Create" : ".Update");
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[7];
+                parameters[0] = new SqlParameter("@ReturnValue", SqlDbType.Int);
+                parameters[0].Direction = ParameterDirection.ReturnValue;
+                parameters[1] = new SqlParameter("@Id", SqlDbType.Int);
+                parameters[1].Value = newObject.Id;
+                parameters[2] = new SqlParameter("@WorkflowId", SqlDbType.Int);
+                parameters[2].Value = newObject.WorkflowId;
+                parameters[3] = new SqlParameter("@name", SqlDbType.NVarChar, 50);
+                parameters[3].Value = newObject.Name;
+                parameters[4] = new SqlParameter("@description", SqlDbType.NVarChar, 200);
+                parameters[4].Value = newObject.Description;
+                parameters[5] = new SqlParameter("@NodeValue", SqlDbType.NVarChar, 100);
+                parameters[5].Value = newObject.NodeValue;
+                parameters[6] = new SqlParameter("@IsAuto", SqlDbType.Char, 1);
+                parameters[6].Value = newObject.IsAuto ? "Y" : "N";
+
+                return ExecuteNonQuery(dbSession, "WorkflowNodeUpSert", parameters);
+            }
+            catch (System.Exception e)
+            {
+                // _logger.Error(methodName, e);
+                return -1;
+            }
+        }
+        #endregion private methods
     }
 }

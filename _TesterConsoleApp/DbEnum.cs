@@ -15,7 +15,7 @@ namespace _TesterConsoleApp
          * Name: 
          * Description:  TypeName for reflection
          * ==========================================================================*/
-        public static readonly DbEnum SQL = new DbEnum(1, "Microsoft.Data.SqlClient", @"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename=" + Directory.GetCurrentDirectory() + "\\Workflow.mdf;Integrated Security = True");
+        public static readonly DbEnum SQL = new DbEnum(1, "Microsoft.Data.SqlClient", @"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename=" + Directory.GetCurrentDirectory() + "\\Workflow.mdf;Integrated Security = True;MultipleActiveResultSets = True;");
 
         #endregion
 
