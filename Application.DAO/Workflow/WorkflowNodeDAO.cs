@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace Application.DAO.Workflow
@@ -15,6 +16,7 @@ namespace Application.DAO.Workflow
     public class WorkflowNodeDAO : AbstractDAO<WorkflowNode>
     {
         #region	Constants
+        private const string CLASS_NAME = nameof(WorkflowNodeDAO);
         // *************************************************************************
         //				 constants
         // *************************************************************************
@@ -36,11 +38,15 @@ namespace Application.DAO.Workflow
 
         public override WorkflowNode Get(IDbSession dbSession, dynamic id)
         {
-            String methodName = "ClassName"  + ".Get() - " + id.ToString();
+            String methodName = CLASS_NAME + ".Get() - " + id.ToString();
 
             string sql = SELECT_ALL + @" WHERE Id=@id";
 
             return dbSession.DbConnection.QueryFirstOrDefault<WorkflowNode>(sql, new { Id = id }, dbSession.Transaction);
+        }
+        public override async Task<WorkflowNode> GetAsync(IDbSession dbSession, dynamic id)
+        {
+            return await Get(dbSession, id);
         }
         public override int Create(IDbSession dbSession, WorkflowNode newObject)
         {
@@ -58,7 +64,7 @@ namespace Application.DAO.Workflow
         
         public override IEnumerable<WorkflowNode> FindByCriteria(IDbSession dbSession, string finderType, params object[] criteria)
         {
-            String methodName = "ClassName" + ".FindByCriteria() - " + finderType ;
+            String methodName = CLASS_NAME + ".FindByCriteria() - " + finderType ;
             //if (_logger.IsDebugEnabled)
             //{
             //    LoggingUtility.logMethodEntry(_logger, methodName);
@@ -105,26 +111,45 @@ namespace Application.DAO.Workflow
         #region private methods
         private int _UpSert(IDbSession dbSession, WorkflowNode newObject)
         {
-            string methodName = "ClassName" + (newObject.Id == 0 ? ".Create" : ".Update");
+            string methodName = nameof(WorkflowNodeDAO) + (newObject.Id == 0 ? ".Create" : ".Update");
             try
             {
-                SqlParameter[] parameters = new SqlParameter[7];
-                parameters[0] = new SqlParameter("@ReturnValue", SqlDbType.Int);
-                parameters[0].Direction = ParameterDirection.ReturnValue;
-                parameters[1] = new SqlParameter("@Id", SqlDbType.Int);
-                parameters[1].Value = newObject.Id;
-                parameters[2] = new SqlParameter("@WorkflowId", SqlDbType.Int);
-                parameters[2].Value = newObject.WorkflowId;
-                parameters[3] = new SqlParameter("@name", SqlDbType.NVarChar, 50);
-                parameters[3].Value = newObject.Name;
-                parameters[4] = new SqlParameter("@description", SqlDbType.NVarChar, 200);
-                parameters[4].Value = newObject.Description;
-                parameters[5] = new SqlParameter("@NodeValue", SqlDbType.NVarChar, 100);
-                parameters[5].Value = newObject.NodeValue;
-                parameters[6] = new SqlParameter("@IsAuto", SqlDbType.Char, 1);
-                parameters[6].Value = newObject.IsAuto ? "Y" : "N";
+                List<SqlParameter> parameters = new List<SqlParameter>();
 
-                return ExecuteNonQuery(dbSession, "WorkflowNodeUpSert", parameters);
+                parameters.Add(new SqlParameter("@ReturnValue", SqlDbType.Int) { Direction = ParameterDirection.ReturnValue });
+                parameters.Add(new SqlParameter("@Id", SqlDbType.Int) { Value = newObject.Id });
+                parameters.Add(new SqlParameter("@WorkflowId", SqlDbType.Int){Value = newObject.WorkflowId});
+                parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar, 100) { Value = newObject.Name });
+                parameters.Add(new SqlParameter("@Description", SqlDbType.VarChar, 250) { Value = newObject.Description });
+                parameters.Add(new SqlParameter("@NodeTypeEnum", SqlDbType.Int) { Value = newObject.NodeTypeEnum });
+                parameters.Add(new SqlParameter("@NodeFromId", SqlDbType.Int) { Value = newObject.NodeFromId });
+                parameters.Add(new SqlParameter("@NodeToId", SqlDbType.Int) { Value = newObject.NodeToId });
+                parameters.Add(new SqlParameter("@StepId", SqlDbType.Int) { Value = newObject.StepId });
+                parameters.Add(new SqlParameter("@ActionName", SqlDbType.VarChar, 100) { Value = newObject.ActionName });
+                parameters.Add(new SqlParameter("@IsPermissioned", SqlDbType.Char, 1) { Value = newObject.IsPermissioned? "Y": "N" });
+                parameters.Add(new SqlParameter("@TimeToSkip", SqlDbType.Int) { Value = newObject.TimeToSkip });
+                parameters.Add(new SqlParameter("@NodeValue", SqlDbType.VarChar, 50) { Value = newObject.NodeValue });
+                parameters.Add(new SqlParameter("@NodeConditionEnum", SqlDbType.Int) { Value = newObject.NodeConditionEnum });
+                parameters.Add(new SqlParameter("@IsAuto", SqlDbType.Char, 1) { Value = newObject.IsAuto ? "Y" : "N" });
+
+                //SqlParameter[] parameters = new SqlParameter[7];
+                //parameters[0] = new SqlParameter("@ReturnValue", SqlDbType.Int);
+                //parameters[0].Direction = ParameterDirection.ReturnValue;
+                //parameters[1] = new SqlParameter("@Id", SqlDbType.Int);
+                //parameters[1].Value = newObject.Id;
+                //parameters[2] = new SqlParameter("@WorkflowId", SqlDbType.Int);
+                //parameters[2].Value = newObject.WorkflowId;
+                //parameters[3] = new SqlParameter("@name", SqlDbType.NVarChar, 50);
+                //parameters[3].Value = newObject.Name;
+                //parameters[4] = new SqlParameter("@description", SqlDbType.NVarChar, 200);
+                //parameters[4].Value = newObject.Description;
+                //parameters[5] = new SqlParameter("@NodeValue", SqlDbType.NVarChar, 100);
+                //parameters[5].Value = newObject.NodeValue;
+                //parameters[6] = new SqlParameter("@IsAuto", SqlDbType.Char, 1);
+                //parameters[6].Value = newObject.IsAuto ? "Y" : "N";
+                object retval;
+                int rowcnt= ExecuteNonQuery(dbSession, "WorkflowNodeUpSert", parameters, out retval);
+                return (int)retval;
             }
             catch (System.Exception e)
             {
@@ -132,6 +157,6 @@ namespace Application.DAO.Workflow
                 return -1;
             }
         }
-        #endregion private methods
+        #endregion private methods    
     }
 }

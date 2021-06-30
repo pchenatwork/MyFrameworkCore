@@ -5,7 +5,8 @@
 }
 
 @using RazorPage.Models
-@using Kendo.Mvc.UI
+
+@*@using Kendo.Mvc.UI*@
 
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @Html.AntiForgeryToken()
@@ -42,7 +43,6 @@
                 columns.Bound(o => o.Id);
                 columns.Bound(o => o.FirstName);
                 columns.Bound(o => o.LastName);
-                columns.Bound(o => o.UpdatedBy);
                 columns.Command(column =>
                 {
                     column.Edit();
@@ -77,12 +77,6 @@
                 )
                 .Pageable()
 )
-</div>
-<script>
-    function forgeryToken() {
-        return kendo.antiForgeryTokens();
-    }
-</script>
 </div>
 <script>
     function forgeryToken() {

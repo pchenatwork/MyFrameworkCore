@@ -78,7 +78,7 @@ namespace AppBase.Core.ValueObjects
 
         #region Public GetBy Methods
         /// <summary>
-        /// Get Enum by Name.
+        /// Get Enum by Name. Return the first hit
         /// </summary>
         public static T GetByName(string name)
         {
@@ -86,7 +86,7 @@ namespace AppBase.Core.ValueObjects
             {
                 try
                 {
-                    if (((T)_list.Value.ElementAt(i)).Name.ToLower().Equals(name.ToLower()))
+                    if (((T)_list.Value.ElementAt(i)).Name.ToLower().Contains(name.ToLower())) // .Equals ??
                         return (T)_list.Value.ElementAt(i);
                 }
                 catch (Exception ex)

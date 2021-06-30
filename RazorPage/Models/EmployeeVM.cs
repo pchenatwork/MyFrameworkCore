@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace RazorPage.Models
 {
-    public class EmployeeVM : BaseModel
+    public class EmployeeVM : BaseVM
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

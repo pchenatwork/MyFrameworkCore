@@ -64,7 +64,9 @@ namespace Application.DAO.Workflow
                 parameters[4] = new SqlParameter("@IsActive", SqlDbType.Char, 1);
                 parameters[4].Value = newObject.IsActive ? "Y" : "N";
 
-                return ExecuteNonQuery(dbSession, "WorkflowListUpSert", parameters);
+                object retval;
+                int rowcnt= ExecuteNonQuery(dbSession, "WorkflowListUpSert", parameters, out retval);
+                return (int)retval;
             }
             catch (System.Exception e)
             {

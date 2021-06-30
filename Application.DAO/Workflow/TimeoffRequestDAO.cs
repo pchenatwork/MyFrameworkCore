@@ -16,6 +16,7 @@ namespace Application.DAO.Workflow
         // *************************************************************************
         //				 constants
         // *************************************************************************
+        private const string CLASS_NAME = nameof(TimeoffRequestDAO);
         public const string FIND_BY_USER = "TimeoffRequestsFindByActionName";
         public const string FIND_BY_TRANSACTION = "FIND_BY_TRANSACTION";
         private static string SELECT_SQL = @"" +
@@ -34,7 +35,7 @@ namespace Application.DAO.Workflow
 
         public override TimeoffRequest Get(IDbSession dbSession, dynamic id)
         {
-            String methodName = "ClassName" + ".Get() - " + id.ToString();
+            String methodName = CLASS_NAME + ".Get() - " + id.ToString();
 
             string sql = SELECT_SQL + @" WHERE Id=@id";
 
@@ -48,7 +49,7 @@ namespace Application.DAO.Workflow
 
         public override IEnumerable<TimeoffRequest> FindByCriteria(IDbSession dbSession, string finderType, params object[] criteria)
         {
-            String methodName = "ClassName" + ".FindByCriteria() - " + finderType;
+            String methodName = CLASS_NAME + ".FindByCriteria() - " + finderType;
             //if (_logger.IsDebugEnabled)
             //{
             //    LoggingUtility.logMethodEntry(_logger, methodName);
@@ -85,7 +86,7 @@ namespace Application.DAO.Workflow
         public override int Create(IDbSession dbSession, TimeoffRequest newObject)
         {
             // tested working 1129
-            string methodName = "ClassName" + ".Create()" ;
+            string methodName = CLASS_NAME + ".Create()" ;
             try
             {
                 SqlParameter[] param = new SqlParameter[10];
@@ -125,7 +126,9 @@ namespace Application.DAO.Workflow
                 param[9] = new SqlParameter("@ByUser", SqlDbType.NVarChar, 50);
                 param[9].Value = newObject.UpdatedBy ?? string.Empty;
 
-                return ExecuteNonQuery(dbSession, "TimeoffRequestInsert", param);
+                object retval;
+                int rowcnt= ExecuteNonQuery(dbSession, "TimeoffRequestInsert", param, out retval);
+                return (int)retval;
             }
             catch (System.Exception e)
             {
@@ -173,7 +176,9 @@ namespace Application.DAO.Workflow
                 parameters[9] = new SqlParameter("@ByUser", SqlDbType.NVarChar, 50);
                 parameters[9].Value = o.UpdatedBy ?? string.Empty;
 
-                return ExecuteNonQuery(dbSession, "TimeoffRequestUpdate", parameters)>0;
+                object retval;
+                int rowcnt= ExecuteNonQuery(dbSession, "TimeoffRequestUpdate", parameters, out retval);
+                return rowcnt > 0;
             }
             catch (System.Exception e)
             {

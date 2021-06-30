@@ -14,6 +14,7 @@ namespace Application.DAO.Workflow
 {
     public class WorkflowHistoryDAO : AbstractDAO<WorkflowHistory>
     {
+        private const string CLASS_NAME = nameof(WorkflowHistoryDAO);
         public const string FIND_BY_TRAN = "WorkflowHistoryFindByTran";
         //public const string FIND_BY_WORKFLOW = "WorkflowHistoryFindByWorkflow";
 
@@ -109,7 +110,7 @@ namespace Application.DAO.Workflow
         private int _UpSert(IDbSession dbSession, WorkflowHistory newObject)
         {
             // tested working 1129
-            string methodName = "ClassName"  + (newObject.Id == 0 ? ".Create" : ".Update");
+            string methodName = CLASS_NAME + (newObject.Id == 0 ? ".Create" : ".Update");
             try
             {
                 SqlParameter[] parameters = new SqlParameter[11];
@@ -138,7 +139,9 @@ namespace Application.DAO.Workflow
                 parameters[10] = new SqlParameter("@User", SqlDbType.NVarChar, 200);
                 parameters[10].Value = newObject.UpdatedBy ?? string.Empty;
 
-                return ExecuteNonQuery(dbSession, "WorkflowHistoryUpSert", parameters);
+                object retval;
+                int rowcnt= ExecuteNonQuery(dbSession, "WorkflowHistoryUpSert", parameters, out retval);
+                return (int)retval;
             }
             catch (System.Exception e)
             {

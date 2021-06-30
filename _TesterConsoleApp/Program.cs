@@ -60,18 +60,32 @@ namespace _TesterConsoleApp
             // testTimeOffUtilities();
 
             /**** Working ****/
+            for (int i = 0; i < 100; i++)
+            {
+                updateme2();
+                updateme2();
+                Thread thr1 = new Thread(() => updateme2());
+                Thread thr2 = new Thread(() => updateme2());
+                Thread thr3 = new Thread(() => updateme2());
+                Thread thr4 = new Thread(() => updateme2());
+                thr1.Start();
+                thr2.Start();
+                thr3.Start();
+                thr4.Start();
+            }
+
             using (IDbSession session = DbSessionFactory.Instance.GetSession(DbEnum.SQL.Name, DbEnum.SQL.Extra))
             {
                 //session.BeginTrans();
 
                 for (int i = 0; i < 100; i++)
                 {
-                    updateme(session);
-                    Thread thr1 = new Thread(() => updateme(session));
-                    Thread thr2 = new Thread(() => updateme(session));
+                    //updateme(session);
+                    //Thread thr1 = new Thread(() => updateme(session));
+                    //Thread thr2 = new Thread(() => updateme(session));
                     //Thread thr3 = new Thread(() => updateme(session));
-                    thr1.Start();
-                    thr2.Start();
+                    //thr1.Start();
+                    //thr2.Start();
                     //thr3.Start();
                 }
 
@@ -129,9 +143,56 @@ namespace _TesterConsoleApp
                 //Console.ReadKey();
 
             }
+            static void updateme2()
+            {
+                Thread thread = Thread.CurrentThread;
 
+                using (IDbSession session = DbSessionFactory.Instance.GetSession(DbEnum.SQL.Name, DbEnum.SQL.Extra))
+                {
+                    var mgr = (WorkflowNodeManager)ManagerFactory<WorkflowNode>.Instance.GetManager(session);
 
-            static void updateme(IDbSession session)
+                    int jj = (new Random()).Next(1, 99);
+
+                    var wfn1 = mgr.Get(1);
+                    Console.WriteLine("Current Thread {0}: Before ........   , NodeValue = {1}, description = {2}, Conn HashCode={3}", (thread.ManagedThreadId<10? "0": "") + thread.ManagedThreadId.ToString(), wfn1.NodeValue, wfn1.Description, session.DbConnection.GetHashCode());
+
+                    session.BeginTrans();
+                    int xx, yy;
+                    int.TryParse(wfn1.NodeValue, out xx);
+                    int.TryParse(wfn1.Description, out yy);
+                    wfn1.NodeValue = jj.ToString();
+                    wfn1.Description = (yy + 1).ToString();
+                    mgr.Update(wfn1);
+
+                    Thread.Sleep(jj);
+
+                    wfn1 = mgr.Get(1);
+                    Console.WriteLine("Current Thread {0}: after first ...   , NodeValue = {1}, description = {2}, Conn HashCode={3}", (thread.ManagedThreadId < 10 ? "0" : "") + thread.ManagedThreadId.ToString(), wfn1.NodeValue, wfn1.Description, session.DbConnection.GetHashCode());
+
+                    int.TryParse(wfn1.NodeValue, out xx);
+                    int.TryParse(wfn1.Description, out yy);
+                    wfn1.NodeValue = session.DbConnection.GetHashCode().ToString();
+                    wfn1.Description = (yy + 1).ToString();
+                    mgr.Update(wfn1);
+
+                    string prefix = "";
+                    if (jj % 2 == 0)
+                    {
+                        prefix = "Committed .. ";
+                        session.Commit();
+                    }
+                    else
+                    {
+                        prefix = "Rollback ... ";
+                        session.Rollback();
+                    }
+                    wfn1 = mgr.Get(1);
+                    Console.WriteLine("Current Thread {0}: After " + prefix + " NodeValue = {1}, description = {2}, Conn HashCode={3}", (thread.ManagedThreadId < 10 ? "0" : "") + thread.ManagedThreadId.ToString(), wfn1.NodeValue, wfn1.Description, session.DbConnection.GetHashCode());
+
+                }
+            }
+
+                static void updateme(IDbSession session)
             {
                 var mgr = (WorkflowNodeManager)ManagerFactory<WorkflowNode>.Instance.GetManager(session);
 
@@ -145,7 +206,7 @@ namespace _TesterConsoleApp
 
                 Thread thread = Thread.CurrentThread;
 
-                Console.WriteLine("Current Thread {0}, NodeValue = {1}, description = {2}", thread.ManagedThreadId.ToString(), wfn1.NodeValue, wfn1.Description);
+                Console.WriteLine("Current Thread {0},Conn HashCode={3},  NodeValue = {1}, description = {2}", thread.ManagedThreadId.ToString(), wfn1.NodeValue, wfn1.Description, session.DbConnection.GetHashCode());
                 mgr.Update(wfn1);
             }
 

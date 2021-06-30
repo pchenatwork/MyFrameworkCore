@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AppBase.Core.DataAccess;
 using Application.BusinessLogic;
-using Application.ValueObjects.Workflow;
-using Framework.Core.DataAccess;
+using Application.BusinessLogic.Workflow;
+using Application.ValueObjects.Workflow; 
+//using Framework.Core.DataAccess;
 using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +26,11 @@ namespace RazorPage.Pages.Grid
             string sProviderName = "Microsoft.Data.SqlClient";
             string sConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + Directory.GetCurrentDirectory() + "\\Workflow.mdf;Integrated Security=True";
 
-            var dbSession = DbSessionFactory.Instance.GetSession(sProviderName, sConnectionString);
+            using (var dbSession = DbSessionFactory.Instance.GetSession(sProviderName, sConnectionString))
+            {
+                var NodeManager = (WorkflowNodeManager)ManagerFactory<WorkflowNode>.Instance.GetManager(dbSession);
+
+            }
        //     WorkflowNodeManager mgrWFNode = ManagerFactory<WorkflowNode>.Instance.GetManager(dbSession);
 
       //      var x = mgrWFNode.FindByCriteria()

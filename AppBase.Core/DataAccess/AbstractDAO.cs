@@ -7,10 +7,12 @@ using System.Xml;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using AppBase.Core.Utilities;
+using System.Collections;
+using System.Threading.Tasks;
 
 namespace AppBase.Core.DataAccess
 {
-    public abstract class AbstractDAO<T> : IDataAccessObject<T> where T : IValueObject // class, IValueObject, new()
+    public abstract class AbstractDAO<T> : IDataAccessObject<T>, IDataAccessObjectAsyn<T> where T : IValueObject // class, IValueObject, new()
     {
         #region constructor
         protected AbstractDAO()
@@ -26,11 +28,33 @@ namespace AppBase.Core.DataAccess
         {
             throw new NotImplementedException();
         }
+        public async Task<int> CreateAsyn(IDbSession dbSession, T entity)
+        {
+            return await Task.Run(() => Create(dbSession, entity));
+        }
+        public virtual bool Update(IDbSession dbSession, T obj)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<bool> UpdateAsyn(IDbSession dbSession, T entity)
+        {
+            return await Task.Run(() => Update(dbSession, entity));
+        }
         public virtual bool Delete(IDbSession dbSession, dynamic Id)
         {
             throw new NotImplementedException();
         }
+        public async Task<bool> DeleteAsyn(IDbSession dbSession, dynamic Id)
+        {
+            return await Task.Run(() => Delete(dbSession, Id));
+        }
+
+
         public virtual IEnumerable<T> FindByCriteria(IDbSession dbSession, string finderType, params object[] criteria)
+        {
+            throw new NotImplementedException();
+        }
+        public virtual Task<IEnumerable<T>> FindByCriteriaAsync(IDbSession dbSession, string finderType, params object[] criteria)
         {
             throw new NotImplementedException();
         }
@@ -38,11 +62,15 @@ namespace AppBase.Core.DataAccess
         {
             throw new NotImplementedException();
         }
+        public async Task<T> GetAsync(IDbSession dbSession, dynamic id)
+        {
+            throw new NotImplementedException();
+        }
         public virtual IEnumerable<T> GetAll(IDbSession dbSession)
         {
             throw new NotImplementedException();
         }
-        public virtual bool Update(IDbSession dbSession, T obj)
+        public async Task<IEnumerable<T>> GetAllAsync(IDbSession dbSession)
         {
             throw new NotImplementedException();
         }
@@ -53,13 +81,17 @@ namespace AppBase.Core.DataAccess
                 BindingFlags.Public | BindingFlags.Instance | BindingFlags.InvokeMethod,
                 null, this, parameters);
         }
+        public async Task<object> InvokeByMethodNameAsync(IDbSession dbSession, string methodName, params object[] parameters)
+        {
+            throw new NotImplementedException();
+        }
         /// <summary>
         /// </summary>
         /// <param name="dbSession"></param>
         /// <param name="commandText"></param>
         /// <param name="parameters">parameters[0] = new SqlParameter("@ReturnValue", SqlDbType.Int);</param>
         /// <returns></returns>
-        protected XmlReader ExecuteXmlReader(IDbSession dbSession, string commandText, SqlParameter[] parameters)
+        protected XmlReader ExecuteXmlReader(IDbSession dbSession, string commandText, IEnumerable<SqlParameter> parameters)
         {
             XmlReader reader;
             using (SqlCommand cmd = new SqlCommand())
@@ -88,14 +120,11 @@ namespace AppBase.Core.DataAccess
         /// <param name="dbSession"></param>
         /// <param name="commandText"></param>
         /// <param name="parameters"></param>
-        /// <returns></returns>
-        protected int ExecuteNonQuery(IDbSession dbSession, string commandText, SqlParameter[] parameters)
+        /// <returns>row count</returns>
+        protected int ExecuteNonQuery(IDbSession dbSession, string commandText, IEnumerable<SqlParameter> parameters, out object retval)
         {
             using (SqlCommand cmd = new SqlCommand())
-            {
-                cmd.Connection = (SqlConnection)dbSession.DbConnection;
-                if (dbSession.Transaction != null)
-                    cmd.Transaction = (SqlTransaction)dbSession.Transaction;
+            {;
 
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = commandText;
@@ -105,10 +134,19 @@ namespace AppBase.Core.DataAccess
                     cmd.Parameters.Add(p);
                 }
 
-                if (cmd.Connection.State != ConnectionState.Open) cmd.Connection.Open();
-                object returnValue = cmd.ExecuteNonQuery();
+                if (dbSession.Transaction != null)
+                {
+                    cmd.Transaction = (SqlTransaction)dbSession.Transaction;
+                    cmd.Connection = cmd.Transaction.Connection;
+                }
+                else 
+                    cmd.Connection = (SqlConnection)dbSession.DbConnection;
 
-                return (int)cmd.Parameters[0].Value;
+                if (cmd.Connection.State != ConnectionState.Open) cmd.Connection.Open();
+
+                int rowcount = cmd.ExecuteNonQuery();
+                retval = cmd.Parameters["@ReturnValue"].Value;
+                return rowcount;
             }
         }
 
